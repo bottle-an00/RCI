@@ -98,3 +98,27 @@ def test_connect_and_disconnect_delegate_to_client():
 
     handler.disconnect()
     mock_instance.disconnect.assert_called_once()
+
+
+def test_handler_wires_real_mqtt_client_correctly():
+    """UR3MqttHandler가 (모의 대체된) MQTTClient가 아니라 실제 MQTTClient를 통해
+    paho 계층까지 올바른 인자로 연결되는지 검증한다. paho.mqtt.client.Client만
+    모의 대체해서, MQTTClient.__init__ 시그니처가 실제로 검증되게 한다."""
+    with patch("shared.mqtt_client.mqtt.Client") as mock_paho_client_cls:
+        mock_paho_instance = MagicMock()
+        mock_paho_instance.is_connected.return_value = True
+        mock_paho_client_cls.return_value = mock_paho_instance
+
+        UR3MqttHandler()
+
+        # will_set이 올바른 LWT 토픽과 offline/disconnected 상태로 디코딩되는 payload로 호출됨
+        mock_paho_instance.will_set.assert_called_once()
+        args, kwargs = mock_paho_instance.will_set.call_args
+        assert args[0] == "minigit/status/rci-ur"
+        payload = kwargs.get("payload") or (args[1] if len(args) > 1 else None)
+        import json
+
+        assert json.loads(payload) == {"state": "offline", "robot": "disconnected"}
+
+        # is_connected()가 True이므로 구독이 즉시 적용됨
+        mock_paho_instance.subscribe.assert_called_once_with("minigit/req/urrobot", qos=1)
