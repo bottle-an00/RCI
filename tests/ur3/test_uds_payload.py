@@ -21,7 +21,7 @@ def test_decode_hex_round_trip():
 def test_decode_hex_lowercase_input_also_accepted():
     # 사양서는 발행 시 대문자를 요구하지만, 파싱은 대소문자에 관용적이어야 한다
     # (웹앱이 보내는 요청 payload를 우리가 통제할 수 없기 때문).
-    assert uds_payload.decode_hex("22 01 07") == uds_payload.decode_hex("22 01 07".lower())
+    assert uds_payload.decode_hex("AB CD") == uds_payload.decode_hex("ab cd") == bytes([0xAB, 0xCD])
 
 
 def test_classify_type_positive():
