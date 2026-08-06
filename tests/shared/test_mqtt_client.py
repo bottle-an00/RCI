@@ -93,3 +93,15 @@ def test_subscribe_after_connect_applies_immediately():
 def test_reconnect_delay_set_is_configured():
     _, _, mock_instance = _make_client_with_mock()
     mock_instance.reconnect_delay_set.assert_called_once_with(min_delay=1, max_delay=30)
+
+
+def test_subscribe_not_replayed_when_connect_fails():
+    client, _, mock_instance = _make_client_with_mock()
+    callback = MagicMock()
+    client.subscribe("minigit/req/urrobot", callback=callback, qos=1)
+
+    # connect failed (reason_code != 0, e.g. 5 = "Connection refused - not authorised")
+    client._on_connect(mock_instance, None, MagicMock(), 5, MagicMock())
+
+    mock_instance.subscribe.assert_not_called()
+    mock_instance.message_callback_add.assert_not_called()

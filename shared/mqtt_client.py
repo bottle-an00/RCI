@@ -33,7 +33,10 @@ class MQTTClient:
         """연결(또는 재연결) 성공 시 큐에 쌓인 구독을 전부 적용한다.
 
         connect() 이전에 subscribe()가 호출돼도 실제 구독이 누락되지 않게 하기 위함이다.
+        연결이 실패한 경우(reason_code != 0)는 구독을 재생하지 않는다.
         """
+        if reason_code != 0:
+            return
         for topic, qos, callback in self._subscriptions:
             self._client.subscribe(topic, qos=qos)
             if callback is not None:
