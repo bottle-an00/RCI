@@ -6,5 +6,5 @@ DASHBOARD_PORT = 29999
 
 # MQTT 브로커 (UR3_RCI_기능명세서.md §4.0 — 실제 클라우드 브로커 정보 미수령 상태.
 # 로컬 테스트 중에는 브로커를 띄운 PC의 LAN IP로 바꿀 것.)
-BROKER_HOST = "localhost"
+BROKER_HOST = "172.20.10.11"
 BROKER_PORT = 1883
