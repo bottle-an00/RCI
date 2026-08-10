@@ -3,3 +3,4 @@ superpowers/*
 .claude*
 __pycache__/
 *.pyc
+cloud/.venv/
