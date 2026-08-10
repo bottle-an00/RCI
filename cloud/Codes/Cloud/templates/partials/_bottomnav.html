@@ -1,0 +1,10 @@
+{% from "partials/_macros.html" import icon %}
+{# 하단 5메뉴 — GDS-SMART 라벨 그대로(§5). bottom_nav 데이터로 렌더. #}
+<nav class="bottomnav">
+  {% for m in bottom_nav %}
+  <a class="bottomnav__item" href="#">
+    {{ icon(m.icon) }}
+    <span>{{ m.label }}</span>
+  </a>
+  {% endfor %}
+</nav>

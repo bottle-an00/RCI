@@ -1,0 +1,19 @@
+{# 세부 항목 접이식 트리 (재귀). 깊이가 달라도 동일 매크로로 렌더.
+   nodes       = {"id","title","children"?} 리스트
+   base        = 잎 링크의 기준 경로 (예: /practice/rc-msg 또는 /practice/rc-msg/run)
+   selected_id = 현재 선택된 잎 id
+   depth       = 들여쓰기 깊이 (재귀 내부용) #}
+{% macro tree(nodes, base, selected_id, depth=0) %}
+  {% for n in nodes %}
+    {% if n.children %}
+    <div class="tree__group" style="padding-left: {{ 16 + depth * 20 }}px">
+      <span class="tree__caret">▾</span>{{ n.title }}
+    </div>
+    {{ tree(n.children, base, selected_id, depth + 1) }}
+    {% else %}
+    <a class="tree__row {% if selected_id and n.id == selected_id %}is-selected{% endif %}"
+       style="padding-left: {{ 16 + depth * 20 }}px"
+       href="{{ base }}?item={{ n.id }}">{{ n.title }}</a>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}

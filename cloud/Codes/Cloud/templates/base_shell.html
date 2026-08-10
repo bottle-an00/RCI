@@ -1,0 +1,10 @@
+{# 서브 화면 공통 셸 — 흰 RCI 상단바 + 브레드크럼 서브바 + {content} + 하단 5메뉴.
+   Figma의 공통 크롬 컴포넌트(Topbar/Subbar/Bottomnav)에 대응. crumbs·status·
+   bottom_nav 는 라우트 컨텍스트에서 주입. #}
+{% extends "base.html" %}
+{% block body %}
+  {% include "partials/_topbar.html" %}
+  {% include "partials/_subhead.html" %}
+  {% block content %}{% endblock %}
+  {% include "partials/_bottomnav.html" %}
+{% endblock %}

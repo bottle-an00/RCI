@@ -1,0 +1,4 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+jinja2>=3.1
+paho-mqtt>=2.0        # 서버측 MQTT 브리지 (mqtt_bridge.py). 브라우저는 mqtt.js 를 따로 씀.

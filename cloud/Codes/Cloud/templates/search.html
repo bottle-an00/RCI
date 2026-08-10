@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}RCI · 검색{% endblock %}
+
+{% block body %}
+{% include "partials/_topbar.html" %}
+<div class="crumbbar">
+  <div class="crumbbar__nav">
+    <a href="#" onclick="history.back();return false;">‹ 뒤로</a>
+    <a href="/">⌂ 홈</a>
+    <span class="crumbbar__sep">|</span>
+    <span class="crumb crumb--content">검색</span>
+  </div>
+</div>
+<main class="search-page">
+  <h1>검색 결과</h1>
+  {% if query %}
+    <p>“{{ query }}” 에 대한 통합 검색 — 교육 자료·실습·대상 ID (연동 예정 플레이스홀더).</p>
+  {% else %}
+    <p>검색어를 입력하세요.</p>
+  {% endif %}
+</main>
+{% include "partials/_bottomnav.html" %}
+{% endblock %}

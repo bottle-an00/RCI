@@ -1,0 +1,47 @@
+{% extends "base_shell.html" %}
+{% from "partials/_macros.html" import icon %}
+{% from "partials/_tree.html" import tree %}
+{% block title %}RCI · {{ title }}{% endblock %}
+
+{% block content %}
+{# Step3 · 실습 준비 — 좌 세부 항목 / 우 상세(절차) #}
+<div class="md">
+  <div class="md__list">
+    <div class="md__list-head">세부 항목</div>
+    {{ tree(nodes, "/" ~ target.id ~ "/" ~ content.id, selected.id if selected else "") }}
+  </div>
+
+  <div class="md__detail">
+    {% if selected %}
+    <div class="detail__head">
+      <div class="detail__title-row">
+        <span class="detail__title">{{ selected.title }}</span>
+        <span class="tag tag--uds">준비</span>
+      </div>
+      <div class="detail__meta">대상 {{ target.label }} · 사전 준비 · 전송 {{ target.transport }}</div>
+    </div>
+    <div class="detail__body">
+      <div class="detail__section">
+        <h3>준비물</h3>
+        <p>Mini VCI · {{ target.label }} · 전원/통신 케이블 · 진단 PC (더미)</p>
+      </div>
+      <div class="detail__section">
+        <h3>체결 절차</h3>
+        <div class="detail__goal">1) 대상 전원 확인</div>
+        <div class="detail__goal">2) Mini VCI ↔ 대상 커넥터 체결</div>
+        <div class="detail__goal">3) Mini VCI ↔ PC 연결 ({{ target.transport }})</div>
+        <div class="detail__goal">4) 연결 상태 '연결됨' 확인</div>
+      </div>
+      <div class="detail__section">
+        <h3>유의사항</h3>
+        <p>체결 전 전원 상태를 반드시 확인하세요. (상세 콘텐츠는 데이터 연동 예정)</p>
+      </div>
+    </div>
+    <div class="detail__actions">
+      <button class="btn btn--primary">실습 시작</button>
+      <button class="btn btn--ghost">가이드 보기</button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

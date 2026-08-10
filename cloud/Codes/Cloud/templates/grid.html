@@ -1,0 +1,22 @@
+{% extends "base_shell.html" %}
+{% from "partials/_macros.html" import icon %}
+{% block title %}RCI · 컨텐츠 선택 ({{ target.label }}){% endblock %}
+
+{% block content %}
+{# Step2 — 학습·준비 / 진단·실습 2섹션 그리드 (대상 기준) #}
+<div class="cat-grid">
+  {% for s in sections %}
+  <div class="cat-group">
+    <div class="cat-group__label">{{ s.name }}</div>
+    <div class="cat-row">
+      {% for c in s.cards %}
+      <a class="cat-tile" href="/{{ target.id }}/{{ c.id }}">
+        {{ icon(c.icon, "cat-tile__icon") }}
+        <span class="cat-tile__label">{{ c.title }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

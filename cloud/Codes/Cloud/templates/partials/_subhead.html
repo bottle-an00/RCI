@@ -1,0 +1,19 @@
+{# 흰색 서브바 (브레드크럼) — 상단바와 동일 배경으로 통일.
+   crumbs = [{text, tier(section|content|leaf), href?}, ...]
+   status = 우측 상태 텍스트 (예: "대상 · RC카 · 연결됨") #}
+<div class="crumbbar">
+  <div class="crumbbar__nav">
+    <a href="#" onclick="history.back();return false;">‹ 뒤로</a>
+    <a href="/">⌂ 홈</a>
+    <span class="crumbbar__sep">|</span>
+    {% for cr in crumbs %}
+      {% if not loop.first %}<span class="crumbbar__chev">›</span>{% endif %}
+      {% if cr.href %}
+      <a href="{{ cr.href }}" class="crumb crumb--{{ cr.tier }}">{{ cr.text }}</a>
+      {% else %}
+      <span class="crumb crumb--{{ cr.tier }}">{{ cr.text }}</span>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <div class="crumbbar__status"><span class="dot">●</span> {{ status }}</div>
+</div>

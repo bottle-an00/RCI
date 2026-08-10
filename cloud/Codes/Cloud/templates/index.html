@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "partials/_macros.html" import icon %}
+{% block title %}RCI · 대상 선택{% endblock %}
+
+{% block body %}
+{% include "partials/_topbar.html" %}
+
+{# 서브바 — 대상 선택 #}
+<div class="subbar">
+  <span class="subbar__label">대상 선택</span>
+  {{ icon("car-check") }}
+</div>
+
+{# 히어로 — 로고 + 검색 + 대상 2택 (Step1) #}
+<main class="hero">
+  <div class="hero__clouds"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="hero__inner">
+    <div class="hero__logo">
+      <img src="{{ url_for('static', path='img/git-logo.png') }}" alt="G1T">
+    </div>
+    <form class="searchbar" action="/search" method="get">
+      <input type="text" name="q"
+             placeholder="대상 ID / 검사 항목 · 고장코드 및 현상을 입력하세요">
+      <button type="submit" aria-label="검색">{{ icon("magnifier") }}</button>
+    </form>
+    <div class="tiles">
+      {% for t in targets %}
+      <a class="tile" href="/{{ t.id }}">
+        {{ icon(t.icon, "tile__icon") }}
+        <span class="tile__label">{{ t.label }}</span>
+        <span class="tile__sub">{{ t.tile_sub }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+
+{% include "partials/_bottomnav.html" %}
+{% endblock %}

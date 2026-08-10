@@ -1,0 +1,26 @@
+{% extends "base_shell.html" %}
+{% block title %}RCI · 퀴즈{% endblock %}
+
+{% block content %}
+{# Step3 · 퀴즈 — 중앙 문항 카드 (더미) #}
+<div class="quiz-wrap">
+  <div class="quiz-card">
+    <div class="quiz-card__top">
+      <span>CAN 통신 퀴즈</span>
+      <span>문항 3 / 10</span>
+    </div>
+    <div class="quiz-bar"><span style="width:30%"></span></div>
+    <div class="quiz-q">다음 중 CAN 표준 프레임의 식별자(ID) 길이로 옳은 것은?</div>
+    <div class="quiz-opts">
+      <label class="quiz-opt is-on"><span class="quiz-mark"></span>11 bit (표준 식별자)</label>
+      <label class="quiz-opt"><span class="quiz-mark"></span>29 bit (확장 식별자)</label>
+      <label class="quiz-opt"><span class="quiz-mark"></span>8 bit</label>
+      <label class="quiz-opt"><span class="quiz-mark"></span>16 bit</label>
+    </div>
+    <div class="quiz-foot">
+      <button class="btn btn--ghost">← 이전</button>
+      <button class="btn btn--primary">다음 →</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
