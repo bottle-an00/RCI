@@ -48,6 +48,39 @@ ROBOT_IP = "192.168.1.101"  # <- 실제 값으로 변경
    ```
    손목 관절(6번 조인트) 하나만 5도 회전시키는 아주 작은 동작이다. 실행 전 터미널에 안전 확인 문구가 뜨고 `yes`를 입력해야 실제로 동작한다.
 
+## MQTT 왕복 연결 테스트 (로봇이 움직이지 않음)
+
+클라우드 웹앱과의 진단 통신 경로(`minigit/*` 계약)가 뚫렸는지만 확인한다. UDS
+디스패처는 아직 없으므로 TesterPresent(`3E 00`)만 긍정 응답하고, 나머지 서비스는
+"미구현" 에러를 솔직하게 회신한다.
+
+```bash
+python scripts/mqtt_echo_test.py                       # config.py 의 브로커 사용
+python scripts/mqtt_echo_test.py --host 192.168.0.10   # 브로커만 바꿔서
+RCI_BROKER_HOST=192.168.0.10 python scripts/mqtt_echo_test.py
+```
+
+브로커 주소·계정은 `config.py` 기본값을 환경변수로 덮어쓴다 — `RCI_BROKER_HOST`,
+`RCI_BROKER_PORT`, `RCI_BROKER_USERNAME`, `RCI_BROKER_PASSWORD`, `RCI_BROKER_TLS`.
+클라우드 웹(FastAPI)도 같은 이름을 읽으므로 양쪽에 같은 값을 주면 된다.
+
+`[성공] 연결됨` 이 뜨면 CONNACK 까지 확인된 것이다(TCP 만 붙은 상태와 구분됨).
+연결이 안 되면 원인(`reason_code=5` 인증 실패 등)을 그대로 출력한다.
+
+**웹 쪽에서 메시지 보내기** — 이 스크립트를 띄운 채로, 웹 서버가 도는 PC 에서:
+
+```bash
+curl -X POST http://localhost:8123/api/diag/urrobot/request \
+     -H "Content-Type: application/json" -d '{"raw":"3E 00"}'
+# {"id":"w-0001","type":"positive","raw":"7E 00"}
+```
+
+전 구간을 한 번에 점검하려면 클라우드 쪽 스크립트를 쓴다:
+
+```bash
+python cloud/scripts/connection_test.py --stub --base-url http://<웹 IP>:8123
+```
+
 ## 안전 주의사항
 
 - `move_test.py`는 실제로 로봇을 움직인다. 실행 전 반드시 로봇 주변에 사람과 장애물이 없는지 확인할 것.
@@ -59,11 +92,14 @@ ROBOT_IP = "192.168.1.101"  # <- 실제 값으로 변경
 
 ```
 UR3-RPi-Test/
-├── config.py              # 로봇 IP 등 연결 설정
+├── config.py              # 로봇 IP·브로커 등 연결 설정 (환경변수로 덮어쓰기 가능)
+├── mqtt_handler.py        # minigit 계약 토픽 래퍼 (shared.mqtt_client 기반)
+├── uds_payload.py         # 계약 페이로드 인코딩/디코딩
 ├── requirements.txt
 ├── scripts/
 │   ├── read_state.py      # RTDE 읽기 전용 테스트
 │   ├── dashboard_test.py  # Dashboard 명령 테스트
+│   ├── mqtt_echo_test.py  # MQTT 왕복 연결 테스트 (로봇 미동작)
 │   └── move_test.py       # 간단한 moveJ 이동 테스트 (실제 동작)
 └── docs/                  # miniGIT UR3 진단 통신 설계 문서 4종 (참고용)
 ```

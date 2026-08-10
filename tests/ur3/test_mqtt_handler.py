@@ -82,6 +82,45 @@ def test_on_request_callback_invoked_with_parsed_request():
     assert received == [{"id": "u-0001", "raw": bytes([0x22, 0x01, 0x01]), "timeout_ms": 1000}]
 
 
+def test_malformed_payload_does_not_raise_into_paho_callback():
+    """깨진 페이로드 하나로 콜백이 예외를 던지면 그 뒤 수신이 조용히 멈춘다."""
+    handler, _, _ = _make_handler_with_mock()
+    received = []
+    handler.on_request = received.append
+
+    for bad in (b"not json", b'{"raw":"22 01 01"}', b'{"id":"u-1","raw":"ZZ"}', b"\xff\xfe"):
+        fake_msg = MagicMock()
+        fake_msg.payload = bad
+        handler._handle_message(None, None, fake_msg)  # 예외 없이 넘어가야 함
+
+    assert received == []
+
+
+def test_credentials_and_tls_forwarded_to_client():
+    with patch("ur3.mqtt_handler.MQTTClient") as mock_client_cls:
+        mock_client_cls.return_value = MagicMock()
+
+        UR3MqttHandler(username="rci", password="secret", tls=True)
+
+        _, kwargs = mock_client_cls.call_args
+        assert kwargs["username"] == "rci"
+        assert kwargs["password"] == "secret"
+        assert kwargs["tls"] is True
+
+
+def test_connection_state_delegates_to_client():
+    handler, _, mock_instance = _make_handler_with_mock()
+    mock_instance.wait_connected.return_value = True
+    mock_instance.is_connected = True
+
+    assert handler.wait_connected(1.5) is True
+    mock_instance.wait_connected.assert_called_once_with(1.5)
+    assert handler.is_connected is True
+
+    handler.connect_async()
+    mock_instance.connect_async.assert_called_once()
+
+
 def test_message_ignored_when_on_request_not_set():
     handler, _, _ = _make_handler_with_mock()
     fake_msg = MagicMock()

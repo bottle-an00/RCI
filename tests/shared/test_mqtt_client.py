@@ -105,3 +105,76 @@ def test_subscribe_not_replayed_when_connect_fails():
 
     mock_instance.subscribe.assert_not_called()
     mock_instance.message_callback_add.assert_not_called()
+
+
+# --- 연결 확인 · 인증 · TLS (클라우드 브로커 이설 대비) ----------------------- #
+
+
+def test_username_pw_set_called_when_credentials_given():
+    with patch("shared.mqtt_client.mqtt.Client") as mock_client_cls:
+        mock_instance = MagicMock()
+        mock_client_cls.return_value = mock_instance
+
+        MQTTClient("test-client", username="rci", password="secret")
+
+        mock_instance.username_pw_set.assert_called_once_with("rci", "secret")
+
+
+def test_username_pw_set_not_called_without_credentials():
+    _, _, mock_instance = _make_client_with_mock()
+    mock_instance.username_pw_set.assert_not_called()
+
+
+def test_tls_set_called_only_when_tls_enabled():
+    _, _, plain = _make_client_with_mock()
+    plain.tls_set.assert_not_called()
+
+    with patch("shared.mqtt_client.mqtt.Client") as mock_client_cls:
+        mock_instance = MagicMock()
+        mock_client_cls.return_value = mock_instance
+
+        MQTTClient("test-client", tls=True)
+
+        mock_instance.tls_set.assert_called_once()
+
+
+def test_wait_connected_true_only_after_successful_connack():
+    """connect() 반환은 TCP까지만 보장한다. CONNACK 성공 전에는 False여야 한다."""
+    client, _, mock_instance = _make_client_with_mock()
+
+    assert client.wait_connected(timeout=0.01) is False
+    assert client.is_connected is False
+
+    client._on_connect(mock_instance, None, MagicMock(), 0, MagicMock())
+
+    assert client.wait_connected(timeout=0.01) is True
+    assert client.is_connected is True
+
+
+def test_wait_connected_stays_false_when_broker_rejects():
+    """인증 실패(5)를 '연결됨'으로 착각하면 원인 진단이 한참 늦어진다."""
+    client, _, mock_instance = _make_client_with_mock()
+
+    client._on_connect(mock_instance, None, MagicMock(), 5, MagicMock())
+
+    assert client.wait_connected(timeout=0.01) is False
+    assert client.last_reason_code == 5
+
+
+def test_on_disconnect_clears_connected_flag():
+    client, _, mock_instance = _make_client_with_mock()
+    client._on_connect(mock_instance, None, MagicMock(), 0, MagicMock())
+
+    client._on_disconnect(mock_instance, None, MagicMock(), 7, MagicMock())
+
+    assert client.is_connected is False
+
+
+def test_connect_async_starts_loop_without_blocking_connect():
+    client, _, mock_instance = _make_client_with_mock()
+
+    client.connect_async()
+
+    mock_instance.connect_async.assert_called_once()
+    mock_instance.connect.assert_not_called()
+    mock_instance.loop_start.assert_called_once()
