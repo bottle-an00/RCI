@@ -1,0 +1,164 @@
+# 요구사항 정의서
+
+## 1. 문서 정보
+
+| 항목 | 내용 |
+|------|------|
+| **작성일** | 2026-06-19 |
+| **프로젝트 제목** | UR3 진단통신 교육 플랫폼 |
+| **목적** | Universal Robots **UR3 (CB3)** arm에서 **진단통신**(데이터 요청/응답, 명령 송신)을 시연하는 입문자용 플랫폼 제공. 웹 클라이언트가 클라우드를 통해 로봇 실시간 텔레메트리를 요청하고 속도 제한 모션 명령을 송신하며, 보드가 클라우드(MQTT)와 로봇(RTDE) 사이를 중계함. 산업용 도구가 아니라 학습을 위한 **통신 흐름 시각화**가 목표임. |
+
+---
+
+## 2. 개요
+
+- **UR3**은 **Control box**(PolyScope / URControl)가 관절을 구동 및 안전을 강제하는 실시간 제어기
+- 보드와 컨트롤 박스 LAN연결, UR 고유 **RTDE** 프로토콜로 통신.
+  **`ur_rtde`** 라이브러리(Python/C++)를 사용함. **ROS2 및 `ur_robot_driver`는 미사용**
+  (초기에 검토했으나, `ur_rtde` + MQTT 스택 대체로 충분)
+- 보드는 **MQTT 클라이언트**(`paho-mqtt`)이기도 하며 **클라우드 브로커**에 연결
+- **PC 또는 태블릿**은 브라우저 기반 웹 UI를 실행하고 **MQTT over WebSocket**으로 동일 클라우드
+  브로커에 접속. MQTT 메시지 송수신만, 로봇 SW는 설치 X
+- 데이터 흐름:
+  - **읽기(요청/응답):** UI → MQTT → 클라우드 → 보드 → RTDE 읽기 → 보드 → MQTT → UI.
+  - **명령(송신):** UI → MQTT → 클라우드 → 보드 → `ur_rtde` 모션 명령 → 컨트롤 박스 → arm.
+- **안전:** 실시간 제어 루프는 로컬(보드 ↔ 컨트롤 박스, CB3는 125 Hz)에 유지함. 이산적 고수준
+  명령만 클라우드를 경유함. 속도 제한은 명령 파라미터(보드)와 컨트롤 박스 안전설정(PolyScope)에서
+  이중으로 적용함.
+
+---
+
+## 3. 전체 구조
+
+*(README.md와 동일)*
+
+```
+                         (인터넷 / Wi-Fi)                (인터넷 / Wi-Fi)
+ [ PC / 태블릿 ]  <--- MQTT over WebSocket --->  [ 클라우드 MQTT 브로커 ]  <--- MQTT --->  ...
+   웹 UI 전용                                      (HiveMQ / EMQX, 무료)
+   (ROS·ur_rtde 없음)
+                                                                                          |
+                                                                                          v
+ ┌──────────────────────────────────────────────────────────────────────────────────────────┐
+ │ [ 보드 ]   (Ubuntu, 엣지 게이트웨이)                                              │
+ │    - MQTT 클라이언트  (paho-mqtt)                                                          │
+ │    - RTDE 클라이언트  (ur_rtde:  RTDEReceiveInterface / RTDEControlInterface)              │
+ │    변환  MQTT  <-->  RTDE / URScript                                                       │
+ └──────────────────────────────────────────────────────────────────────────────────────────┘
+                                  |
+                                  |  RTDE (TCP 30004, 읽기 @125 Hz)  +  URScript (TCP 30002, 제어)
+                                  v
+                       [ UR 컨트롤 박스 (CB3) ]
+                          PolyScope / URControl  (실시간 제어기, 안전)
+                                  |
+                                  |  내부 실시간 필드버스 (UR 독자)
+                                  v
+                       [ UR3 로봇 arm ]  (6관절: 모터 + 엔코더, OS 없음)
+```
+
+---
+
+## 4. 구성 요소 및 역할
+
+| # | 구성 요소 | 역할 |
+|---|-----------|------|
+| 1 | **UR3 로봇 arm** (CB3) | 기계적 구동 + 센싱. 각 관절에 모터·엔코더·관절보드(펌웨어) 탑재, 각도/전류/온도를 보고하나 **OS는 없으며** 컨트롤 박스 없이는 동작 불가. |
+| 2 | **컨트롤 박스** (CB3) | 실시간 제어기(URControl). 모션 실행, 역기구학/궤적 생성, **안전 제한 강제**, RTDE/URScript로 데이터·제어 노출. OS는 arm이 아니라 여기에 있음. |
+| 3 | **티치 펜던트** (PolyScope 3.x) | 로컬 운영 UI: 전원 인가/브레이크 해제, 안전 설정, 수동 조그, 외부 제어 허용. 데이터 경로에는 포함되지 않음. |
+| 4 | **보드** | **엣지 게이트웨이 / 프로토콜 변환기**(§6 참조). `ur_rtde`(RTDE 클라이언트)와 `paho-mqtt`(MQTT 클라이언트) 실행. |
+| 5 | **클라우드 MQTT 브로커** (HiveMQ / EMQX 무료) | 메시지 라우터. 클라이언트와 보드를 분리(decouple)하고, publish/subscribe 토픽으로 어디서든 접속 가능하게 함. |
+| 6 | **PC / 태블릿** | **웹 UI 클라이언트**(§7 참조). 요청/명령을 publish하고 응답 + 흐름 시각화를 표시. ROS·`ur_rtde` 없음. |
+| 7 | **LAN / Wi-Fi / LTE** | LAN: 컨트롤 박스 ↔ 보드. Wi-Fi/LTE: 보드 ↔ 인터넷 ↔ 클라우드 브로커 ↔ 클라이언트. |
+
+---
+
+## 5. 읽어올 센서 / 상태 값
+
+**근거 출처:** **UR RTDE 레지스터 사양**(`ur_rtde`의 `RTDEReceiveInterface`가 실제로 노출하는
+필드). 문서화된 RTDE 출력 필드만 기재하며 **추측 값은 포함하지 않음**.
+
+> CB3 주의사항:
+> - UR3 (CB3)에는 **내장 힘/토크 센서가 없음**. `actual_TCP_force`는 존재하나 전용 손목 센서
+>   측정값이 아니라 **관절 전류로 추정한 값**(정확도 낮음)임.
+> - e-Series 전용 필드 `ft_raw_wrench`는 CB3에서 **사용 불가**.
+> - CB3의 RTDE 갱신율은 **125 Hz**.
+
+| 값 | RTDE 필드 | `ur_rtde` getter | 단위 |
+|----|-----------|------------------|------|
+| 관절 각도 (×6) | `actual_q` | `getActualQ()` | rad |
+| 관절 속도 (×6) | `actual_qd` | `getActualQd()` | rad/s |
+| 관절 전류 (×6) | `actual_current` | `getActualCurrent()` | A |
+| 관절 온도 (×6) | `joint_temperatures` | `getJointTemperatures()` | °C |
+| TCP 자세 (x,y,z,rx,ry,rz) | `actual_TCP_pose` | `getActualTCPPose()` | m, rad |
+| TCP 속도 | `actual_TCP_speed` | `getActualTCPSpeed()` | m/s, rad/s |
+| TCP 힘 (일반화) | `actual_TCP_force` | `getActualTCPForce()` | N, Nm *(CB3는 추정값)* |
+| 디지털 입력 상태 | `actual_digital_input_bits` | `getActualDigitalInputBits()` | 비트마스크 |
+| 디지털 출력 상태 | `actual_digital_output_bits` | `getActualDigitalOutputBits()` | 비트마스크 |
+| 표준 아날로그 입력 (×2) | `standard_analog_input0/1` | `getStandardAnalogInput0()/1()` | A 또는 V |
+| 툴 가속도계 | `actual_tool_accelerometer` | `getActualToolAccelerometer()` | m/s² |
+| 주전원 전압 | `actual_main_voltage` | `getActualMainVoltage()` | V |
+| 로봇 전압 / 전류 | `actual_robot_voltage` / `actual_robot_current` | `getActualRobotVoltage()` / `getActualRobotCurrent()` | V / A |
+| 로봇 모드 | `robot_mode` | `getRobotMode()` | enum |
+| 안전 모드 | `safety_mode` | `getSafetyMode()` | enum |
+| 속도 스케일링 | `speed_scaling` | `getSpeedScaling()` | 비율 |
+
+> RTDE 출력 레시피에는 추가 필드(`target_*`, `runtime_state`, `actual_momentum` 등)가 더 있음.
+> 본 표는 권장 데모 부분집합이며, 더 필요하면 RTDE 레지스터 목록에서만 확장할 것.
+
+**권장 데모 세트(가장 직관적):** 관절 각도(`actual_q`), TCP 자세(`actual_TCP_pose`),
+디지털 I/O 상태 1종 — "요청 → 응답"을 명확히 보여줌.
+
+---
+
+## 6. 보드 — 구체적 역할
+
+보드는 **엣지 게이트웨이 겸 프로토콜 변환기**임. MQTT와 RTDE를 모두 구사하는 유일한 장치임.
+
+1. **두 연결 유지:**
+   - 컨트롤 박스와 LAN으로 RTDE/URScript 세션 (`ur_rtde`).
+   - 클라우드 브로커와 Wi-Fi/LTE로 MQTT 세션 (`paho-mqtt`).
+2. **읽기 경로(요청 → 응답):**
+   - 요청 토픽 구독(예: `ur3/req/joint_states`).
+   - 요청 수신 시 `RTDEReceiveInterface`로 값 읽기(예: `getActualQ()`).
+   - 결과를 응답 토픽(예: `ur3/res/joint_states`)에 JSON으로 publish.
+3. **명령 경로(송신):**
+   - 명령 토픽 구독(예: `ur3/cmd/move_joint`).
+   - 동작 전 **속도/가속도를 안전 한계로 클램프(검증)**.
+   - `RTDEControlInterface`로 모션 실행(예: 안전 속도의 `moveJ(...)`).
+4. **포맷 변환:** UI 친화 포맷(도, JSON)과 RTDE 단위(라디안, SI) 사이를 변환.
+5. **연결 관리:** 시작 시 `RTDEControlInterface`가 제어 스크립트를 로봇에 업로드함. 재연결을
+   처리하고 연결/로봇 상태를 UI에 보고.
+6. **제약:** 실시간 루프는 로컬 유지. 안전 클램프 없이 클라우드 명령을 그대로 전달 금지. 로봇은
+   전원 인가·브레이크 해제 상태이고 펜던트에 충돌 프로그램이 없어야 함.
+
+---
+
+## 7. 제어 PC / 태블릿 — 구체적 역할
+
+클라이언트는 **브라우저 기반 웹 UI**이자 **MQTT over WebSocket 클라이언트 전용**임. 로봇
+미들웨어는 설치하지 않음.
+
+1. **접속:** MQTT over WebSocket(wss)으로 클라우드 브로커에 연결.
+2. **데이터 요청:** 요청 토픽에 publish(예: "현재 관절 각도 요청" 버튼 → `ur3/req/joint_states`)
+   하고 응답 토픽으로 받은 **응답을 표시**.
+3. **명령 송신:** 목표 관절 각도 입력 후 명령 토픽(예: `ur3/cmd/move_joint`)에 publish —
+   고수준·이산 명령만.
+4. **진단통신 흐름 시각화:** 신호 경로(UI → 브로커 → 보드 → 로봇, 그리고 역방향) 애니메이션 및
+   학습용 **요청/응답 패킷 내용 표시**.
+5. **얇게 유지:** 기구학·실시간 제어·`ur_rtde`/ROS 없음. 모든 로봇 로직은 보드에 둠.
+
+---
+
+## 8. 통신 프로토콜
+
+| 프로토콜 | 구간 | 전송 / 포트 | 용도 |
+|----------|------|-------------|------|
+| **MQTT over WebSocket** | PC/태블릿 ↔ 클라우드 브로커 | TCP, wss (예: 8884/443) | 클라이언트의 요청·명령·응답 publish/subscribe |
+| **MQTT** | 클라우드 브로커 ↔ 보드 | TCP, TLS (8883) | 보드의 publish/subscribe, 클라우드–로봇 측 중계 |
+| **RTDE** | 보드 ↔ 컨트롤 박스 | TCP **30004** | 텔레메트리 읽기 @125 Hz 및 입력 레지스터 쓰기 (`RTDEReceiveInterface` / `RTDEIOInterface`) |
+| **URScript / Secondary 인터페이스** | 보드 ↔ 컨트롤 박스 | TCP **30002** | `RTDEControlInterface`가 제어 스크립트 업로드 및 모션 명령 전송 |
+| **Dashboard 서버** *(선택)* | 보드 ↔ 컨트롤 박스 | TCP **29999** | 프로그램 load/play/stop, 전원 인가, 브레이크 해제 (운영 제어) |
+| **내부 실시간 필드버스** | 컨트롤 박스 ↔ UR3 arm | UR 독자 | 실시간 관절 서보·센싱 (사용자 접근 불가) |
+
+> 계층 경계: MQTT는 클라우드 측에만, RTDE/URScript는 LAN 측에만 존재함. 보드가 둘
+> 사이의 유일한 변환 지점임.
