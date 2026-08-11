@@ -234,7 +234,7 @@ IOControlParameter: 0x00=제어권 반환(returnControlToECU), 0x03=단기 강�
 | SF | 동작 | 설명 |
 |---|---|---|
 | 0x01 | startRoutine | 루틴 시작 |
-| 0x02 | stopRoutine | 루틴 정지 (RID 무관 항상 성공) |
+| 0x02 | stopRoutine | 루틴 정지 (RID 무관, 통신 두절 아니면 항상 성공) |
 | 0x03 | requestRoutineResults | 결과 요청 |
 
 | RID | 루틴명 | 파라미터 | 필요 권한 |

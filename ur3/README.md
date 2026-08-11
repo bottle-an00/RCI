@@ -2,7 +2,9 @@
 
 라즈베리파이와 실제 UR3 로봇팔 사이의 통신을 확인하고, 간단한 제어 명령을 한 번 넣어보기 위한 최소 테스트 코드다.
 
-`docs/` 폴더에는 miniGIT 프로젝트에서 설계한 UR3 진단 통신 문서 4종(사양서/기능명세서/RCI 기능명세서/클라우드 요청서)이 참고용으로 들어있다. 이 저장소의 코드는 그 설계를 구현한 것이 아니라, 본격적인 개발에 앞서 "라즈베리파이에서 UR3에 실제로 연결되고 명령이 먹히는지"만 먼저 확인하기 위한 것이다.
+`docs/` 폴더에는 miniGIT 프로젝트에서 설계한 UR3 진단 통신 문서 4종(사양서/기능명세서/RCI 기능명세서/클라우드 요청서)이 참고용으로 들어있다.
+
+`scripts/`는 본격 개발 전에 "라즈베리파이에서 UR3에 실제로 연결되고 명령이 먹히는지"만 먼저 확인하기 위한 최소 연결 테스트다. 실제 설계(위 문서 4종)를 구현한 코드는 `rci/` 패키지에 있다 — `mqtt_handler.py`/`uds_payload.py`(MQTT 전송·페이로드 계약)를 사용해 UDS 요청을 해석하고 RTDE/Dashboard로 UR3를 조회·구동하는 진단 에이전트다.
 
 ## 준비물
 
@@ -88,10 +90,43 @@ python cloud/scripts/connection_test.py --stub --base-url http://<웹 IP>:8123
 - 처음 테스트할 때는 UR 컨트롤박스의 Safety Configuration(Installation 탭)에서 속도/힘 제한을 낮게 설정해두는 것을 권장한다.
 - UR3가 Local(PolyScope 자체 프로그램 실행 중) 상태이거나 보호정지/비상정지 상태이면 RTDEControlInterface 연결 또는 moveJ 호출이 실패할 수 있다. 이 경우 PolyScope 화면에서 로봇 상태를 먼저 정상화한다.
 
+## RCI 진단 에이전트 (rci/)
+
+MQTT로 UDS 진단 요청(`minigit/req/urrobot`)을 받아 처리하고 응답/에러/상태를 발행하는 진단 에이전트 구현체다. 전송 계층(`mqtt_handler.py`/`uds_payload.py`/`shared/mqtt_client.py`)은 이 폴더 밖의 형제 모듈을 그대로 쓰고, `rci/`는 그 위의 SID 디스패치·세션·보안·모션·DTC 로직을 담당한다. 모듈 구성과 프로토콜 상세는 `docs/UR3_RCI_기능명세서.md`를 따른다.
+
+### 테스트
+
+레포 루트에서 실행한다(`rci`가 `ur3` 패키지의 하위 패키지라 루트가 기준이다):
+
+```bash
+python -m pytest ur3/rci/tests -q
+```
+
+실제 로봇/브로커 없이도 전부 통과해야 한다(링크 계층은 mock으로 검증).
+
+### 실행
+
+레포 루트에서 실행한다:
+
+```bash
+export RCI_BROKER_HOST=localhost    # config.py 기본값을 덮어씀
+export RCI_BROKER_PORT=1883
+python -m ur3.rci.main
+```
+
+브로커/로봇 설정은 `config.py`를 따른다(환경변수로 덮어쓰기 가능, 위 "MQTT 왕복 연결 테스트" 절 참고). 로그는 콘솔과 `rci/rci.log`(gitignore됨)에 동시에 남는다.
+
+### 아직 구현 안 된 것
+
+- 0x2F 장시간 명령(브레이크 해제 등)의 `responsePending`(0x78) 비동기 처리 — 지금은 동기 호출
+- 0x0201 재생 시 `RTDEControlInterface` disconnect/reuploadScript 절차 (기능명세서 §5.3)
+- `robot_iface` 재접속 정책(§5.7)의 주기적 감시 — `health_check_and_reconnect()`는 정의만 있고 아직 호출되지 않음
+- 블록 시퀀스(웨이포인트 이동), 그리퍼 실제 I/O — 설계 보류/미확정 상태라 제외
+
 ## 폴더 구조
 
 ```
-UR3-RPi-Test/
+ur3/
 ├── config.py              # 로봇 IP·브로커 등 연결 설정 (환경변수로 덮어쓰기 가능)
 ├── mqtt_handler.py        # minigit 계약 토픽 래퍼 (shared.mqtt_client 기반)
 ├── uds_payload.py         # 계약 페이로드 인코딩/디코딩
@@ -101,5 +136,8 @@ UR3-RPi-Test/
 │   ├── dashboard_test.py  # Dashboard 명령 테스트
 │   ├── mqtt_echo_test.py  # MQTT 왕복 연결 테스트 (로봇 미동작)
 │   └── move_test.py       # 간단한 moveJ 이동 테스트 (실제 동작)
+├── rci/                   # RCI 진단 에이전트 구현체 (uds_server/robot/main 등)
+│   ├── link/               # RTDE, Dashboard, 카메라 전송 계층
+│   └── tests/               # pytest 유닛/통합 테스트
 └── docs/                  # miniGIT UR3 진단 통신 설계 문서 4종 (참고용)
 ```
