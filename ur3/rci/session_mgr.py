@@ -1,7 +1,7 @@
 """진단 세션 제어(0x10)와 TesterPresent(0x3E) 처리"""
 import threading
 
-from . import frames
+from . import frames, logger
 from .state import SESSION_EXTENDED
 
 SID_DIAGNOSTIC_SESSION_CONTROL = 0x10
@@ -38,10 +38,12 @@ class SessionMgr:
         if sf == SF_DEFAULT_SESSION:
             self.state.reset_to_default()
             self._stop_s3_timer()
+            logger.log_robot_event("SESSION", "default (10 01)")
         elif sf == SF_EXTENDED_DIAGNOSTIC_SESSION:
             with self.state.lock:
                 self.state.session = SESSION_EXTENDED
             self._restart_s3_timer()
+            logger.log_robot_event("SESSION", "extended (10 03)")
         else:
             raise frames.NRCError(SID_DIAGNOSTIC_SESSION_CONTROL, frames.NRC_SUB_FUNCTION_NOT_SUPPORTED)
         return frames.positive(SID_DIAGNOSTIC_SESSION_CONTROL, bytes([sf]) + P2_P2STAR_PAYLOAD)
@@ -73,6 +75,7 @@ class SessionMgr:
     def _on_s3_timeout(self):
         """S3 타임아웃 시 상태를 기본값으로 리셋한다"""
         self.state.reset_to_default()
+        logger.log_robot_event("SESSION", "default (S3 timeout)")
         with self._timer_lock:
             self._s3_timer = None
 
