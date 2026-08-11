@@ -203,10 +203,12 @@ RCI는 클라우드(웹앱)와 로봇(UR3) 사이에서 통역과 감독을 동�
 **startRoutine(SF=0x01)**
 1. `robot_busy_owner`가 `URP_PROGRAM`이면 `7F 31 22`(프로그램 재생 중)
 2. `robot_busy_owner`가 이미 `MOTION_ROUTINE`이면 `7F 31 21`(busyRepeatRequest)
-3. 0x0301/0x0302는 확장 세션+보안 접근, 0x0303은 확장 세션만 검사(미충족 `7F 31 33`/`7F 31 7F`)
+3. 0x0301/0x0302/0x0305는 확장 세션+보안 접근, 0x0303은 확장 세션만 검사(미충족 `7F 31 33`/`7F 31 7F`)
 4. 목표값 범위(화이트리스트) 검증, 벗어나면 `7F 31 31`
 5. 통과 시 `RTDEControlInterface.moveJ()`/`moveL()`을 `async=True`로 호출, `robot_busy_owner`=`MOTION_ROUTINE`, 런어웨이 방지 타이머 시작(§10 A2)
 6. 즉시 `71 01 [RID] 00` 반환(비동기 접수)
+
+**RID 0x0305 Wave** — 시연용 손 흔들기 동작. 파라미터는 속도(1B,%)+가속도(1B,%)+반복횟수(1B,1~10)로 다른 RID(14B)와 길이가 다르다. 한 번의 `startRoutine` 호출로 ① 고정 인사 자세(`WAVE_START_POSE_DEG`, 가정치)로 이동 → ② 손목(wrist2/wrist3, 가정치 ±45도)만 좌우로 왕복 → ③ `startRoutine` 호출 시점의 원래 관절각으로 복귀까지 전부 처리한다 — 베이스/숄더/엘보는 왕복 구간에서 고정해 충돌 범위를 최소화한다. 내부적으로 백그라운드 스레드가 `moveJ`를 동기(`async=False`) 호출로 순차 실행하며, `stopRoutine`/S3 타임아웃/런어웨이 타임아웃 시 다음 스텝을 내보내지 않고 중단한다(이 경우 원위치 복귀도 생략됨). `requestRoutineResults`는 RTDE의 `getAsyncOperationProgress()` 대신 이 스레드의 완료 여부로 진행중/완료를 판단한다.
 
 **requestRoutineResults(SF=0x03)**
 - `getAsyncOperationProgress()` 폴링(웹앱 권장 폴링 간격 200~500ms)
@@ -229,6 +231,7 @@ RCI는 클라우드(웹앱)와 로봇(UR3) 사이에서 통역과 감독을 동�
 
 - `3E 00`은 웹앱이 주기(권장 2s 이내) 발행, RCI는 S3 타이머(5s) 리셋 후 `7E 00` 응답
 - S3 타임아웃 → default 세션 복귀 + 보안/제어권/`robot_busy_owner` 초기화(단, 실행 중이던 모션은 안전을 위해 자동 stopJ/stopL 처리 후 초기화)
+- 웹앱은 세션을 더 유지할 필요가 없어진 시점(사용자가 진단 화면을 벗어남, `10 01`로 기본세션 복귀를 직접 요청함 등)에 주기 발행을 멈춘다 — RCI 쪽 처리는 없으니 클라이언트(웹앱) 구현 규칙일 뿐이다
 
 ### 5.7 로봇 재접속 정책
 

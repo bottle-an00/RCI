@@ -1,4 +1,4 @@
-"""모션 실행(0x31 RoutineControl) 서비스 모듈. MoveJoint/MoveLinear만 지원한다"""
+"""모션 실행(0x31 RoutineControl) 서비스 모듈. MoveJoint/MoveLinear/Wave를 지원한다"""
 import math
 import threading
 import time
@@ -15,9 +15,11 @@ SF_RESULTS = 0x03
 
 RID_MOVE_JOINT = 0x0301
 RID_MOVE_LINEAR = 0x0302
-SUPPORTED_RIDS = (RID_MOVE_JOINT, RID_MOVE_LINEAR)
+RID_WAVE = 0x0305
+SUPPORTED_RIDS = (RID_MOVE_JOINT, RID_MOVE_LINEAR, RID_WAVE)
 
 PARAM_LEN = 14
+WAVE_PARAM_LEN = 3  # speed_pct(1B) accel_pct(1B) repeat_count(1B)
 
 JOINT_ANGLE_SCALE = 10      # 0.1도 단위
 TCP_POS_SCALE = 10          # 0.1mm 단위
@@ -29,6 +31,13 @@ TCP_POS_LIMIT_MM = 1000.0
 TCP_ORIENT_LIMIT_RAD = 6.283
 PERCENT_MIN = 1
 PERCENT_MAX = 100
+
+# 가정치: 실기에서 세이프티 존 확인 필요
+WAVE_START_POSE_DEG = [0.0, -45.0, -90.0, -45.0, 90.0, 0.0]  # 인사 자세(팔꿈치를 든 자세)
+WAVE_AMPLITUDE_DEG = 45.0
+WAVE_WRIST_INDICES = (4, 5)  # wrist2, wrist3만 왕복시키고 베이스/숄더/엘보는 고정
+WAVE_REPEAT_MIN = 1
+WAVE_REPEAT_MAX = 10
 
 RESULT_SUCCESS = 1
 RESULT_FAILURE = 2
@@ -45,7 +54,7 @@ def _in_range(values, low, high):
 
 
 class MotionCtrl:
-    """0x31 RoutineControl(MoveJoint/MoveLinear) 요청을 처리한다"""
+    """0x31 RoutineControl(MoveJoint/MoveLinear/Wave) 요청을 처리한다"""
 
     def __init__(self, state, rtde_link, runaway_timeout_sec=45):
         self.state = state
@@ -56,6 +65,9 @@ class MotionCtrl:
         self.target_values = None
         self.start_time = None
         self.timer = None
+        self._wave_stop_requested = False
+        self._wave_done = threading.Event()
+        self._wave_success = False
         state.add_reset_hook(self._on_reset)
 
     def handle(self, sid, payload):
@@ -86,15 +98,18 @@ class MotionCtrl:
                 raise NRCError(sid, frames.NRC_SECURITY_ACCESS_DENIED)
             if rid not in SUPPORTED_RIDS:
                 raise NRCError(sid, frames.NRC_REQUEST_OUT_OF_RANGE)
-            if len(params) != PARAM_LEN:
+            expected_len = WAVE_PARAM_LEN if rid == RID_WAVE else PARAM_LEN
+            if len(params) != expected_len:
                 raise NRCError(sid, frames.NRC_INCORRECT_LENGTH_OR_FORMAT)
             if not self.rtde_link.is_connected():
                 raise NRCError(sid, frames.NRC_CONDITIONS_NOT_CORRECT)
 
             if rid == RID_MOVE_JOINT:
                 self._start_move_joint(sid, params)
-            else:
+            elif rid == RID_MOVE_LINEAR:
                 self._start_move_linear(sid, params)
+            else:
+                self._start_wave(sid, params)
 
             self.active_rid = rid
             self.start_time = time.time()
@@ -144,11 +159,75 @@ class MotionCtrl:
         self.active_kind = "linear"
         self.target_values = (pos_mm, orient_rad)
 
+    def _start_wave(self, sid, params):
+        """Wave 파라미터를 검증하고 인사 자세 이동+손목 왕복+원위치 복귀 시퀀스를 백그라운드 스레드로 시작한다"""
+        speed_pct = codec.unpack_uint8(params[0:1])
+        accel_pct = codec.unpack_uint8(params[1:2])
+        repeat_count = codec.unpack_uint8(params[2:3])
+        if not _in_range([speed_pct, accel_pct], PERCENT_MIN, PERCENT_MAX):
+            raise NRCError(sid, frames.NRC_REQUEST_OUT_OF_RANGE)
+        if not (WAVE_REPEAT_MIN <= repeat_count <= WAVE_REPEAT_MAX):
+            raise NRCError(sid, frames.NRC_REQUEST_OUT_OF_RANGE)
+
+        # 가정: 속도/가속도 백분율 환산은 MoveJoint와 동일 기준(3.14 rad/s, 3.14 rad/s^2)
+        speed_rad_s = speed_pct / 100 * 3.14
+        accel_rad_s2 = accel_pct / 100 * 3.14
+        origin_q = list(self.rtde_link.get_cache()["actual_q"])
+
+        self._wave_stop_requested = False
+        self._wave_done = threading.Event()
+        self._wave_success = False
+        self.active_kind = "joint"
+        self.target_values = [math.degrees(v) for v in origin_q]
+
+        thread = threading.Thread(
+            target=self._run_wave_sequence,
+            args=(origin_q, speed_rad_s, accel_rad_s2, repeat_count),
+            daemon=True,
+        )
+        thread.start()
+
+    def _run_wave_sequence(self, origin_q, speed, accel, repeat_count):
+        """인사 자세(WAVE_START_POSE_DEG)로 이동 -> 손목(wrist2/wrist3) 왕복 -> 원위치 복귀까지
+        한 번의 startRoutine 호출로 전부 처리한다.
+
+        정지 요청(_wave_stop_requested)은 매 스텝 사이에서만 확인한다 — 이미 큐에
+        들어간 한 스텝은 rtde_link.stop_j()로 즉시 끊기고, 그 다음 스텝을 안 내보내는
+        방식으로 중단된다. 정지되면 원위치 복귀도 생략한다(다음 stopRoutine/이동
+        명령이 그 자리에서부터 이어받는다).
+        """
+        start_pose = [math.radians(d) for d in WAVE_START_POSE_DEG]
+        amplitude_rad = math.radians(WAVE_AMPLITUDE_DEG)
+        pose_a, pose_b = list(start_pose), list(start_pose)
+        for idx in WAVE_WRIST_INDICES:
+            pose_a[idx] += amplitude_rad
+            pose_b[idx] -= amplitude_rad
+
+        success = True
+        try:
+            if not self._wave_stop_requested:
+                self.rtde_link.move_j_blocking(start_pose, speed, accel)
+            for _ in range(repeat_count):
+                if self._wave_stop_requested:
+                    break
+                self.rtde_link.move_j_blocking(pose_a, speed, accel)
+                if self._wave_stop_requested:
+                    break
+                self.rtde_link.move_j_blocking(pose_b, speed, accel)
+            if not self._wave_stop_requested:
+                self.rtde_link.move_j_blocking(origin_q, speed, accel)
+        except Exception:
+            success = False
+
+        self._wave_success = success and not self._wave_stop_requested
+        self._wave_done.set()
+
     def _stop_routine(self, sid, rid):
         """stopRoutine 서브펑션. 통신이 살아있으면 로봇을 정지시키고, 두절 중이면 정직하게 실패를 알린다"""
         with self.state.lock:
             if not self.rtde_link.is_connected():
                 raise NRCError(sid, frames.NRC_CONDITIONS_NOT_CORRECT)
+            self._wave_stop_requested = True
             self.rtde_link.stop_j()
             self.rtde_link.stop_l()
             self.state.robot_busy_owner = BUSY_NONE
@@ -162,9 +241,14 @@ class MotionCtrl:
             if self.active_rid is None or rid != self.active_rid:
                 raise NRCError(sid, frames.NRC_REQUEST_SEQUENCE_ERROR)
 
-            progress = self.rtde_link.get_async_progress()
-            if progress < 1.0 and self.state.robot_busy_owner == BUSY_MOTION_ROUTINE:
-                raise NRCError(sid, frames.NRC_RESPONSE_PENDING)
+            if rid == RID_WAVE:
+                if not self._wave_done.is_set():
+                    raise NRCError(sid, frames.NRC_RESPONSE_PENDING)
+                progress = 1.0 if self._wave_success else 0.0
+            else:
+                progress = self.rtde_link.get_async_progress()
+                if progress < 1.0 and self.state.robot_busy_owner == BUSY_MOTION_ROUTINE:
+                    raise NRCError(sid, frames.NRC_RESPONSE_PENDING)
 
             self._cancel_runaway_timer()
             self.state.robot_busy_owner = BUSY_NONE
@@ -203,6 +287,7 @@ class MotionCtrl:
     def _on_runaway_timeout(self):
         """타임아웃 시 연결돼 있으면 로봇을 정지시키고, 어떤 경우든 제어권을 해제한다"""
         with self.state.lock:
+            self._wave_stop_requested = True
             if self.rtde_link.is_connected():
                 self.rtde_link.stop_j()
                 self.rtde_link.stop_l()
@@ -213,6 +298,7 @@ class MotionCtrl:
     def _on_reset(self):
         """세션 타임아웃/리셋 시 연결돼 있으면 진행중인 모션을 정지시키고, 어떤 경우든 내부 상태를 초기화한다"""
         with self.state.lock:
+            self._wave_stop_requested = True
             self._cancel_runaway_timer()
             if self.rtde_link.is_connected():
                 self.rtde_link.stop_j()

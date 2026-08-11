@@ -83,6 +83,29 @@ curl -X POST http://localhost:8123/api/diag/urrobot/request \
 python cloud/scripts/connection_test.py --stub --base-url http://<웹 IP>:8123
 ```
 
+## 확장 세션 유지 테스터 (0x2F/0x31 수동 테스트용)
+
+`main.py`(실제 RCI)를 띄운 상태에서, 0x2F(강제구동)/0x31(모션)처럼 확장 세션이
+필요한 명령을 수동으로 테스트하려면 매번 S3 타임아웃(5s) 안에 `10 03`→명령을
+맞춰 보내야 해서 번거롭다. `session_keepalive_test.py`가 확장 세션을 열어두고
+2초 간격으로 `3E 00`을 대신 발행해준다.
+
+```bash
+python scripts/session_keepalive_test.py                       # config.py 값 사용
+python scripts/session_keepalive_test.py --host 172.20.10.3    # 브로커만 바꿔서
+```
+
+실행 후 raw hex를 입력하면 그대로 발행되고, 응답은 콘솔에 바로 찍힌다:
+
+```
+2F 02 01 03 01
+[발행] id=cmd-1 raw=2F 02 01 03 01
+[응답] minigit/resp/urrobot -> {"id": "cmd-1", "type": "positive", "raw": "6F 02 01 03 01"}
+```
+
+종료는 `quit` 입력 또는 `Ctrl+C`. 이때 키프얼라이브 발행만 멈추고 `10 01`은
+따로 보내지 않는다 — RCI가 S3 타임아웃으로 스스로 default 세션으로 돌아간다.
+
 ## 안전 주의사항
 
 - `move_test.py`는 실제로 로봇을 움직인다. 실행 전 반드시 로봇 주변에 사람과 장애물이 없는지 확인할 것.
@@ -135,7 +158,8 @@ ur3/
 │   ├── read_state.py      # RTDE 읽기 전용 테스트
 │   ├── dashboard_test.py  # Dashboard 명령 테스트
 │   ├── mqtt_echo_test.py  # MQTT 왕복 연결 테스트 (로봇 미동작)
-│   └── move_test.py       # 간단한 moveJ 이동 테스트 (실제 동작)
+│   ├── move_test.py       # 간단한 moveJ 이동 테스트 (실제 동작)
+│   └── session_keepalive_test.py  # 확장 세션 유지(2s 주기 3E) 테스터, 0x2F/0x31 수동 테스트용
 ├── rci/                   # RCI 진단 에이전트 구현체 (uds_server/robot/main 등)
 │   ├── link/               # RTDE, Dashboard, 카메라 전송 계층
 │   └── tests/               # pytest 유닛/통합 테스트

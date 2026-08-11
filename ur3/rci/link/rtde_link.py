@@ -126,6 +126,10 @@ class RTDELink:
         """관절 좌표로 비동기 moveJ를 실행한다"""
         self.control_if.moveJ(q_rad_list, speed, accel, asynchronous=True)
 
+    def move_j_blocking(self, q_rad_list, speed, accel):
+        """관절 좌표로 동기 moveJ를 실행한다. 완료(또는 stopJ로 인한 중단)까지 호출 스레드가 대기한다"""
+        self.control_if.moveJ(q_rad_list, speed, accel, asynchronous=False)
+
     def move_l(self, pose_list, speed, accel):
         """직선 좌표로 비동기 moveL을 실행한다"""
         self.control_if.moveL(pose_list, speed, accel, asynchronous=True)

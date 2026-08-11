@@ -7,7 +7,7 @@ from ur3.rci.state import RciState
 class FakeRtdeLink:
     def __init__(self):
         self.connected = True
-        self.cache = {}
+        self.cache = {"actual_q": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}
         self.moves = []
         self.stopped = False
         self.progress = 1.0
@@ -21,6 +21,9 @@ class FakeRtdeLink:
 
     def move_j(self, q, speed, accel):
         self.moves.append(("j", q, speed, accel))
+
+    def move_j_blocking(self, q, speed, accel):
+        self.moves.append(("j_blocking", q, speed, accel))
 
     def move_l(self, pose, speed, accel):
         self.moves.append(("l", pose, speed, accel))
