@@ -203,12 +203,14 @@ RCI는 클라우드(웹앱)와 로봇(UR3) 사이에서 통역과 감독을 동�
 **startRoutine(SF=0x01)**
 1. `robot_busy_owner`가 `URP_PROGRAM`이면 `7F 31 22`(프로그램 재생 중)
 2. `robot_busy_owner`가 이미 `MOTION_ROUTINE`이면 `7F 31 21`(busyRepeatRequest)
-3. 0x0301/0x0302/0x0305는 확장 세션+보안 접근, 0x0303은 확장 세션만 검사(미충족 `7F 31 33`/`7F 31 7F`)
+3. 0x0301/0x0302/0x0305/0x0306는 확장 세션+보안 접근, 0x0303은 확장 세션만 검사(미충족 `7F 31 33`/`7F 31 7F`)
 4. 목표값 범위(화이트리스트) 검증, 벗어나면 `7F 31 31`
 5. 통과 시 `RTDEControlInterface.moveJ()`/`moveL()`을 `async=True`로 호출, `robot_busy_owner`=`MOTION_ROUTINE`, 런어웨이 방지 타이머 시작(§10 A2)
 6. 즉시 `71 01 [RID] 00` 반환(비동기 접수)
 
 **RID 0x0305 Wave** — 시연용 손 흔들기 동작. 파라미터는 속도(1B,%)+가속도(1B,%)+반복횟수(1B,1~10)로 다른 RID(14B)와 길이가 다르다. 한 번의 `startRoutine` 호출로 ① 고정 인사 자세(`WAVE_START_POSE_DEG`, 가정치)로 이동 → ② 손목(wrist2/wrist3, 가정치 ±45도)만 좌우로 왕복 → ③ `startRoutine` 호출 시점의 원래 관절각으로 복귀까지 전부 처리한다 — 베이스/숄더/엘보는 왕복 구간에서 고정해 충돌 범위를 최소화한다. 내부적으로 백그라운드 스레드가 `moveJ`를 동기(`async=False`) 호출로 순차 실행하며, `stopRoutine`/S3 타임아웃/런어웨이 타임아웃 시 다음 스텝을 내보내지 않고 중단한다(이 경우 원위치 복귀도 생략됨). `requestRoutineResults`는 RTDE의 `getAsyncOperationProgress()` 대신 이 스레드의 완료 여부로 진행중/완료를 판단한다.
+
+**RID 0x0306 TableTour** — 시연용 모서리 순회+그리퍼 동작. 파라미터는 Wave와 동일한 3바이트(속도/가속도/그리퍼반복횟수 1~10). 한 번의 `startRoutine` 호출로 ① 테이블 4모서리(`TABLE_CORNER_POSES_M`, 가정치, TCP 위치/자세)를 `moveL`로 순서대로 이동 → ② 중앙(`TABLE_CENTER_POSE_M`)으로 이동 → ③ 그리퍼 개폐(`last_gripper_cmd` 토글, 실제 I/O는 그리퍼 인터페이스 미확정이라 미구현)를 지정 횟수만큼 반복 → ④ 원래 관절각으로 복귀(`moveJ`)까지 전부 처리한다. Wave와 동일하게 백그라운드 스레드+`_bg_stop_requested` 플래그로 중단을 처리하며, `requestRoutineResults`도 동일한 완료 판단 경로(`_bg_done`)를 공유한다.
 
 **requestRoutineResults(SF=0x03)**
 - `getAsyncOperationProgress()` 폴링(웹앱 권장 폴링 간격 200~500ms)

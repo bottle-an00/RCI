@@ -134,6 +134,10 @@ class RTDELink:
         """직선 좌표로 비동기 moveL을 실행한다"""
         self.control_if.moveL(pose_list, speed, accel, asynchronous=True)
 
+    def move_l_blocking(self, pose_list, speed, accel):
+        """직선 좌표로 동기 moveL을 실행한다. 완료(또는 stopL로 인한 중단)까지 호출 스레드가 대기한다"""
+        self.control_if.moveL(pose_list, speed, accel, asynchronous=False)
+
     def stop_j(self):
         """moveJ 동작을 정지한다"""
         self.control_if.stopJ()

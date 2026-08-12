@@ -1,4 +1,4 @@
-"""모션 실행(0x31 RoutineControl) 서비스 모듈. MoveJoint/MoveLinear/Wave를 지원한다"""
+"""모션 실행(0x31 RoutineControl) 서비스 모듈. MoveJoint/MoveLinear/Wave/TableTour를 지원한다"""
 import math
 import threading
 import time
@@ -16,10 +16,12 @@ SF_RESULTS = 0x03
 RID_MOVE_JOINT = 0x0301
 RID_MOVE_LINEAR = 0x0302
 RID_WAVE = 0x0305
-SUPPORTED_RIDS = (RID_MOVE_JOINT, RID_MOVE_LINEAR, RID_WAVE)
+RID_TABLE_TOUR = 0x0306
+SUPPORTED_RIDS = (RID_MOVE_JOINT, RID_MOVE_LINEAR, RID_WAVE, RID_TABLE_TOUR)
+BACKGROUND_RIDS = (RID_WAVE, RID_TABLE_TOUR)  # 백그라운드 스레드로 다단계 시퀀스를 실행하는 RID
 
 PARAM_LEN = 14
-WAVE_PARAM_LEN = 3  # speed_pct(1B) accel_pct(1B) repeat_count(1B)
+SHORT_PARAM_LEN = 3  # speed_pct(1B) accel_pct(1B) repeat_count(1B) — Wave/TableTour 공통
 
 JOINT_ANGLE_SCALE = 10      # 0.1도 단위
 TCP_POS_SCALE = 10          # 0.1mm 단위
@@ -39,6 +41,20 @@ WAVE_WRIST_INDICES = (4, 5)  # wrist2, wrist3만 왕복시키고 베이스/숄�
 WAVE_REPEAT_MIN = 1
 WAVE_REPEAT_MAX = 10
 
+# 가정치: 실기에서 테이블 배치/도달 가능성 확인 필요. TCP 위치(m)+자세(rad, 회전벡터)
+TABLE_CORNER_POSES_M = [
+    [0.30, 0.30, 0.20, 3.14, 0.0, 0.0],
+    [0.30, -0.30, 0.20, 3.14, 0.0, 0.0],
+    [-0.30, -0.30, 0.20, 3.14, 0.0, 0.0],
+    [-0.30, 0.30, 0.20, 3.14, 0.0, 0.0],
+]
+TABLE_CENTER_POSE_M = [0.0, 0.0, 0.20, 3.14, 0.0, 0.0]
+GRIP_CLOSE_VALUE = 100
+GRIP_OPEN_VALUE = 0
+GRIP_ACTION_DELAY_SEC = 0.5  # 그리퍼 실제 I/O 미구현이라 개폐 간 시연용 지연
+TOUR_REPEAT_MIN = 1
+TOUR_REPEAT_MAX = 10
+
 RESULT_SUCCESS = 1
 RESULT_FAILURE = 2
 
@@ -54,7 +70,7 @@ def _in_range(values, low, high):
 
 
 class MotionCtrl:
-    """0x31 RoutineControl(MoveJoint/MoveLinear/Wave) 요청을 처리한다"""
+    """0x31 RoutineControl(MoveJoint/MoveLinear/Wave/TableTour) 요청을 처리한다"""
 
     def __init__(self, state, rtde_link, runaway_timeout_sec=45):
         self.state = state
@@ -65,9 +81,9 @@ class MotionCtrl:
         self.target_values = None
         self.start_time = None
         self.timer = None
-        self._wave_stop_requested = False
-        self._wave_done = threading.Event()
-        self._wave_success = False
+        self._bg_stop_requested = False
+        self._bg_done = threading.Event()
+        self._bg_success = False
         state.add_reset_hook(self._on_reset)
 
     def handle(self, sid, payload):
@@ -98,7 +114,7 @@ class MotionCtrl:
                 raise NRCError(sid, frames.NRC_SECURITY_ACCESS_DENIED)
             if rid not in SUPPORTED_RIDS:
                 raise NRCError(sid, frames.NRC_REQUEST_OUT_OF_RANGE)
-            expected_len = WAVE_PARAM_LEN if rid == RID_WAVE else PARAM_LEN
+            expected_len = SHORT_PARAM_LEN if rid in BACKGROUND_RIDS else PARAM_LEN
             if len(params) != expected_len:
                 raise NRCError(sid, frames.NRC_INCORRECT_LENGTH_OR_FORMAT)
             if not self.rtde_link.is_connected():
@@ -108,8 +124,10 @@ class MotionCtrl:
                 self._start_move_joint(sid, params)
             elif rid == RID_MOVE_LINEAR:
                 self._start_move_linear(sid, params)
-            else:
+            elif rid == RID_WAVE:
                 self._start_wave(sid, params)
+            else:
+                self._start_table_tour(sid, params)
 
             self.active_rid = rid
             self.start_time = time.time()
@@ -174,9 +192,9 @@ class MotionCtrl:
         accel_rad_s2 = accel_pct / 100 * 3.14
         origin_q = list(self.rtde_link.get_cache()["actual_q"])
 
-        self._wave_stop_requested = False
-        self._wave_done = threading.Event()
-        self._wave_success = False
+        self._bg_stop_requested = False
+        self._bg_done = threading.Event()
+        self._bg_success = False
         self.active_kind = "joint"
         self.target_values = [math.degrees(v) for v in origin_q]
 
@@ -191,7 +209,7 @@ class MotionCtrl:
         """인사 자세(WAVE_START_POSE_DEG)로 이동 -> 손목(wrist2/wrist3) 왕복 -> 원위치 복귀까지
         한 번의 startRoutine 호출로 전부 처리한다.
 
-        정지 요청(_wave_stop_requested)은 매 스텝 사이에서만 확인한다 — 이미 큐에
+        정지 요청(_bg_stop_requested)은 매 스텝 사이에서만 확인한다 — 이미 큐에
         들어간 한 스텝은 rtde_link.stop_j()로 즉시 끊기고, 그 다음 스텝을 안 내보내는
         방식으로 중단된다. 정지되면 원위치 복귀도 생략한다(다음 stopRoutine/이동
         명령이 그 자리에서부터 이어받는다).
@@ -205,29 +223,94 @@ class MotionCtrl:
 
         success = True
         try:
-            if not self._wave_stop_requested:
+            if not self._bg_stop_requested:
                 self.rtde_link.move_j_blocking(start_pose, speed, accel)
             for _ in range(repeat_count):
-                if self._wave_stop_requested:
+                if self._bg_stop_requested:
                     break
                 self.rtde_link.move_j_blocking(pose_a, speed, accel)
-                if self._wave_stop_requested:
+                if self._bg_stop_requested:
                     break
                 self.rtde_link.move_j_blocking(pose_b, speed, accel)
-            if not self._wave_stop_requested:
+            if not self._bg_stop_requested:
                 self.rtde_link.move_j_blocking(origin_q, speed, accel)
         except Exception:
             success = False
 
-        self._wave_success = success and not self._wave_stop_requested
-        self._wave_done.set()
+        self._bg_success = success and not self._bg_stop_requested
+        self._bg_done.set()
+
+    def _start_table_tour(self, sid, params):
+        """TableTour 파라미터를 검증하고 모서리 순회+그리퍼 시연+원위치 복귀 시퀀스를 백그라운드 스레드로 시작한다"""
+        speed_pct = codec.unpack_uint8(params[0:1])
+        accel_pct = codec.unpack_uint8(params[1:2])
+        grip_repeat_count = codec.unpack_uint8(params[2:3])
+        if not _in_range([speed_pct, accel_pct], PERCENT_MIN, PERCENT_MAX):
+            raise NRCError(sid, frames.NRC_REQUEST_OUT_OF_RANGE)
+        if not (TOUR_REPEAT_MIN <= grip_repeat_count <= TOUR_REPEAT_MAX):
+            raise NRCError(sid, frames.NRC_REQUEST_OUT_OF_RANGE)
+
+        # 가정: 선형 이동은 MoveLinear와 동일 기준(0.25 m/s, 1.2 m/s^2),
+        # 원위치 복귀(moveJ)는 MoveJoint와 동일 기준(3.14 rad/s, 3.14 rad/s^2)
+        speed_m_s = speed_pct / 100 * 0.25
+        accel_m_s2 = accel_pct / 100 * 1.2
+        speed_rad_s = speed_pct / 100 * 3.14
+        accel_rad_s2 = accel_pct / 100 * 3.14
+        origin_q = list(self.rtde_link.get_cache()["actual_q"])
+
+        self._bg_stop_requested = False
+        self._bg_done = threading.Event()
+        self._bg_success = False
+        self.active_kind = "joint"
+        self.target_values = [math.degrees(v) for v in origin_q]
+
+        thread = threading.Thread(
+            target=self._run_table_tour_sequence,
+            args=(origin_q, speed_m_s, accel_m_s2, speed_rad_s, accel_rad_s2, grip_repeat_count),
+            daemon=True,
+        )
+        thread.start()
+
+    def _run_table_tour_sequence(self, origin_q, speed_l, accel_l, speed_j, accel_j, grip_repeat_count):
+        """테이블 4모서리(TABLE_CORNER_POSES_M) 순회 -> 중앙(TABLE_CENTER_POSE_M) 이동 ->
+        그리퍼 개폐 반복(그리퍼 실 I/O 미구현, 상태값만 토글) -> 원위치 복귀까지
+        한 번의 startRoutine 호출로 전부 처리한다.
+
+        정지 요청(_bg_stop_requested)은 매 스텝 사이에서만 확인한다.
+        """
+        success = True
+        try:
+            for corner in TABLE_CORNER_POSES_M:
+                if self._bg_stop_requested:
+                    break
+                self.rtde_link.move_l_blocking(corner, speed_l, accel_l)
+            if not self._bg_stop_requested:
+                self.rtde_link.move_l_blocking(TABLE_CENTER_POSE_M, speed_l, accel_l)
+            for _ in range(grip_repeat_count):
+                if self._bg_stop_requested:
+                    break
+                self.state.last_gripper_cmd = GRIP_CLOSE_VALUE
+                logger.log_robot_event("GRIPPER", "close (table_tour)")
+                time.sleep(GRIP_ACTION_DELAY_SEC)
+                if self._bg_stop_requested:
+                    break
+                self.state.last_gripper_cmd = GRIP_OPEN_VALUE
+                logger.log_robot_event("GRIPPER", "open (table_tour)")
+                time.sleep(GRIP_ACTION_DELAY_SEC)
+            if not self._bg_stop_requested:
+                self.rtde_link.move_j_blocking(origin_q, speed_j, accel_j)
+        except Exception:
+            success = False
+
+        self._bg_success = success and not self._bg_stop_requested
+        self._bg_done.set()
 
     def _stop_routine(self, sid, rid):
         """stopRoutine 서브펑션. 통신이 살아있으면 로봇을 정지시키고, 두절 중이면 정직하게 실패를 알린다"""
         with self.state.lock:
             if not self.rtde_link.is_connected():
                 raise NRCError(sid, frames.NRC_CONDITIONS_NOT_CORRECT)
-            self._wave_stop_requested = True
+            self._bg_stop_requested = True
             self.rtde_link.stop_j()
             self.rtde_link.stop_l()
             self.state.robot_busy_owner = BUSY_NONE
@@ -241,10 +324,10 @@ class MotionCtrl:
             if self.active_rid is None or rid != self.active_rid:
                 raise NRCError(sid, frames.NRC_REQUEST_SEQUENCE_ERROR)
 
-            if rid == RID_WAVE:
-                if not self._wave_done.is_set():
+            if rid in BACKGROUND_RIDS:
+                if not self._bg_done.is_set():
                     raise NRCError(sid, frames.NRC_RESPONSE_PENDING)
-                progress = 1.0 if self._wave_success else 0.0
+                progress = 1.0 if self._bg_success else 0.0
             else:
                 progress = self.rtde_link.get_async_progress()
                 if progress < 1.0 and self.state.robot_busy_owner == BUSY_MOTION_ROUTINE:
@@ -287,7 +370,7 @@ class MotionCtrl:
     def _on_runaway_timeout(self):
         """타임아웃 시 연결돼 있으면 로봇을 정지시키고, 어떤 경우든 제어권을 해제한다"""
         with self.state.lock:
-            self._wave_stop_requested = True
+            self._bg_stop_requested = True
             if self.rtde_link.is_connected():
                 self.rtde_link.stop_j()
                 self.rtde_link.stop_l()
@@ -298,7 +381,7 @@ class MotionCtrl:
     def _on_reset(self):
         """세션 타임아웃/리셋 시 연결돼 있으면 진행중인 모션을 정지시키고, 어떤 경우든 내부 상태를 초기화한다"""
         with self.state.lock:
-            self._wave_stop_requested = True
+            self._bg_stop_requested = True
             self._cancel_runaway_timer()
             if self.rtde_link.is_connected():
                 self.rtde_link.stop_j()

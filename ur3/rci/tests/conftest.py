@@ -28,6 +28,9 @@ class FakeRtdeLink:
     def move_l(self, pose, speed, accel):
         self.moves.append(("l", pose, speed, accel))
 
+    def move_l_blocking(self, pose, speed, accel):
+        self.moves.append(("l_blocking", pose, speed, accel))
+
     def stop_j(self):
         self.stopped = True
 
