@@ -94,21 +94,24 @@ class UR3Robot:
     def run(self):
         """감시 스레드를 시작하고 MQTT 연결이 될 때까지 재시도한 뒤 요청 처리 루프를 돈다"""
         logger.setup_logging()
-        self._connect_robot_links()
+        robot_connected = self._connect_robot_links()
         self.dtc_monitor.start()
         self._connect_mqtt_with_retry()
+        self.mqtt_client.publish_status("online", "connected" if robot_connected else "disconnected")
         while True:
             request = self.request_queue.get()
             self._process_request_safe(request)
 
     def _connect_robot_links(self):
-        """RTDE/Dashboard에 최초 연결을 시도한다. 실패해도 RCI 기동은 계속되며,
-        연결 안 된 상태는 dtc_monitor가 DTC로 계속 보고한다(자동 재시도는 아직 없음 — §5.7 정책)"""
+        """RTDE/Dashboard에 최초 연결을 시도하고 둘 다 성공했는지를 반환한다. 실패해도 RCI
+        기동은 계속되며, 연결 안 된 상태는 dtc_monitor가 DTC로 계속 보고한다(자동 재시도는
+        아직 없음 — §5.7 정책)"""
         rtde_ok = self.rtde_link.connect()
         dashboard_ok = self.dashboard_link.connect()
         logger.log_robot_event(
             "ROBOT_LINK_INIT", f"rtde={'OK' if rtde_ok else 'FAIL'} dashboard={'OK' if dashboard_ok else 'FAIL'}"
         )
+        return rtde_ok and dashboard_ok
 
     def _connect_mqtt_with_retry(self):
         """MQTT 브로커 연결을 될 때까지 일정 간격으로 무한 재시도한다"""
