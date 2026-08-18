@@ -100,6 +100,14 @@ class BrokerConfig:
 
     @classmethod
     def from_env(cls):
+        # host 는 '접속할 목적지'다. 브로커가 '어디에 귀 기울일지'(bind)와 헷갈리기
+        # 쉬운데, 그쪽은 dev_broker.py 의 RCI_BIND_HOST 이고 여기와 무관하다.
+        #   - 0.0.0.0 을 넣지 말 것. 바인딩 와일드카드지 목적지가 아니다. OS 가
+        #     루프백으로 되돌려줘서 이 PC 에선 우연히 동작하지만, 같은 값을 RCI 에
+        #     복사해 가면 라즈베리파이가 자기 자신에게 붙는다.
+        #   - 기본값이 127.0.0.1 인 이유: FastAPI 와 브로커는 같은 PC 에서 돈다.
+        #     LAN 접속용 IP(예: 172.20.10.3)는 *RCI 가* 볼 주소이지 여기가 아니다.
+        #     핫스팟 DHCP 로 바뀌는 값을 코드에 박으면 반드시 썩는다.
         tls = os.environ.get("RCI_BROKER_TLS", "").lower() in ("1", "true", "yes", "on")
         return cls(
             host=os.environ.get("RCI_BROKER_HOST", "127.0.0.1"),
@@ -213,6 +221,14 @@ class MqttBridge:
         if not topic.startswith((RESP_PREFIX, ERROR_PREFIX, STATUS_PREFIX)):
             log.debug("구독 범위 밖 토픽 무시: %s", topic)
             return
+        # 빈 retained 페이로드는 '발행자가 자기 상태 주장을 회수했다'는 MQTT 관용구다
+        # (retained 삭제). 목 RCI 가 실물에게 device 를 넘길 때 이렇게 한다
+        # (Codes/board/mock_rci.py apply_control). JSON 파싱 실패로 흘려보내면
+        # 캐시에 옛 online 이 남아 /api/health 가 없는 장비를 살아있다고 보고한다.
+        if topic.startswith(STATUS_PREFIX) and not msg.payload:
+            self._forget_status(topic)
+            return
+
         try:
             payload = json.loads(msg.payload.decode("utf-8"))
         except (ValueError, UnicodeDecodeError):
@@ -239,12 +255,23 @@ class MqttBridge:
 
     # ---- 내부 헬퍼 -------------------------------------------------------- #
 
-    def _handle_status(self, topic, payload):
+    @staticmethod
+    def _device_of_status(topic):
         suffix = topic.rsplit("/", 1)[-1]           # rci-ur | rci-rc
-        device = "urrobot" if suffix.endswith("-ur") else "rccar"
+        return "urrobot" if suffix.endswith("-ur") else "rccar"
+
+    def _handle_status(self, topic, payload):
+        device = self._device_of_status(topic)
         self._status[device] = payload
         log.info("RCI 상태 · %s · %s", device, payload)
         self._emit({"kind": "status", "device": device, **payload})
+
+    def _forget_status(self, topic):
+        """retained 가 지워졌다 — 해당 device 의 상태를 '모름'으로 되돌린다."""
+        device = self._device_of_status(topic)
+        self._status.pop(device, None)
+        log.info("RCI 상태 회수 · %s (발행자가 retained 를 지움)", device)
+        self._emit({"kind": "status", "device": device, "state": "unknown"})
 
     def _is_duplicate(self, key) -> bool:
         with self._lock:
