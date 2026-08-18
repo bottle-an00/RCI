@@ -13,9 +13,17 @@
     이 창에서 Ctrl+C  (아래 finally 가 자식 셋을 정리한다)
     창을 X 로 닫아 고아가 남았다면  ->  stop.bat  또는  ./scripts/stop.ps1
 
+  환경변수 (자식 프로세스가 그대로 상속한다 — 여기서 설정하면 셋 다 적용된다):
+    RCI_BROKER_LOG=info    브로커 로그를 켠다. 기본은 조용해서 아무것도 안 찍힌다.
+                           접속/해제와 접속해 온 IP 가 보인다 — 실물 RCI 가 정말
+                           도달했는지 확인할 때. debug 는 패킷까지(도배 주의).
+    RCI_BROKER_HOST=<IP>   웹 브리지·브라우저가 붙을 브로커 주소. 브로커가 이 PC 에
+                           있으면 건드릴 필요 없다.
+
   사용:
     ./scripts/dev.ps1                 # 로컬 전용 + 목 (기존 개발)
     ./scripts/dev.ps1 -Lan -NoMock    # 핫스팟에서 실물 RCI 테스트
+    $env:RCI_BROKER_LOG="info"; ./scripts/dev.ps1 -Lan -NoMock   # + 브로커 로그
 #>
 param(
   [switch]$Lan,

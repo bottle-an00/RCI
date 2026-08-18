@@ -5,12 +5,22 @@
   그러지 못한 경우 — 콘솔 창을 X 로 닫았거나, 작업관리자로 부모만 죽였거나, 재부팅
   없이 다시 띄우려는데 포트가 잡혀 있을 때 — 를 위한 안전망이다.
 
-  세 경로로 찾는다(합집합). 하나만으로는 빠지는 게 생긴다:
+  다섯 경로로 찾는다(합집합). 하나만으로는 빠지는 게 생긴다:
     ① PID 파일 (.dev-pids)  — dev.ps1/dev.sh 가 남긴 자식 PID. 가장 정확.
-    ② 포트 소유자           — 1883(브로커 TCP) / 8080(브로커 WS) / 8123(웹).
-                              PID 파일이 없거나 낡았을 때의 폴백.
+    ② 포트 소유자           — 1883·8080(브로커) + 웹 포트. 웹 포트는 고정 8123 에
+                              .claude/launch.json 의 port 들(8129·8130 등)을 합쳐서
+                              쓴다. 손으로 관리하면 구성이 늘 때마다 새는 포트가 생긴다.
     ③ 커맨드라인 스캔       — mock_rci.py 는 **포트를 열지 않아** ② 로 안 잡힌다.
                               venv 런처 스텁(아래 참고)도 여기서 함께 걸린다.
+    ④ 자손 추적             — uvicorn --reload 의 워커는 커맨드라인이
+                              `multiprocessing.spawn ...` 이라 ③ 에 안 걸리고, 포트도
+                              부모가 쥐고 있어 ② 에도 안 걸린다. 부모만 죽이면 고아로
+                              남아 **이후 어떤 실행도 못 찾는다** — 실제로 이렇게 쌓였다.
+    ⑤ 고아 spawn 워커       — 이미 고아가 된 것은 커맨드라인의 parent_pid 로 판정한다.
+                              부모가 없으면 아무 일도 못 하므로 기본으로 정리한다.
+
+  종료 후 남은 것이 있으면 목록으로 알려준다. '몇 건 종료'만 찍고 끝내면 덜 치웠는데도
+  다 된 줄 알게 되기 때문이다.
 
   신원 검증 — 왜 실행파일 경로가 아니라 커맨드라인인가
     Windows venv 의 Scripts\python.exe 는 런처 스텁이라 실제 인터프리터를 **자식
@@ -19,19 +29,44 @@
     커맨드라인은 그대로 상속되므로 'dev_broker.py' 같은 서비스 시그니처가 남는다.
 
   사용:
-    ./scripts/stop.ps1              # 정리
-    ./scripts/stop.ps1 -WhatIf      # 무엇을 죽일지 보기만 (실제 종료 안 함)
-    ./scripts/stop.ps1 -Force       # 우리 것이 아닌 포트 점유자까지 종료(주의)
+    ./scripts/stop.ps1                # 정리
+    ./scripts/stop.ps1 -WhatIf        # 무엇을 죽일지 보기만 (실제 종료 안 함)
+    ./scripts/stop.ps1 -Force         # 우리 것이 아닌 포트 점유자까지 종료(주의)
+    ./scripts/stop.ps1 -KeepOrphans   # 고아 spawn 워커는 손대지 않음
+    ./scripts/stop.ps1 -Ports 8123,9000   # 확인할 포트를 직접 지정
 #>
 param(
   [switch]$WhatIf,
   [switch]$Force,
-  [int[]]$Ports = @(1883, 8080, 8123)
+  [switch]$KeepOrphans,
+  [int[]]$Ports
 )
 $ErrorActionPreference = "Stop"
 
 $root    = Split-Path $PSScriptRoot -Parent
+$repo    = Split-Path $root -Parent          # .claude/launch.json 은 저장소 루트에 있다
 $pidFile = Join-Path $root ".dev-pids"
+
+# 감시할 포트. 브로커는 고정이지만 웹은 여러 포트에 뜬다 — dev.ps1 은 8123,
+# .claude/launch.json 은 8123·8129·8130(reload·alt 구성). 목록을 손으로 관리하면
+# launch.json 에 구성이 하나 늘 때마다 조용히 새는 포트가 생기므로 거기서 읽어 합친다.
+$FIXED_PORTS = @(1883, 8080, 8123)
+
+function Get-LaunchJsonPorts {
+  $file = Join-Path $repo ".claude/launch.json"
+  if (-not (Test-Path $file)) { return @() }
+  try {
+    @((Get-Content $file -Raw | ConvertFrom-Json).configurations |
+      ForEach-Object { $_.port } | Where-Object { $_ })
+  } catch {
+    Write-Host "[stop] launch.json 을 읽지 못했습니다 — 고정 포트만 확인합니다." -ForegroundColor DarkYellow
+    @()
+  }
+}
+
+if (-not $Ports) {
+  $Ports = @($FIXED_PORTS + (Get-LaunchJsonPorts)) | Sort-Object -Unique
+}
 
 $GRACE_SECONDS = 3   # 강제 종료 전 정상 종료를 기다리는 시간
 
@@ -60,10 +95,70 @@ function Get-PidsFromPorts {
   }
 }
 
-function Get-PidsFromCommandLine {
-  Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction SilentlyContinue |
-    Where-Object { $_.CommandLine -and (Test-OurCommandLine $_.CommandLine) } |
+function Get-PythonProcesses {
+  @(Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction SilentlyContinue)
+}
+
+function Get-PidsFromCommandLine($all) {
+  $all | Where-Object { $_.CommandLine -and (Test-OurCommandLine $_.CommandLine) } |
     Select-Object -ExpandProperty ProcessId
+}
+
+# --------------------------------------------------------------------------- #
+# 혈통 추적 — uvicorn --reload 워커가 새는 것을 막는다
+#
+# --reload 는 실제 앱을 multiprocessing 으로 spawn 한다. 그 워커의 커맨드라인은
+#   python -X utf8 -c "from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=30800, ...)"
+# 이라 'uvicorn main:app' 같은 시그니처가 **없다.** 그래서:
+#   · 커맨드라인 스캔에 안 걸리고
+#   · 포트도 안 쥐고 있어(부모가 리슨한다) 포트 스캔에도 안 걸린다
+# 부모만 죽으면 이 워커는 고아로 남고, 시그니처가 없으니 이후 어떤 stop 실행도
+# 영영 발견하지 못한다. (측정 2026-08-11: reload 구성 1회 기동→정리에 고아 1개 잔류.
+# 기존 Stop-Process -Force 는 트리가 아니라 그 프로세스 하나만 죽인다.)
+#
+# 대책 둘:
+#   ① 죽이기 전에 자손을 미리 모은다 — 부모를 죽인 뒤엔 혈통 정보가 사라진다.
+#   ② 이미 고아가 된 것은 커맨드라인의 parent_pid 로 판정한다(아래 Get-SpawnParentPid).
+# --------------------------------------------------------------------------- #
+
+function Get-Descendants([int[]]$roots, $all) {
+  $byParent = @{}
+  foreach ($p in $all) {
+    $key = [int]$p.ParentProcessId
+    if (-not $byParent.ContainsKey($key)) { $byParent[$key] = @() }
+    $byParent[$key] += [int]$p.ProcessId
+  }
+  $seen = @{}
+  $queue = New-Object System.Collections.Queue
+  foreach ($r in $roots) { $queue.Enqueue([int]$r) }
+  while ($queue.Count -gt 0) {
+    foreach ($child in @($byParent[[int]$queue.Dequeue()])) {
+      if ($child -and -not $seen.ContainsKey($child)) {
+        $seen[$child] = $true
+        $queue.Enqueue($child)
+      }
+    }
+  }
+  @($seen.Keys)
+}
+
+# spawn 워커가 커맨드라인에 적어둔 부모 PID. 부모가 죽어도 이 값은 남는다 —
+# 고아를 판정할 수 있는 유일한 단서다(실행파일 경로는 베이스 파이썬이라 무의미).
+function Get-SpawnParentPid([string]$cmd) {
+  if ($cmd -and $cmd -match 'spawn_main\(parent_pid=(\d+)') { return [int]$Matches[1] }
+  return $null
+}
+
+# 부모가 이미 사라진 spawn 워커. 부모의 파이프를 기다리며 아무 일도 못 하는
+# 확정 쓰레기라, 남겨둘 이유가 없어 기본으로 정리한다(-KeepOrphans 로 보존).
+# 다만 '우리 것'임을 증명할 방법은 없으므로 로그에 부모 PID 를 붙여 구분해 찍는다.
+function Get-AbandonedSpawnWorkers($all) {
+  # 부모 생존 여부는 실제 프로세스로 확인한다. $all(파이썬만)에서 찾으면
+  # 부모가 다른 실행파일인 경우를 '죽었다'고 오판한다.
+  $all | Where-Object {
+    $parent = Get-SpawnParentPid $_.CommandLine
+    $parent -and -not (Get-Process -Id $parent -ErrorAction SilentlyContinue)
+  }
 }
 
 # --------------------------------------------------------------------------- #
@@ -76,18 +171,23 @@ function Test-OurCommandLine([string]$cmd) {
   return $false
 }
 
-function Get-ProcInfo([int]$procId) {
+# $extra: pid → 시그니처 말고 다른 근거로 '우리 것'이라 판정된 이유(자손·고아).
+# 시그니처가 없는 프로세스도 이 표에 있으면 우리 것으로 본다.
+function Get-ProcInfo([int]$procId, $extra) {
   $ci = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue
   if (-not $ci) { return $null }
   $label = "python"
   foreach ($pattern in $SERVICES.Keys) {
     if ($ci.CommandLine -match $pattern) { $label = $SERVICES[$pattern]; break }
   }
+  $reason = if ($extra -and $extra.ContainsKey($procId)) { $extra[$procId] } else { $null }
+  if ($reason -and $label -eq "python") { $label = $reason }
   [pscustomobject]@{
-    Id    = $procId
-    Label = $label
-    Cmd   = $ci.CommandLine
-    Ours  = (Test-OurCommandLine $ci.CommandLine)
+    Id     = $procId
+    Label  = $label
+    Cmd    = $ci.CommandLine
+    Reason = $reason
+    Ours   = ((Test-OurCommandLine $ci.CommandLine) -or [bool]$reason)
   }
 }
 
@@ -149,21 +249,43 @@ function Stop-DevProcess($info) {
 
 # --------------------------------------------------------------------------- #
 
-$candidates = @(Get-PidsFromFile) + @(Get-PidsFromPorts) + @(Get-PidsFromCommandLine) |
+$allPython = Get-PythonProcesses
+
+$matched = @(Get-PidsFromFile) + @(Get-PidsFromPorts) + @(Get-PidsFromCommandLine $allPython) |
   Sort-Object -Unique
+
+# 시그니처 밖의 근거들. 왜 죽이는지 로그에 남기려고 이유를 함께 들고 다닌다.
+$extra = @{}
+
+# ① 자손 — 반드시 죽이기 **전에** 모은다. 부모가 죽으면 혈통을 잃는다.
+foreach ($descendant in (Get-Descendants $matched $allPython)) {
+  if ($matched -notcontains $descendant) { $extra[[int]$descendant] = "자식" }
+}
+
+# ② 이미 고아가 된 spawn 워커 — 부모가 없어 아무것도 못 하는 확정 쓰레기.
+if (-not $KeepOrphans) {
+  foreach ($orphan in (Get-AbandonedSpawnWorkers $allPython)) {
+    $procId = [int]$orphan.ProcessId
+    if ($matched -notcontains $procId -and -not $extra.ContainsKey($procId)) {
+      $extra[$procId] = "고아(부모 $(Get-SpawnParentPid $orphan.CommandLine) 없음)"
+    }
+  }
+}
+
+$candidates = @(@($matched) + @($extra.Keys)) | Sort-Object -Unique
 
 if (-not $candidates) {
   Write-Host "[stop] 실행 중인 개발 서버가 없습니다." -ForegroundColor DarkGray
   if (Test-Path $pidFile) { Remove-Item $pidFile -Force }
-  return
+  exit 0
 }
 
-Write-Host "[stop] 종료 대상 확인 중..." -ForegroundColor Cyan
+Write-Host "[stop] 종료 대상 확인 중...  (포트 $($Ports -join ', '))" -ForegroundColor Cyan
 $stopped = 0
 $skipped = @()
 
 foreach ($procId in $candidates) {
-  $info = Get-ProcInfo $procId
+  $info = Get-ProcInfo $procId $extra
   if (-not $info) { continue }                       # 이미 죽은 PID(낡은 PID 파일)
 
   if ($info.Ours) {
@@ -188,3 +310,21 @@ if ($skipped) {
   $skipped | ForEach-Object { Write-Host ("        pid {0,-6} {1}" -f $_.Id, $_.Cmd) -ForegroundColor DarkYellow }
   Write-Host "        정말 종료하려면:  ./scripts/stop.ps1 -Force" -ForegroundColor DarkYellow
 }
+
+# 남은 것이 있는지 확인해서 알려준다. '종료 N 건'만 찍고 끝내면 정리가 덜 됐는데도
+# 다 된 줄 알게 된다 — 이 스크립트가 원래 놓치던 부분이 정확히 그 지점이었다.
+if (-not $WhatIf) {
+  $left = @(Get-PythonProcesses | Where-Object {
+    (Test-OurCommandLine $_.CommandLine) -or (Get-SpawnParentPid $_.CommandLine)
+  })
+  if ($left) {
+    Write-Host "[stop] 아직 남아 있습니다:" -ForegroundColor Red
+    $left | ForEach-Object { Write-Host ("        pid {0,-6} {1}" -f $_.ProcessId, $_.CommandLine) -ForegroundColor Red }
+  } else {
+    Write-Host "[stop] 개발 서버 프로세스가 모두 정리되었습니다." -ForegroundColor Green
+  }
+}
+
+# taskkill 의 종료코드가 그대로 스크립트 종료코드로 새면 stop.bat 이
+# "exited with code 128" 을 찍어 실패처럼 보인다. 정상 완료는 0 으로 못박는다.
+exit 0
