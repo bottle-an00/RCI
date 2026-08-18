@@ -2,14 +2,20 @@
    nodes       = {"id","title","children"?} 리스트
    base        = 잎 링크의 기준 경로 (예: /practice/rc-msg 또는 /practice/rc-msg/run)
    selected_id = 현재 선택된 잎 id
-   depth       = 들여쓰기 깊이 (재귀 내부용) #}
+   depth       = 들여쓰기 깊이 (재귀 내부용)
+
+   자식은 별도 컨테이너(.tree__children)로 감싼다 — 그래야 그룹 머리를 눌러
+   접을 수 있다. 접기 동작·상태 유지는 static/js/tree-toggle.js. #}
 {% macro tree(nodes, base, selected_id, depth=0) %}
   {% for n in nodes %}
     {% if n.children %}
-    <div class="tree__group" style="padding-left: {{ 16 + depth * 20 }}px">
+    <div class="tree__group" data-group="{{ n.id }}" role="button" tabindex="0"
+         aria-expanded="true" style="padding-left: {{ 16 + depth * 20 }}px">
       <span class="tree__caret">▾</span>{{ n.title }}
     </div>
-    {{ tree(n.children, base, selected_id, depth + 1) }}
+    <div class="tree__children" data-children="{{ n.id }}">
+      {{ tree(n.children, base, selected_id, depth + 1) }}
+    </div>
     {% else %}
     <a class="tree__row {% if selected_id and n.id == selected_id %}is-selected{% endif %}"
        style="padding-left: {{ 16 + depth * 20 }}px"

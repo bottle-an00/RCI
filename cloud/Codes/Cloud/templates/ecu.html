@@ -1,51 +1,48 @@
 {% extends "base_shell.html" %}
 {% block title %}RCI · ECU 업그레이드{% endblock %}
+{# 로그가 길어져도 페이지가 늘어나지 않도록 실행 화면과 같은 고정 높이 규약을 쓴다. #}
+{% block app_class %}app--fixed{% endblock %}
 
 {% block content %}
-{# Step3 · ECU 업그레이드 — 중앙 리프로그래밍 진행 + 우 로그 (더미) #}
-<div class="run">
+{# Step3 · ECU 업그레이드 — 중앙 리프로그래밍 자동 시퀀스 / 우 통신 로그.
+   진단·강제구동과 같은 라이브 화면이다: 계약(minigit)대로 실제 왕복하고,
+   전송 방식(목업 / MQTT 목업 / RCI(MQTT))은 상단 토글로 갈린다. #}
+<div class="run" data-target="{{ target.id }}" data-device="{{ target.device }}"
+     data-transport="{{ target.transport }}" data-ws-url="{{ ws_url or '' }}"
+     data-live="1">
   <div class="run__center">
-    <div class="panel panel--grow">
-      <div class="panel__head">
-        <span class="panel__title">ECU 리프로그래밍 · {{ target.label }}</span>
-        <span class="panel__meta">전송 {{ target.transport }}</span>
-      </div>
-      <div class="panel__body">
-        <div class="fw-info">
-          <span class="fw-info__cur">현재 v1.02</span><span class="fw-info__arrow">→</span>
-          <span class="fw-info__new">신규 v1.05</span>
-          <span class="fw-info__file">파일 rc_engine_v105.bin (더미)</span>
-        </div>
-        <div class="step-title">진행률 45 %</div>
-        <div class="progress"><span style="width:45%"></span></div>
-        <div class="step-title">단계</div>
-        <div class="stepper">
-          <div class="stepper__row is-done"><span class="stepper__dot"></span>① 진단 세션 수립 (10 02)</div>
-          <div class="stepper__row is-now"><span class="stepper__dot"></span>② 데이터 전송 (34/36 TransferData)</div>
-          <div class="stepper__row"><span class="stepper__dot"></span>③ 검증 (37 RequestTransferExit)</div>
-          <div class="stepper__row"><span class="stepper__dot"></span>④ ECU 리셋 (11 01)</div>
-        </div>
-        <div class="run-warn">주의: 전송 중 전원·통신을 끊지 마세요.</div>
-        <div class="run-actions"><button class="btn btn--primary">업그레이드 진행 중…</button></div>
-      </div>
+    <div class="fw-info">
+      <span class="fw-info__cur">현재 v1.02</span><span class="fw-info__arrow">→</span>
+      <span class="fw-info__new">신규 v1.05</span>
+      <span class="fw-info__file">파일 rc_engine_v105.bin (더미 · 블록 3개)</span>
     </div>
+    {% if sequence %}{% include "partials/_sequence.html" %}{% endif %}
   </div>
   <span class="run__grip"></span>
-  <div class="run__right panel">
-    <div class="panel__head">
-      <span class="panel__title">통신 로그</span>
-      <span class="tag tag--uds">{{ target.transport }}</span>
-    </div>
-    <div class="log-body">
-      <span class="log-line send">→ 10 02</span>
-      <span class="log-line recv">← 50 02</span>
-      <span class="log-line send">→ 34 00 44 …</span>
-      <span class="log-line recv">← 74 20 0F FF</span>
-      <span class="log-line send">→ 36 01 …</span>
-      <span class="log-line recv">← 76 01</span>
-      <span class="log-line send">→ 36 02 …</span>
-      <span class="log-line recv">← 76 02</span>
+
+  <div class="run__right">
+    <div class="panel run__log">
+      <div class="panel__head">
+        <span class="panel__title">통신 로그</span>
+        {# 세션 유지 발행은 리셋 직전까지 계속되므로 여기서 멈출 수 있어야 한다. #}
+        <span class="ka-badge" id="ka-badge" hidden>
+          <span class="ka-badge__text"></span>
+          <button class="mini-btn js-ka-stop" type="button">■ 중지</button>
+        </span>
+        <span class="tag tag--uds">{{ target.transport }}</span>
+      </div>
+      <div class="log-body" id="log-body">
+        <span class="log-line muted">브로커 연결 대기 중…</span>
+      </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ asset('js/mock-rci.js') }}"></script>
+<script src="{{ asset('js/rci-live.js') }}"></script>
+<script src="{{ asset('js/transport-switch.js') }}"></script>
+<script src="{{ asset('js/auto-sequence.js') }}"></script>
 {% endblock %}

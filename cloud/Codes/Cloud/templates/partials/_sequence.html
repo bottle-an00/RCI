@@ -1,0 +1,41 @@
+{# 자동 시퀀스 패널 — 진단 · 강제구동 · ECU 업그레이드 공용.
+
+   sequence = {id, title, danger, steps[]}  (main.py auto_sequence)
+   여기서는 뼈대만 그린다. 단계 진행·왕복·실패 판정은 static/js/auto-sequence.js 몫이고,
+   그 근거가 되는 순서는 아래 <script id="seq-plan"> 로 그대로 내려간다. #}
+<div class="panel panel--grow seq" data-seq>
+  <div class="panel__head">
+    <span class="panel__title">{{ sequence.title }}</span>
+    {# 전송 방식은 상단 토글로 바뀐다 — 지금 무엇으로 보내는지 여기서도 보여야
+       '왜 응답이 이렇게 오는가' 를 설명할 수 있다 (auto-sequence.js paintMode). #}
+    <span class="panel__meta">전송 <b data-seq-mode>—</b> ·
+      <span data-seq-status>대기 중 · 0 / {{ sequence.steps|length }}</span></span>
+  </div>
+  <div class="panel__body">
+    {% if sequence.danger %}
+    <div class="run-warn">주의: 시작 전 주변 안전을 확인하세요.
+      RCI(MQTT) 모드에서는 실물 장비가 실제로 반응합니다.</div>
+    {% endif %}
+
+    <div class="progress" data-seq-progress><span style="width:0"></span></div>
+
+    <div class="seq__steps">
+      {% for s in sequence.steps %}
+      <div class="stepper__row" data-seq-row="{{ loop.index0 }}">
+        <span class="stepper__dot"></span>
+        <span class="seq__name">{{ loop.index }}. {{ s.title }}</span>
+        <span class="seq__raw mono">{{ s.raw or "—" }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="run-hint">
+      각 단계는 1초 간격으로 자동 수행되고, 오간 메시지는 우측 통신 로그에 그대로 남습니다.
+      전송 방식(목업 / MQTT 목업 / RCI(MQTT))은 상단에서 바꿀 수 있습니다.
+    </div>
+    <div class="run-actions">
+      <button class="btn btn--primary js-seq-run" type="button">자동 시퀀스 시작 →</button>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="seq-plan">{{ sequence|tojson }}</script>

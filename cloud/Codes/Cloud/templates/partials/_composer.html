@@ -1,0 +1,109 @@
+{# 메시지 작성 — 사용자가 CAN 프레임을 직접 타이핑하는 화면.
+   위: 입력창 + 전송 + 층 분해 + 검증 결과 (주역, 동작은 static/js/can-composer.js)
+   아래: 읽기 전용 참고 자료 (조역 — 무엇을 쓸 수 있는지 알려주기만 한다)
+
+   컨텍스트: scenario, step, step_no, step_total, addr, examples, layers, nrc, negative
+   addr.req 가 없으면(DoIP) CAN 층이 없어 UDS 페이로드만 다룬다. #}
+{% set spec = step.spec %}
+<div class="panel panel--emph panel--grow composer" data-composer
+     data-can-req="{{ addr.req or '' }}" data-can-resp="{{ addr.resp or '' }}"
+     data-fill-req="{{ addr.fill_req or '' }}" data-fill-resp="{{ addr.fill_resp or '' }}"
+     data-transport="{{ target.transport }}"
+     data-step-id="{{ step.id }}" data-sid="{{ spec.sid }}"
+     data-next-url="{{ next_url or '' }}"
+     {# 값은 발행 주기(ms). 세션 유지 단계에서만 붙고, 전송 버튼이 반복 발행
+        토글로 바뀐다 (can-composer.js → window.RCI.keepalive). #}
+     {% if spec.keepalive %}data-keepalive="2000"{% endif %}>
+
+  <div class="panel__head panel__head--brand">
+    <span class="panel__title">{{ target.transport }} 메시지 작성</span>
+    <span class="panel__meta panel__meta--light">{{ scenario.title }} · {{ step.title }} ({{ step_no }}/{{ step_total }})</span>
+  </div>
+
+  <div class="panel__body composer__body">
+
+    {# ───────── 작성 영역 ───────── #}
+    <div class="write">
+      <div class="write__label">
+        {% if addr.req %}CAN 프레임 직접 입력 — CAN ID · DLC · PCI · UDS · 필러 순
+        {% else %}UDS 페이로드 직접 입력 (DoIP — CAN 층 없음){% endif %}
+      </div>
+      <textarea class="write__input mono" id="frame-input" rows="2" spellcheck="false"
+                autocomplete="off" autocapitalize="off"
+                placeholder="{% if addr.req %}{{ addr.req }}  8  02  10  03  55 55 55 55 55{% else %}10 03{% endif %}"></textarea>
+      {# 잠긴 단계 안내 자리 — step-progress.js 가 채운다. #}
+      <div class="gate" id="step-gate" hidden></div>
+
+      <div class="write__bar">
+        <span class="write__count" id="frame-count"></span>
+        <button class="btn btn--primary js-send-frame" disabled>전송 →</button>
+      </div>
+
+      {# 입력을 뜯어본 결과. 생성이 아니라 해석이다. #}
+      <div class="frame" id="frame-parse"></div>
+      <ul class="verdict" id="frame-verdict"></ul>
+
+      {% if spec.keepalive %}
+      <div class="run-hint">
+        전송을 누르면 2초 주기로 계속 발행합니다. 다음 단계로 넘어가도 발행은 유지되며,
+        멈출 때는 우측 ‘통신 로그’ 머리의 중지 버튼이나 이 버튼을 다시 누르세요.
+      </div>
+      {% endif %}
+    </div>
+
+    {# ───────── 참고 자료 ───────── #}
+    <div class="ref">
+      <div class="ref__head">작성 참고 자료 · {{ step.title }}</div>
+
+      <div class="svc">
+        <span class="svc__sid">SID 0x{{ spec.sid }}</span>
+        <span class="svc__name">{{ spec.service }}</span>
+        <span class="svc__arrow">→ 긍정 응답 0x{{ '%02X' % (spec.sid|int(base=16) + 0x40) }} · 부정 응답 {{ negative }}</span>
+      </div>
+      <div class="run-hint">{{ spec.hint }}</div>
+
+      {# 이 단계에서 골라 쓸 수 있는 값들 — 표로만 보여주고 클릭 동작은 없다. #}
+      {% for f in spec.fields %}
+      <table class="ref__table">
+        <caption>{{ f.label }}</caption>
+        {% if f.kind == "choice" %}
+        {% for o in f.options %}
+        <tr><th class="mono">{{ o.v }}</th><td>{{ o.t }}</td></tr>
+        {% endfor %}
+        {% else %}
+        <tr><th class="mono">{{ f.default }}</th><td>{{ f.hint or "기본값" }}</td></tr>
+        {% endif %}
+      </table>
+      {% endfor %}
+
+      {# 본보기 프레임. 손으로 옮겨 적어 보는 대상이다. #}
+      <table class="ref__table ref__table--wide">
+        <caption>예시 프레임</caption>
+        {% for ex in examples %}
+        <tr><th>{{ ex.label }}<br><span class="ref__dir">요청</span></th>
+            <td class="mono">{{ ex.frame }}</td></tr>
+        <tr><th><span class="ref__dir">예상 응답</span></th>
+            <td class="mono ref__resp">{{ ex.resp_frame }}</td></tr>
+        {% endfor %}
+      </table>
+
+      <table class="ref__table ref__table--wide">
+        <caption>프레임 층</caption>
+        {% for name, desc, ex in layers %}
+        <tr><th>{{ name }}</th>
+            <td>{{ desc }}<br><span class="mono ref__ex">{{ ex.replace('{req}', addr.req or '—').replace('{resp}', addr.resp or '—') }}</span></td></tr>
+        {% endfor %}
+      </table>
+
+      <table class="ref__table ref__table--wide">
+        <caption>자주 나오는 NRC (부정 응답 코드)</caption>
+        {% for code, name, desc, seen in nrc %}
+        <tr><th class="mono">{{ code }}</th>
+            <td>{{ name }} — {{ desc }}{% if seen %} <span class="ref__seen">{{ seen }}</span>{% endif %}</td></tr>
+        {% endfor %}
+      </table>
+
+      <div class="frame-ref">{{ spec.ref }}</div>
+    </div>
+  </div>
+</div>

@@ -490,6 +490,8 @@ body {
   justify-content: center;
   text-decoration: none;
 }
+/* 위 display 가 UA 의 [hidden]{display:none} 을 이기므로 명시적으로 되돌린다. */
+.btn[hidden] { display: none; }
 
 /* =========================================================================
    실습 실행 — 3분할 (좌 트리 / 중앙 실습·3D / 우 통신로그·작성기)
@@ -508,7 +510,17 @@ body {
   overflow-y: auto;
 }
 .run__center { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-.run__right { width: 340px; flex: none; }
+/* 우 컬럼 = 통신 로그(남는 높이 전부) + 3D 모델 뷰(고정 높이). */
+.run__right { width: 340px; flex: none; display: flex; flex-direction: column; gap: 16px; }
+.run__log { flex: 1; min-height: 0; }   /* min-height:0 이 없으면 로그가 넘쳐 3D 를 밀어낸다 */
+
+/* 실행 화면 전용 — 뷰포트에 고정하고, 스크롤은 각 패널 내부에서 처리한다.
+   flex 자식은 기본 min-height 가 auto(=내용 크기)라서, 사슬 전체에 min-height:0
+   을 내려주지 않으면 내용이 컨테이너를 밀어내고 페이지가 늘어난다. */
+.app--fixed { height: 100vh; overflow: hidden; }
+.app--fixed .run,
+.app--fixed .run__center,
+.app--fixed .panel--grow { min-height: 0; }
 .run__grip { flex: none; width: 6px; align-self: stretch; background: var(--border); border-radius: 3px; cursor: col-resize; }
 .run__grip:hover { background: #aab4c0; }
 
@@ -541,7 +553,11 @@ body {
 .mini-btn { font-size: 11px; color: var(--muted); background: #f5f7fa; border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
 
 /* 통신 로그 */
-.log-body { flex: 1; background: #fbfcfd; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+/* 로그가 길어지면 이 영역만 휠로 스크롤한다 (rci-live.js 가 하단으로 자동 추적). */
+.log-body {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  background: #fbfcfd; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px;
+}
 .log-line { font-size: 12px; }
 .log-line.send { color: var(--brand-blue); }
 .log-line.recv { color: var(--status-green); }
@@ -575,8 +591,19 @@ input.composer__input:focus { outline: none; border-color: var(--brand-blue); }
 .crumbbar__nav > a { color: var(--nav-text); text-decoration: none; font-size: 13px; }
 .crumbbar__sep { color: #c4cbd4; }
 .crumbbar__chev { color: #c4cbd4; }
-.crumbbar__status { font-size: 12px; color: var(--muted); }
-.crumbbar__status .dot { color: var(--status-green); }
+.crumbbar__status { font-size: 12px; color: var(--muted); white-space: nowrap; }
+/* 점(●) 색이 연결 상태를 나타낸다 — link-status.js 가 클래스를 갈아 끼운다.
+   서버는 연결 여부를 모르므로 기본값은 '확인 중'(회색)이고, 초기 렌더가
+   초록으로 보였다가 빨강으로 바뀌는 일이 없게 한다. */
+.crumbbar__status .dot { color: var(--muted); }
+.crumbbar__status.link--up .dot { color: var(--status-green); }
+.crumbbar__status.link--down .dot { color: var(--pdf-tag); }
+.crumbbar__status.link--mock .dot { color: var(--brand-blue); }
+.crumbbar__status.link--probe .dot { color: var(--muted); }
+.crumbbar__link { font-weight: 600; }
+.crumbbar__status.link--up .crumbbar__link { color: var(--status-green); }
+.crumbbar__status.link--down .crumbbar__link { color: var(--pdf-tag); }
+.crumbbar__sep2 { color: var(--border); }
 .crumb { text-decoration: none; }
 .crumb--section { font-size: 16px; font-weight: 400; color: var(--muted); }
 .crumb--content { font-size: 16px; font-weight: 700; color: var(--ink-2); }
@@ -613,16 +640,257 @@ input.composer__input:focus { outline: none; border-color: var(--brand-blue); }
 .stepper__row.is-now .stepper__dot { background: var(--brand-blue); border-color: var(--brand-blue); }
 .run-warn { font-size: 12px; color: var(--pdf-tag); font-weight: 600; }
 
-/* 퀴즈 */
-.quiz-wrap { flex: 1; background: #e6e9ee; display: flex; align-items: flex-start; justify-content: center; padding: 28px 26px; }
-.quiz-card { width: 760px; max-width: 100%; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px 28px 22px; display: flex; flex-direction: column; gap: 18px; }
-.quiz-card__top { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); font-weight: 600; }
+/* 자동 시퀀스 (partials/_sequence.html + static/js/auto-sequence.js)
+   단계 목록은 ECU 리프로그래밍처럼 12단계까지 길어진다 — 패널을 밀어내지 않도록
+   이 영역만 스크롤한다(.log-body 와 같은 규약). */
+.seq__steps {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 8px;
+  border: 1px solid var(--border); background: #fbfcfd; padding: 12px 14px;
+}
+.seq__name { flex: 1; min-width: 0; }
+/* 무엇을 보내는 단계인지 한눈에 — 실패했을 때 로그와 맞춰 보기 위한 것이다. */
+.seq__raw { flex: none; font-size: 11px; color: var(--muted); }
+.stepper__row.is-fail { color: var(--pdf-tag); font-weight: 600; }
+.stepper__row.is-fail .stepper__dot { background: var(--pdf-tag); border-color: var(--pdf-tag); }
+.stepper__row.is-now .seq__raw { color: var(--brand-blue); }
+/* 진행 중에는 시작 버튼이 중지 버튼이 된다 — 실물 모드에서 빠져나올 길이 필요하다. */
+.btn--stop { background: var(--pdf-tag); border-color: var(--pdf-tag); }
+
+/* =========================================================================
+   퀴즈 (Figma 103:2) — 좌 주제 목록 / 우 문항. 이론 교육·실습 준비와 같은 .md 규약
+   위에 얹는다. 진행·채점은 static/js/quiz.js.
+   ========================================================================= */
+
+/* display 를 지정한 요소에도 hidden 이 먹도록 (진행/결과 화면 전환) */
+[hidden] { display: none !important; }
+
+/* 좌측 주제 행 — 라벨 + 문항수 배지 */
+.quiz-topic { justify-content: space-between; }
+.quiz-topic__label { font-size: 14px; }
+.quiz-topic.is-selected .quiz-topic__label { color: var(--brand-blue); font-weight: 600; }
+.quiz-topic__count { font-size: 11px; color: var(--muted); flex: none; }
+
+/* 우측 진행 화면 */
+.quiz-play { display: flex; flex-direction: column; gap: 16px; }
+.quiz-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.quiz-meta > :first-child { font-weight: 600; }
 .quiz-bar { height: 6px; background: #e5e8ec; border-radius: 99px; overflow: hidden; }
-.quiz-bar > span { display: block; height: 100%; background: var(--brand-blue); }
+.quiz-bar > span {
+  display: block; height: 100%; width: 0;
+  background: var(--brand-blue); border-radius: 99px;
+  transition: width .2s ease;
+}
 .quiz-q { font-size: 17px; font-weight: 600; color: var(--ink); line-height: 1.5; }
 .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
-.quiz-opt { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; color: #3d4a57; cursor: pointer; }
+.quiz-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: #fff; color: #3d4a57;
+  font: inherit; font-size: 14px; text-align: left;
+  cursor: pointer;
+}
+.quiz-opt:hover { border-color: #b9c3d0; }
 .quiz-opt.is-on { border: 1.5px solid var(--brand-blue); background: var(--select-bg); color: var(--brand-blue); font-weight: 600; }
 .quiz-mark { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #c4cbd4; flex: none; }
 .quiz-opt.is-on .quiz-mark { border-color: var(--brand-blue); background: var(--brand-blue); }
-.quiz-foot { display: flex; justify-content: space-between; }
+
+/* 우측 결과 화면 */
+.quiz-result { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.quiz-score { font-size: 52px; font-weight: 700; line-height: 1.1; color: var(--brand-blue); }
+.quiz-score__sub { font-size: 15px; color: #3d4a57; }
+.quiz-marks { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.quiz-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 10px; border-radius: 4px; }
+.quiz-chip__no { font-size: 10px; color: var(--muted); }
+.quiz-chip__sign { font-size: 15px; font-weight: 700; }
+.quiz-chip.is-ok { background: #e8f5ed; }
+.quiz-chip.is-ok .quiz-chip__sign { color: var(--status-green); }
+.quiz-chip.is-ng { background: #fae5e3; }
+.quiz-chip.is-ng .quiz-chip__sign { color: var(--pdf-tag); }
+
+/* 퀴즈 푸터 — 이전/다음을 양 끝으로 (실습 준비의 꽉 찬 주요버튼과 다름) */
+.detail__actions--quiz { justify-content: space-between; }
+.detail__actions--quiz .btn--primary { flex: none; }
+.btn:disabled { cursor: default; }
+.btn--ghost:disabled { color: #a2abb8; }
+.btn--primary:disabled { background: #9aa6b4; }
+
+/* =========================================================================
+   CAN/DoIP 프레임 조립기 (메시지 작성)
+   프레임을 '바이트 칸'으로 그려서 어느 바이트가 어느 층인지 색으로 구분한다.
+   층 = CAN ID / DLC / PCI(ISO-TP) / SID / 데이터 / 필러.
+   ========================================================================= */
+
+.svc { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.svc__sid { font-size: 13px; font-weight: 700; color: var(--brand-blue); }
+.svc__name { font-size: 12px; color: var(--ink); }
+.svc__arrow { font-size: 12px; color: var(--muted); }
+
+.act { display: flex; flex-direction: column; gap: 6px; }
+
+/* 프레임 한 뭉치(단일프레임 1줄, 멀티프레임 여러 줄) */
+.frame { display: flex; flex-direction: column; gap: 4px; }
+.frame__row { display: flex; align-items: stretch; gap: 3px; flex-wrap: nowrap; }
+.frame__tag {
+  min-width: 26px; padding: 4px 5px; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  background: #eef1f5; color: var(--muted); border: 1px solid var(--border);
+}
+.frame__cell {
+  font-family: ui-monospace, "Consolas", monospace; font-size: 12px; font-weight: 600;
+  padding: 6px 0; text-align: center; border: 1px solid var(--border); background: #fff;
+  min-width: 30px; flex: 1 1 0;
+}
+.frame__cell--id { flex: 2 1 0; min-width: 68px; background: #fff8e6; color: #8a6100; }
+.frame__cell--dlc { background: #fdecec; color: var(--pdf-tag); flex: 0 0 30px; }
+.frame__cell--pci { background: #f0e9fb; color: #5b3ea8; }
+.frame__cell--sid { background: var(--select-bg); color: var(--brand-blue); }
+.frame__cell--data { background: #eaf4ff; color: #1c4f8b; }
+.frame__cell--fill { background: #f2f4f7; color: #9aa4b1; font-weight: 400; }
+.frame__cell--unknown { background: #f7f9fb; color: var(--muted); font-weight: 400; }
+
+.frame--resp .frame__cell--id { background: #f0f6ff; color: #4a5a70; }
+
+.frame__legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 10px; color: var(--muted); }
+.frame__legend b { font-weight: 600; }
+.frame__legend em { font-style: normal; padding: 0 4px; border: 1px solid var(--border); }
+.frame__legend .lg-id { background: #fff8e6; }
+.frame__legend .lg-dlc { background: #fdecec; }
+.frame__legend .lg-pci { background: #f0e9fb; }
+.frame__legend .lg-sid { background: var(--select-bg); }
+.frame__legend .lg-data { background: #eaf4ff; }
+.frame__legend .lg-fill { background: #f2f4f7; }
+
+.frame-act { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+.frame-act--left { justify-content: flex-start; }
+.frame-act .btn { flex: none; }
+
+.frame-ref {
+  font-size: 11px; color: var(--muted); border-left: 2px solid var(--border);
+  padding: 4px 0 4px 8px;
+}
+/* 세션 유지 반복 발행 — 로그 머리의 상태 배지. 발행이 단계를 넘어 계속되므로
+   어느 화면에서도 보이고 멈출 수 있어야 한다 (rci-live.js kaPaint). */
+.ka-badge {
+  /* margin-left:auto — .panel__head 는 space-between 이라 3번째 요소가 들어오면
+     제목·배지·태그가 균등하게 벌어진다. 배지는 태그 옆에 붙어야 읽힌다. */
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-left: auto; margin-right: 8px;
+  font-size: 11px; font-weight: 600; color: var(--status-green);
+}
+.ka-badge[hidden] { display: none; }
+.ka-badge::before {
+  content: "↻"; font-weight: 400;
+  animation: ka-spin 2s linear infinite;      /* 발행 주기와 같은 2초 */
+}
+@keyframes ka-spin { to { transform: rotate(360deg); } }
+.ka-badge .mini-btn { padding: 2px 6px; font-size: 10px; }
+
+/* 반복 발행은 왕복마다 새 줄을 만들지 않고 이 한 줄을 갱신한다 — 그러지 않으면
+   2초마다 두 줄씩 쌓여 실제 단계 통신이 위로 밀려 사라진다. */
+.log-line--fold {
+  font-style: normal; color: var(--status-green);
+  border-top: 1px dashed var(--border); padding-top: 3px; margin-top: 2px;
+}
+
+/* =========================================================================
+   메시지 작성 — 입력창(주역) + 읽기 전용 참고 자료(조역)
+   프레임 셀(.frame__*)은 위 블록의 것을 그대로 쓴다. 다만 역할이 반대다:
+   자동 조립 결과가 아니라 **사용자가 쓴 것을 뜯어본 결과**를 그린다.
+   ========================================================================= */
+
+/* 참고 자료가 길어 스크롤이 필요하다. flex 자식이라 min-height:0 이 있어야 줄어든다. */
+.composer__body { overflow-y: auto; min-height: 0; }
+
+.write { display: flex; flex-direction: column; gap: 8px; }
+.write__label { font-size: 12px; font-weight: 600; color: var(--ink); }
+.write__input {
+  font-family: ui-monospace, "Consolas", monospace; font-size: 15px; font-weight: 600;
+  letter-spacing: 0.5px; color: var(--brand-blue); background: #f7f9fb;
+  border: 1.5px solid var(--border); padding: 10px 12px; resize: vertical; line-height: 1.6;
+}
+.write__input:focus { outline: none; border-color: var(--brand-blue); background: #fff; }
+.write__input::placeholder { color: #b3bcc9; font-weight: 400; letter-spacing: 0.5px; }
+.write__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.write__count { font-size: 11px; color: var(--muted); }
+.write__bar .btn { flex: none; }
+
+/* 검증 결과 — 통과/경고/오류를 색과 기호로 구분한다. */
+.verdict { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.verdict__item { font-size: 11px; display: flex; gap: 6px; align-items: baseline; }
+.verdict__item::before { font-weight: 700; flex: none; }
+.verdict__item--ok { color: var(--status-green); }
+.verdict__item--ok::before { content: "✓"; }
+.verdict__item--warn { color: #b8860b; }
+.verdict__item--warn::before { content: "!"; }
+.verdict__item--err { color: var(--pdf-tag); }
+.verdict__item--err::before { content: "✗"; }
+.verdict__item b { font-weight: 600; }
+.frame__cell--err { background: #fdecec; color: var(--pdf-tag); border-color: #f0b8b4; }
+
+/* 참고 자료 — 입력창과 시각적으로 확실히 분리한다(주역/조역). */
+.ref {
+  display: flex; flex-direction: column; gap: 10px;
+  border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px;
+}
+.ref__head { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.4px; }
+.ref__table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.ref__table caption {
+  text-align: left; font-size: 11px; font-weight: 600; color: var(--ink);
+  padding-bottom: 4px;
+}
+.ref__table th, .ref__table td {
+  text-align: left; vertical-align: top; padding: 4px 8px;
+  border: 1px solid var(--border); font-weight: 400; color: #3d4a57;
+}
+.ref__table th {
+  background: #f5f7fa; white-space: nowrap; font-weight: 600; color: var(--ink); width: 1%;
+}
+.ref__table th.mono { color: var(--brand-blue); }
+.ref__table--wide td { line-height: 1.5; }
+.ref__dir { font-size: 10px; font-weight: 400; color: var(--muted); }
+.ref__ex { color: var(--muted); font-size: 10px; }
+.ref__resp { color: var(--status-green); }
+.ref__seen { color: var(--muted); font-size: 10px; }
+
+/* 트리 접기 (tree-toggle.js) — 캐럿은 회전으로 상태를 보여준다. */
+.tree__group { cursor: pointer; user-select: none; }
+.tree__group:hover { background: #eef1f5; }
+.tree__group:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: -2px; }
+.tree__caret { display: inline-block; transition: transform 0.12s ease; }
+.tree__group.is-collapsed .tree__caret { transform: rotate(-90deg); }
+.tree__children.is-collapsed { display: none; }
+
+/* 단계 순차 진행 (step-progress.js) — 통과·잠김을 트리에서 바로 알아보게 한다. */
+.md__list-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tree__row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tree__row.is-done::after {
+  content: "통과 ✓"; font-size: 10px; font-weight: 600; color: var(--status-green); flex: none;
+}
+.tree__row.is-locked {
+  color: #b3bcc9; background: #fafbfc; cursor: not-allowed; pointer-events: none;
+}
+.tree__row.is-locked::after { content: "잠김"; font-size: 10px; color: #b3bcc9; flex: none; }
+
+.gate { font-size: 12px; padding: 8px 10px; border: 1px solid var(--border); }
+.gate--locked { background: #fdf6e6; border-color: #e8d9a8; color: #8a6100; }
+.gate--ok { background: #eaf7ef; border-color: #b8e0c6; color: var(--status-green); font-weight: 600; }
+.gate a { color: var(--brand-blue); font-weight: 600; }
+
+/* 전송 방식 토글 (transport-switch.js) — 상태 표시 좌측, 2단 세그먼트.
+   목업일 때는 '실물이 아니다'가 한눈에 보여야 하므로 경고색으로 칠한다. */
+.crumbbar__right { display: flex; align-items: center; gap: 14px; }
+.modesw { display: inline-flex; border: 1px solid var(--border); overflow: hidden; }
+.modesw__btn {
+  font: inherit; font-size: 11px; padding: 4px 10px; cursor: pointer;
+  background: #fff; color: var(--muted); border: 0; border-left: 1px solid var(--border);
+}
+.modesw__btn:first-child { border-left: 0; }
+.modesw__btn:hover { background: #f5f7fa; }
+.modesw__btn.is-on { background: var(--brand-blue); color: #fff; font-weight: 600; }
+/* 모드마다 다른 색. 지금 어느 경로로 나가는지를 색 하나로 알아보게 한다 —
+   실물 RCI 에 진짜로 요청이 나가는 모드(rci)와 목업이 헷갈리면 곤란하다.
+   목업=황갈 · MQTT 목업=기본 파랑 · RCI(실물)=초록 */
+.modesw[data-mode="mock"] .modesw__btn.is-on { background: #b8860b; }
+.modesw[data-mode="rci"] .modesw__btn.is-on { background: #1a7f47; }

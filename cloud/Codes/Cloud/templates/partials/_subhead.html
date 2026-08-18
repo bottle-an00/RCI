@@ -15,5 +15,28 @@
       {% endif %}
     {% endfor %}
   </div>
-  <div class="crumbbar__status"><span class="dot">●</span> {{ status }}</div>
+  <div class="crumbbar__right">
+    {% if transport_switch %}
+    {# R&D 전송 방식 전환. 왼쪽부터 실물에 가까워지는 순서다.
+         목업       브로커 없이 브라우저 안에서 응답 생성 (static/js/mock-rci.js)
+         MQTT 목업  브로커 경유 · PC 의 mock_rci.py 가 응답
+         RCI(MQTT)  브로커 경유 · PC 목업은 침묵하고 실물 RCI 만 응답
+       뒤 둘은 전송 경로가 같고, minigit/control/mock/{device} 억제 선언만 다르다.
+       실제 전환은 static/js/transport-switch.js → window.RCI.setMode(). #}
+    <div class="modesw" data-transport-switch title="메시지 전송 방식">
+      <button class="modesw__btn" type="button" data-mode="mock">목업</button>
+      <button class="modesw__btn" type="button" data-mode="mqtt">MQTT 목업</button>
+      <button class="modesw__btn" type="button" data-mode="rci">RCI(MQTT)</button>
+    </div>
+    {% endif %}
+    {# 연결 여부는 서버가 모른다 (브라우저가 브로커에 직접 붙는다) — 뒷부분은
+       link-status.js 가 채운다. data-* 가 없으면 그리지 않는다. #}
+    <div class="crumbbar__status" data-link-status
+         data-device="{{ target.device if target else '' }}"
+         data-ws-url="{{ ws_url or '' }}">
+      <span class="dot">●</span> {{ status }}
+      <span class="crumbbar__sep2">·</span>
+      <span class="crumbbar__link">확인 중…</span>
+    </div>
+  </div>
 </div>

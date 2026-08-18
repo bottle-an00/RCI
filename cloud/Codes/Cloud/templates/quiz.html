@@ -1,26 +1,63 @@
 {% extends "base_shell.html" %}
-{% block title %}RCI · 퀴즈{% endblock %}
+{% block title %}RCI · 퀴즈 · {{ selected.title if selected else "" }}{% endblock %}
 
 {% block content %}
-{# Step3 · 퀴즈 — 중앙 문항 카드 (더미) #}
-<div class="quiz-wrap">
-  <div class="quiz-card">
-    <div class="quiz-card__top">
-      <span>CAN 통신 퀴즈</span>
-      <span>문항 3 / 10</span>
+{# Step3 · 퀴즈 — 좌 주제 목록 / 우 문항 (이론 교육·실습 준비와 동일한 .md 규약).
+   문항 진행·채점은 static/js/quiz.js 가 담당하고, 서버는 선택 주제의 문항 배열을
+   data-questions 로 한 번에 내려보낸다. 주제 전환만 서버 왕복(?item=). #}
+<div class="md">
+  <div class="md__list">
+    <div class="md__list-head">퀴즈 주제</div>
+    {% for t in topics %}
+    <a class="md__item quiz-topic {% if selected and selected.id == t.id %}is-selected{% endif %}"
+       href="/{{ target.id }}/{{ content.id }}?item={{ t.id }}">
+      <span class="quiz-topic__label">{{ t.title }}</span>
+      <span class="quiz-topic__count">{{ t.questions | length }}문항</span>
+    </a>
+    {% endfor %}
+  </div>
+
+  {% if selected %}
+  <div class="md__detail"
+       data-quiz
+       data-questions='{{ questions | tojson }}'
+       data-home="/{{ target.id }}/{{ content.id }}?item={{ topics[0].id }}">
+    <div class="detail__head">
+      <div class="detail__title-row">
+        <span class="detail__title">{{ selected.title }}</span>
+        <span class="tag tag--uds" data-quiz-tag>퀴즈</span>
+      </div>
+      <div class="detail__meta">{{ selected.subtitle }} · 총 {{ questions | length }}문항</div>
     </div>
-    <div class="quiz-bar"><span style="width:30%"></span></div>
-    <div class="quiz-q">다음 중 CAN 표준 프레임의 식별자(ID) 길이로 옳은 것은?</div>
-    <div class="quiz-opts">
-      <label class="quiz-opt is-on"><span class="quiz-mark"></span>11 bit (표준 식별자)</label>
-      <label class="quiz-opt"><span class="quiz-mark"></span>29 bit (확장 식별자)</label>
-      <label class="quiz-opt"><span class="quiz-mark"></span>8 bit</label>
-      <label class="quiz-opt"><span class="quiz-mark"></span>16 bit</label>
+
+    {# 진행 화면 — 문항 내용은 JS가 채운다 #}
+    <div class="detail__body quiz-play" data-quiz-play>
+      <div class="quiz-meta">
+        <span data-quiz-index></span>
+        <span data-quiz-percent></span>
+      </div>
+      <div class="quiz-bar"><span data-quiz-bar></span></div>
+      <div class="quiz-q" data-quiz-text></div>
+      <div class="quiz-opts" data-quiz-opts></div>
     </div>
-    <div class="quiz-foot">
-      <button class="btn btn--ghost">← 이전</button>
-      <button class="btn btn--primary">다음 →</button>
+
+    {# 결과 화면 — 제출 시 표시 #}
+    <div class="detail__body quiz-result" data-quiz-result hidden>
+      <div class="quiz-score" data-quiz-score></div>
+      <div class="quiz-score__sub" data-quiz-sub></div>
+      <div class="quiz-marks" data-quiz-marks></div>
+    </div>
+
+    <div class="detail__actions detail__actions--quiz">
+      <button class="btn btn--ghost" data-quiz-prev>← 이전</button>
+      <button class="btn btn--primary" data-quiz-next>다음 →</button>
     </div>
   </div>
+  {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}   {# 상단바 연결 표시 (link-status.js) #}
+<script src="{{ asset('js/quiz.js') }}"></script>
 {% endblock %}

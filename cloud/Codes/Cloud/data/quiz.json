@@ -1,0 +1,726 @@
+{
+  "_note": "CAN·UDS·GIT 사업 사전/사후 6종 모두 담당자 제공 txt 원문 기반 확정본. 원문에서 손댄 곳은 해당 문항의 _edit 필드에 사유를 남긴다.",
+  "_schema": {
+    "topics[]": "id(경로 slug) / title(좌측 목록·헤더 표기) / subject(과목) / phase(pre|post|none) / subtitle(헤더 보조문구) / questions[]",
+    "questions[]": "id / text(질문) / choices(보기 4개, 원문 A~D 순서 유지) / answer(정답 인덱스 0~3, A=0·B=1·C=2·D=3) / explain(해설, 원문에 없으면 생략)"
+  },
+  "version": 2,
+  "topics": [
+    {
+      "id": "can-pre",
+      "title": "CAN 통신 (사전)",
+      "subject": "CAN 통신",
+      "phase": "pre",
+      "subtitle": "사전 퀴즈 · 객관식 4지선다",
+      "questions": [
+        {
+          "id": "can-pre-01",
+          "text": "CAN 통신을 최초로 개발한 회사는?",
+          "choices": [
+            "Bosch",
+            "Continental",
+            "Denso",
+            "Delphi"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-pre-02",
+          "text": "CAN 통신에서 사용하는 두 개의 신호선은?",
+          "choices": [
+            "CAN_High, CAN_Low",
+            "TX, RX",
+            "K-Line, L-Line",
+            "SCL, SDA"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-pre-03",
+          "text": "CAN 표준 프레임의 식별자(ID) 길이로 옳은 것은?",
+          "choices": [
+            "11 bit",
+            "29 bit",
+            "8 bit",
+            "16 bit"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-pre-04",
+          "text": "다음 중 CAN 통신의 특징이 아닌 것은?",
+          "choices": [
+            "Multi Master 방식",
+            "노이즈에 강함",
+            "1:1 통신 전용",
+            "Plug & Play"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "can-pre-05",
+          "text": "CAN 통신에서 ID 값이 낮을수록 어떻게 되는가?",
+          "choices": [
+            "우선순위가 낮아진다",
+            "우선순위가 높아진다",
+            "무시된다",
+            "지연된다"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "can-pre-06",
+          "text": "CAN 통신의 High Speed 통신 속도는?",
+          "choices": [
+            "100kbps",
+            "500kbps",
+            "250kbps",
+            "1Mbps"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "can-pre-07",
+          "text": "CAN 통신이 자동차에 도입된 주된 이유는?",
+          "choices": [
+            "배선비용 감소와 무게 경감",
+            "속도 증가만을 위해",
+            "소음 감소",
+            "연비 향상"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-pre-08",
+          "text": "CAN 통신 데이터 프레임의 데이터 필드는 최대 몇 바이트인가?",
+          "choices": [
+            "4바이트",
+            "8바이트",
+            "16바이트",
+            "64바이트"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "can-pre-09",
+          "text": "여러 노드가 동시에 버스를 사용할 수 있는 CAN의 통신 방식은?",
+          "choices": [
+            "Single Master",
+            "Multi Master",
+            "Slave Only",
+            "Point-to-Point"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "can-pre-10",
+          "text": "CAN 통신이 전기적 노이즈에 강한 이유는?",
+          "choices": [
+            "Twist Pair 배선 사용",
+            "광케이블 사용",
+            "무선통신이기 때문",
+            "단일 선 통신"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "can-post",
+      "title": "CAN 통신 (사후)",
+      "subject": "CAN 통신",
+      "phase": "post",
+      "subtitle": "사후 퀴즈 · 객관식 4지선다",
+      "questions": [
+        {
+          "id": "can-post-01",
+          "text": "CAN 통신에서 40kbps 속도로 통신할 경우 최대 통신 가능 거리는?",
+          "choices": [
+            "100m",
+            "500m",
+            "1000m",
+            "2000m"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "can-post-02",
+          "text": "CAN 메시지 구조에서 RTR 비트에 대한 설명으로 옳은 것은?",
+          "choices": [
+            "데이터 프레임에서는 항상 0",
+            "항상 1",
+            "통신속도 결정",
+            "CRC 검증용"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-post-03",
+          "text": "CAN 프레임에서 표준 ID(11bit)와 확장 ID(29bit)를 구분하는 비트는?",
+          "choices": [
+            "SOF",
+            "IDE",
+            "RTR",
+            "DLC"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "can-post-04",
+          "text": "통신 프로토콜 비교표에서 CAN의 버스 액세스 방식은?",
+          "choices": [
+            "폴링",
+            "CSMA/CA",
+            "TDMA/FTDMA",
+            "CSMA/CD"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "can-post-05",
+          "text": "OBD-II 16핀 커넥터에서 CAN 통신에 사용되는 핀 번호는?",
+          "choices": [
+            "4,5번",
+            "6,14번",
+            "7,15번",
+            "2,10번"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "can-post-06",
+          "text": "CAN 메시지 구조에서 DLC(Data Length Code)가 나타내는 것은?",
+          "choices": [
+            "데이터 바이트 수(0~8)",
+            "메시지 우선순위",
+            "통신속도",
+            "에러검출값"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-post-07",
+          "text": "CAN 메시지 구조에서 CRC는 몇 비트 체크섬인가?",
+          "choices": [
+            "8bit",
+            "15bit",
+            "24bit",
+            "32bit"
+          ],
+          "answer": 1,
+          "_edit": "원문은 정답 16bit 였으나 CAN 표준 프레임의 CRC 시퀀스는 15bit 라 정답을 15bit 로 바로잡고, 오답 보기 16bit 를 24bit 로 교체함."
+        },
+        {
+          "id": "can-post-08",
+          "text": "CAN 메시지 구조에서 SRR 비트에 대한 설명으로 옳은 것은?",
+          "choices": [
+            "중재 시 항상 1을 전송",
+            "항상 0 전송",
+            "데이터 길이 표시",
+            "체크섬 역할"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-post-09",
+          "text": "CAN 통신의 ACK 비트에 대한 설명으로 옳은 것은?",
+          "choices": [
+            "수신측이 성공 수신 시 1로 바꿔 전송",
+            "송신측만 사용",
+            "항상 0 고정",
+            "데이터 프레임에 없음"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "can-post-10",
+          "text": "ISO-TP 기반 CAN 진단통신의 Flow Control(FC) 프레임에 포함되지 않는 정보는?",
+          "choices": [
+            "Block Size",
+            "Separation Time",
+            "Control Information",
+            "Identifier 우선순위 값"
+          ],
+          "answer": 3
+        }
+      ]
+    },
+    {
+      "id": "uds-pre",
+      "title": "UDS 진단 통신 (사전)",
+      "subject": "UDS 진단 통신",
+      "phase": "pre",
+      "subtitle": "사전 퀴즈 · 객관식 4지선다",
+      "questions": [
+        {
+          "id": "uds-pre-01",
+          "text": "UDS는 무엇의 약자인가?",
+          "choices": [
+            "Unified Diagnostic Services",
+            "Universal Data Standard",
+            "Unified Data Signal",
+            "Universal Diagnostic Serial"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-02",
+          "text": "UDS는 어떤 통신에서 사용되는가?",
+          "choices": [
+            "진단 통신",
+            "오디오 스트리밍",
+            "인포테인먼트 영상전송",
+            "GPS 위치통신"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-03",
+          "text": "UDS DiagnosticSessionControl 서비스의 역할은?",
+          "choices": [
+            "진단 세션(모드) 전환",
+            "DTC 삭제",
+            "센서값 읽기",
+            "ECU 재시작"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-04",
+          "text": "UDS 진단 모드 중 차량이 기본적으로 위치하는 세션은?",
+          "choices": [
+            "Default Session",
+            "Programming Session",
+            "Extended Session",
+            "Safety System Session"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-05",
+          "text": "UDS ReadDataByIdentifier 서비스의 목적은?",
+          "choices": [
+            "식별자로 데이터를 읽어오는 것",
+            "진단정보 삭제",
+            "ECU 리셋",
+            "보안접근 요청"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-06",
+          "text": "UDS ECUReset 서비스의 목적은?",
+          "choices": [
+            "ECU 재시작",
+            "센서 데이터 읽기",
+            "DTC 조회",
+            "세션 열기"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-07",
+          "text": "UDS SecurityAccess 서비스의 목적은?",
+          "choices": [
+            "보안 기능 접근 권한 획득",
+            "데이터 읽기",
+            "세션 종료",
+            "통신속도 변경"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-08",
+          "text": "UDS TesterPresent 서비스의 역할은?",
+          "choices": [
+            "진단 세션 유지 신호 전송",
+            "DTC 소거",
+            "메모리 주소 읽기",
+            "ECU 프로그래밍 시작"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-09",
+          "text": "UDS ClearDiagnosticInformation 서비스의 목적은?",
+          "choices": [
+            "저장된 DTC 삭제",
+            "새 DTC 생성",
+            "통신속도 변경",
+            "소프트웨어 업데이트"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-pre-10",
+          "text": "UDS ReadDTCInformation 서비스의 목적은?",
+          "choices": [
+            "고장진단코드(DTC) 조회",
+            "소프트웨어 다운로드",
+            "통신세션 종료",
+            "센서 초기화"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "uds-post",
+      "title": "UDS 진단 통신 (사후)",
+      "subject": "UDS 진단 통신",
+      "phase": "post",
+      "subtitle": "사후 퀴즈 · 객관식 4지선다",
+      "questions": [
+        {
+          "id": "uds-post-01",
+          "text": "UDS 진단통신에서 테스터(Tester)→ECU 요청과 ECU→테스터 응답에 사용되는 CAN ID에 대한 설명으로 옳은 것은?",
+          "choices": [
+            "요청과 응답은 서로 다른 CAN ID 사용",
+            "항상 동일한 CAN ID 사용",
+            "요청 ID가 응답 ID보다 항상 큼",
+            "CAN ID를 사용하지 않음"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-post-02",
+          "text": "UDS 진단 요청 메시지의 기본 구성 요소는?",
+          "choices": [
+            "SID + Sub-function/Parameter",
+            "MAC 주소만",
+            "IP 헤더+Payload",
+            "CAN ID만"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-post-03",
+          "text": "UDS ReadDataByIdentifier의 SID(hex)는?",
+          "choices": [
+            "0x19",
+            "0x22",
+            "0x27",
+            "0x3E"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "uds-post-04",
+          "text": "UDS TesterPresent의 SID(hex)는?",
+          "choices": [
+            "0x10",
+            "0x11",
+            "0x3E",
+            "0x84"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "uds-post-05",
+          "text": "UDS ECUReset의 SID(hex)는?",
+          "choices": [
+            "0x10",
+            "0x11",
+            "0x22",
+            "0x28"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "uds-post-06",
+          "text": "UDS SecurityAccess의 SID(hex)는?",
+          "choices": [
+            "0x27",
+            "0x28",
+            "0x2F",
+            "0x31"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-post-07",
+          "text": "UDS 기억소거(Clear DTC) 요청/긍정응답 SID로 옳은 것은?",
+          "choices": [
+            "0x14/0x54",
+            "0x19/0x59",
+            "0x22/0x62",
+            "0x10/0x50"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "uds-post-08",
+          "text": "UDS 자기진단(ReadDTCInformation) 요청/긍정응답 SID로 옳은 것은?",
+          "choices": [
+            "0x14/0x54",
+            "0x19/0x59",
+            "0x27/0x67",
+            "0x3E/0x7E"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "uds-post-09",
+          "text": "UDS Diagnostic Mode 중 \"Programming Session\"의 세션 값(hex)은?",
+          "choices": [
+            "01h",
+            "02h",
+            "03h",
+            "04h"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "uds-post-10",
+          "text": "UDS 진단 서비스의 긍정 응답(Positive Response) SID는 일반적으로 요청 SID에 얼마를 더한 값인가?",
+          "choices": [
+            "+0x40",
+            "+0x10",
+            "+0x04",
+            "+0x80"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "git-pre",
+      "title": "GIT 사업 (사전)",
+      "subject": "GIT 사업",
+      "phase": "pre",
+      "subtitle": "사전 퀴즈 · 객관식 4지선다",
+      "questions": [
+        {
+          "id": "git-pre-01",
+          "text": "VCI 3는 무엇을 하는 장비인가?",
+          "choices": [
+            "차량과 진단 SW를 연결하는 통신 인터페이스",
+            "타이어를 직접 교체하는 장비",
+            "엔진오일을 주입하는 장비",
+            "배터리를 충전하는 장비"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-pre-02",
+          "text": "VCI 3와 함께 사용되는 진단 소프트웨어로 옳은 것은?",
+          "choices": [
+            "DAS",
+            "ODIS",
+            "Techstream",
+            "GDS-Smart"
+          ],
+          "answer": 3
+        },
+        {
+          "id": "git-pre-03",
+          "text": "VCI 3가 지원하는 통신 방식으로, 이더넷과 함께 언급되는 것은?",
+          "choices": [
+            "CAN FD",
+            "블루투스 5.0",
+            "5G",
+            "NFC"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-pre-04",
+          "text": "VCI 3의 무선 통신 범위는 기존 대비 어떻게 달라졌는가?",
+          "choices": [
+            "10m → 30m로 확대",
+            "전체 무선 통신 가능",
+            "변화 없음",
+            "유선만 지원으로 변경"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-pre-05",
+          "text": "VCI 3의 정식 명칭은 무엇인가?",
+          "choices": [
+            "Vehicle Control Interface",
+            "Vehicle Communication Interface",
+            "Vehicle Connect Integration",
+            "Vehicle Certified Instrument"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "git-pre-06",
+          "text": "PDI(Pre-Delivery Inspection)란 무엇인가?",
+          "choices": [
+            "정비소 예약 시스템",
+            "폐차 검사",
+            "출고 전 검사",
+            "보험 갱신 절차"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "git-pre-07",
+          "text": "GDS-Smart/KDS 2.0에 대한 설명으로 가장 적절한 것은?",
+          "choices": [
+            "부품 재고 관리 프로그램",
+            "지능형 진단 솔루션",
+            "차량 내비게이션 시스템",
+            "정비사 급여 관리 시스템"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "git-pre-08",
+          "text": "G-scan 3+와 G-scan M은 어떤 시장을 겨냥한 제품인가?",
+          "choices": [
+            "AM(애프터마켓)용 진단기",
+            "항공기 정비용 장비",
+            "조선업용 장비",
+            "비전문가용 진단장비"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-pre-09",
+          "text": "아래 설명 중 VCI와 진단기(G-scan 계열)의 관계로 옳은 것은?",
+          "choices": [
+            "VCI는 차량과 통신하는 모듈이고, 진단 SW(고장코드 조회 등)의 기능은 별도의 진단기/SW가 담당한다",
+            "VCI 자체가 진단 SW의 모든 기능을 포함한다",
+            "둘은 완전히 같은 제품이다",
+            "VCI는 정비 이력만 저장하는 장비다"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-pre-10",
+          "text": "다음 중 지아이티의 사업영역이 아닌 것은?",
+          "choices": [
+            "차량용 진단기",
+            "전장 검사",
+            "로봇 진단",
+            "제어기 제조"
+          ],
+          "answer": 3
+        }
+      ]
+    },
+    {
+      "id": "git-post",
+      "title": "GIT 사업 (사후)",
+      "subject": "GIT 사업",
+      "phase": "post",
+      "subtitle": "사후 퀴즈 · 객관식 4지선다",
+      "questions": [
+        {
+          "id": "git-post-01",
+          "text": "VCI 3의 역할을 가장 정확히 설명한 것은?",
+          "choices": [
+            "차량과 진단 SW사이의 통신을 담당하는 인터페이스 장비",
+            "진단 SW 기능을 모두 대체하는 독립형 진단기",
+            "정비 이력만 저장하는 클라우드 서버",
+            "부품 재고를 관리하는 바코드 리더기"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-post-02",
+          "text": "VCI 3에서 이더넷·CAN FD 통신이 필요해진 이유로 가장 적절한 것은?",
+          "choices": [
+            "기존 CAN으로는 비효율적인 작업이 늘었기 때문",
+            "정비사의 근무 기록을 실시간 전송하기 위해서",
+            "차량 위치를 GPS로 추적하기 위해서",
+            "부품 재고를 자동 발주하기 위해서"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-post-03",
+          "text": "VCI 3의 무선 통신 관련 개선 사항으로 옳은 것은?",
+          "choices": [
+            "통신 범위 확대 및 페어링 속도 향상",
+            "무선 기능을 완전히 제거하고 유선 전용화",
+            "통신 범위 축소로 배터리 소모 절감",
+            "블루투스에서 적외선 통신으로 변경"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-post-04",
+          "text": "Digital PDI/GPMS의 주요 목적은?",
+          "choices": [
+            "부품 단가 견적 자동 계산",
+            "신차 출고 시 서류 자동 발급",
+            "정비사 채용 및 교육 이력 관리",
+            "재고 차량에 대한 효율적인 관리(차량 ECU 진단, 실시간 주행데이터, 검사 사진 첨부 등)"
+          ],
+          "answer": 3
+        },
+        {
+          "id": "git-post-05",
+          "text": "GDS-Smart/KDS 2.0의 목적을 가장 잘 설명한 것은?",
+          "choices": [
+            "진단 기능의 시각화·접근성을 높이고 스마트 진단·검색 등을 지원하는 지능형 진단 솔루션",
+            "정비소 매출/회계를 관리하는 ERP 시스템",
+            "차량 구매 계약서를 자동 작성하는 프로그램",
+            "고객 예약을 접수하는 콜센터 시스템"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-post-06",
+          "text": "G-scan M과 G-scan 3+의 공통된 시장 포지션은?",
+          "choices": [
+            "현대/기아 순정 서비스센터 전용 OEM 장비",
+            "애프터마켓(AM)용 진단 장비",
+            "신차 출고 라인 전용 검사 장비",
+            "부품 협력사 품질보증 전용 장비"
+          ],
+          "answer": 1
+        },
+        {
+          "id": "git-post-07",
+          "text": "GIT의 로봇 관련 진단 서비스 명칭으로 옳은 것은?",
+          "choices": [
+            "GDS-Smart+",
+            "KDS 3.0",
+            "G-scan Robotics",
+            "Robotics LAB RDS"
+          ],
+          "answer": 3,
+          "_edit": "원문 오타 '오른 것은' → '옳은 것은' 으로 교정. 보기·정답은 원문 그대로."
+        },
+        {
+          "id": "git-post-08",
+          "text": "VCI와 G-scan 계열 진단기의 관계를 정리할 때 옳은 설명은?",
+          "choices": [
+            "VCI는 통신 모듈이고, 진단 SW 자체의 기능은 G-scan/GDS-Smart 같은 SW·장비가 담당",
+            "VCI가 진단 SW 없이도 모든 진단 기능을 독자적으로 수행",
+            "G-scan은 VCI와 무관하게 별도로 통신 기능을 자체 내장",
+            "둘은 동일한 제품의 구형/신형 모델명 차이일 뿐"
+          ],
+          "answer": 0
+        },
+        {
+          "id": "git-post-09",
+          "text": "DTC는 무엇의 약자인가?",
+          "choices": [
+            "Dynamic Torque Control",
+            "Digital Test Connector",
+            "Diagnostic Trouble Code",
+            "Data Transfer Communication"
+          ],
+          "answer": 2
+        },
+        {
+          "id": "git-post-10",
+          "text": "진단기에서 강제구동을 해보는 이유는?",
+          "choices": [
+            "차량의 무선 통신 범위를 측정하기 위해",
+            "액추에이터가 ECU 명령대로 실제 정상 동작하는지 확인하기 위해",
+            "DTC 코드를 자동으로 삭제하기 위해",
+            "센서 데이터를 그래프로 저장하기 위해"
+          ],
+          "answer": 1
+        }
+      ]
+    }
+  ]
+}

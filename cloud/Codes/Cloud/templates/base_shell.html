@@ -8,3 +8,13 @@
   {% block content %}{% endblock %}
   {% include "partials/_bottomnav.html" %}
 {% endblock %}
+{# 상단바의 연결 표시는 브라우저만 알 수 있으므로 모든 서브 화면에서 같은 규칙으로
+   그린다. 실습 화면은 rci-live.js 가 쥔 접속 상태를 받아 쓰고, 그 밖의 화면은
+   link-status.js 가 관찰 전용으로 직접 붙는다.
+   scripts 를 덮어쓰는 하위 템플릿(run/quiz)은 {{ super() }} 로 이 줄을 남길 것. #}
+{% block scripts %}
+{% if target %}
+<script src="{{ asset('js/vendor/mqtt.min.js') }}"></script>
+<script src="{{ asset('js/link-status.js') }}"></script>
+{% endif %}
+{% endblock %}

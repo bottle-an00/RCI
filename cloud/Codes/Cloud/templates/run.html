@@ -2,15 +2,24 @@
 {% from "partials/_macros.html" import icon %}
 {% from "partials/_tree.html" import tree %}
 {% block title %}RCI · {{ title }} · {{ selected.title if selected else "" }}{% endblock %}
+{# 실행 화면만 뷰포트 높이에 고정한다 — 각 패널이 '안에서' 스크롤되게 하려면
+   바깥 높이가 확정돼야 한다(min-height:100vh 로는 페이지 전체가 늘어난다). #}
+{% block app_class %}app--fixed{% endblock %}
 
 {% block content %}
 {# Step3 · 실습 실행 3분할 — 좌 트리 / 중앙(작성·제어·진행 + 3D) / 우 통신 로그.
    live(=MQTT 연결 대상 여부)는 라우트 컨텍스트에서 주입 — 블록 간 공유를 위해. #}
 <div class="run" data-target="{{ target.id }}" data-device="{{ target.device }}"
-     data-transport="{{ target.transport }}" {% if live %}data-live="1"{% endif %}>
+     data-transport="{{ target.transport }}" data-ws-url="{{ ws_url or '' }}"
+     {% if live %}data-live="1"{% endif %}>
   {# ① 좌 세부 트리 #}
   <div class="run__left">
-    <div class="md__list-head">세부 항목</div>
+    <div class="md__list-head">세부 항목
+      {% if is_composer %}
+      {# 순차 진행이라 반복 실습에는 초기화가 필요하다 (step-progress.js). #}
+      <button class="mini-btn js-progress-reset" type="button">진행 초기화</button>
+      {% endif %}
+    </div>
     {{ tree(nodes, "/" ~ target.id ~ "/" ~ content.id, selected.id if selected else "") }}
   </div>
   <span class="run__grip"></span>
@@ -18,58 +27,46 @@
   {# ② 중앙 — 콘텐츠별 상단 + 3D(접기) #}
   <div class="run__center">
     {% if is_composer %}
-    <div class="panel panel--emph panel--grow">
-      <div class="panel__head panel__head--brand">
-        <span class="panel__title">메시지 작성 · {{ selected.title if selected else title }}</span>
-        <span class="panel__meta panel__meta--light">단계 2 / 5</span>
-      </div>
-      <div class="panel__body">
-        <div class="step-title">① 세션 유형 선택</div>
-        <div class="chips">
-          <span class="chip">기본 01</span><span class="chip">프로그래밍 02</span><span class="chip is-on">확장 03</span>
-        </div>
-        <div class="step-title">② 요청 (Hex)</div>
-        <input class="composer__input mono" id="uds-req" value="10 03" spellcheck="false">
-        <div class="step-title">③ 예상 응답</div>
-        <div class="composer__input mono">50 03</div>
-        <div class="run-hint">SID 0x10 · 응답 SID = 요청 + 0x40 (0x10 → 0x50) · 전송 {{ target.transport }}</div>
-        <div class="run-actions"><button class="btn btn--primary js-send" data-uds="10 03">전송 · 검증 →</button></div>
-      </div>
-    </div>
-    {% elif content.id == "force" %}
-    {# 조명(LED) 선택 시엔 조명 제어 DID(0x0207)로, 그 외엔 모터 구동으로. #}
-    {% set is_lights = target.id == "rc-car" and selected and selected.id == "rc-led" %}
-    {% set force_uds = "2F 02 07 03 01" if is_lights else "2F 02 01 03 3C" %}
-    <div class="panel panel--grow">
-      <div class="panel__head">
-        <span class="panel__title">강제구동 제어 · {{ selected.title if selected else title }}</span>
-        <span class="panel__meta warn">안전 확인 필요</span>
-      </div>
-      <div class="panel__body">
-        <div class="step-title">구동 상태</div>
-        <div class="seg"><span class="seg__off">OFF</span><span class="seg__on">ON</span></div>
-        <div class="step-title">{{ "전조등 ON" if is_lights else "값 60 %" }}</div>
-        <div class="progress"><span style="width:{{ '100%' if is_lights else '60%' }}"></span></div>
-        <div class="run-hint">주의: 구동 전 주변 안전을 확인하세요. 사전조건(IG1/SERVO ON 등)은 로그로 표시됩니다.</div>
-        <div class="run-hint">SID 0x2F InputOutputControlByIdentifier · 응답 0x6F · 전송 {{ target.transport }}{% if is_lights %} · 정상 응답 시 3D 조명 점등{% endif %}</div>
-        <div class="run-actions"><button class="btn btn--primary js-send" data-uds="{{ force_uds }}">{{ "전조등 ON →" if is_lights else "구동 시작 →" }}</button></div>
-      </div>
-    </div>
-    {% else %}
-    <div class="panel panel--grow">
-      <div class="panel__head">
-        <span class="panel__title">진단 진행 · {{ selected.title if selected else title }}</span>
-        <span class="panel__meta">단계 2 / 3</span>
-      </div>
-      <div class="panel__body">
-        <div class="run-hint">① 대상 제어기 선택 → ② 진단 요청 → ③ 응답·값 해석</div>
-        <div class="step-title">측정값 (더미)</div>
-        <div class="mono-box">조도 342 lux · 상태 정상</div>
-        <div class="run-hint">SID 0x22 ReadDataByIdentifier · 응답 0x62 · 전송 {{ target.transport }}</div>
-        <div class="run-actions"><button class="btn btn--primary js-send" data-uds="{{ '22 01 05' if target.id == 'rc-car' else '22 01 07' }}">진단 요청 →</button></div>
-      </div>
-    </div>
+    {% include "partials/_composer.html" %}
+    {% elif sequence %}
+    {# 진단·강제구동은 요청 한 줄이 아니라 '순서'다 — 세션 오픈부터 정리까지를
+       자동으로 밟는다 (partials/_sequence.html + static/js/auto-sequence.js). #}
+    {% include "partials/_sequence.html" %}
     {% endif %}
+
+  </div>
+  <span class="run__grip"></span>
+
+  {# ③ 우 컬럼 — 통신 로그(가변 높이·스크롤) + 그 아래 3D 모델 뷰(고정 높이) #}
+  <div class="run__right">
+    <div class="panel run__log">
+      <div class="panel__head">
+        <span class="panel__title">통신 로그</span>
+        {# 세션 유지 반복 발행은 단계를 넘어 계속되므로 어느 화면에서도 상태가
+           보이고 멈출 수 있어야 한다 (rci-live.js kaPaint). #}
+        <span class="ka-badge" id="ka-badge" hidden>
+          <span class="ka-badge__text"></span>
+          <button class="mini-btn js-ka-stop" type="button">■ 중지</button>
+        </span>
+        <span class="tag tag--uds">{{ target.transport }}</span>
+      </div>
+      {# 로그가 길어지면 이 영역만 휠로 스크롤된다 (패널 밖으로 밀지 않는다). #}
+      <div class="log-body" id="log-body">
+        {% set p = "[DoIP] " if target.transport == "DoIP" else "" %}
+        {% if live %}
+        <span class="log-line muted">브로커 연결 대기 중…</span>
+        {% else %}
+        <span class="log-line send">→ {{ p }}10 03</span>
+        <span class="log-line recv">← {{ p }}50 03 00 32 01 F4</span>
+        <span class="log-line send">→ {{ p }}3E 00</span>
+        <span class="log-line recv">← {{ p }}7E 00</span>
+        <span class="log-line send">→ {{ p }}22 F1 90</span>
+        <span class="log-line recv">← {{ p }}62 F1 90 00 12 34</span>
+        <span class="log-line send">→ {{ p }}19 02 0C</span>
+        <span class="log-line recv">← {{ p }}59 02 FF 00 12 34</span>
+        {% endif %}
+      </div>
+    </div>
 
     <div class="panel panel--3d">
       <div class="panel__head">
@@ -79,52 +76,42 @@
       <div class="view3d">
         {% if target.model %}
         <model-viewer class="view3d__model"
-                      src="{{ url_for('static', path='models/' ~ target.model) }}"
+                      src="{{ asset('models/' ~ target.model) }}"
                       alt="{{ target.label }} 3D 모델"
                       camera-controls auto-rotate touch-action="pan-y"
                       environment-image="neutral" exposure="0.55"
                       shadow-intensity="0.6"></model-viewer>
         {% else %}
         {{ icon("cube", "view3d__icon") }}
-        <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대 (접으면 상단이 세로 전체 사용)</span>
+        <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대</span>
         {% endif %}
       </div>
-    </div>
-  </div>
-  <span class="run__grip"></span>
-
-  {# ③ 우 통신 로그 (전체 높이) #}
-  <div class="run__right panel">
-    <div class="panel__head">
-      <span class="panel__title">통신 로그</span>
-      <span class="tag tag--uds">{{ target.transport }}</span>
-    </div>
-    <div class="log-body" id="log-body">
-      {% set p = "[DoIP] " if target.transport == "DoIP" else "" %}
-      {% if live %}
-      <span class="log-line muted">브로커 연결 대기 중…</span>
-      {% else %}
-      <span class="log-line send">→ {{ p }}10 03</span>
-      <span class="log-line recv">← {{ p }}50 03 00 32 01 F4</span>
-      <span class="log-line send">→ {{ p }}3E 00</span>
-      <span class="log-line recv">← {{ p }}7E 00</span>
-      <span class="log-line send">→ {{ p }}22 F1 90</span>
-      <span class="log-line recv">← {{ p }}62 F1 90 00 12 34</span>
-      <span class="log-line send">→ {{ p }}19 02 0C</span>
-      <span class="log-line recv">← {{ p }}59 02 FF 00 12 34</span>
-      {% endif %}
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', path='js/run-resize.js') }}"></script>
+{# mqtt.min.js + link-status.js (상단바 연결 표시). rci-live.js 보다 먼저 실행되어도
+   무방하다 — link-status.js 는 .run[data-live] 를 보고 '접속의 주인' 을 가린다. #}
+{{ super() }}
+<script src="{{ asset('js/run-resize.js') }}"></script>
+<script src="{{ asset('js/tree-toggle.js') }}"></script>
 {% if target.model %}
-<script type="module" src="{{ url_for('static', path='js/vendor/model-viewer.min.js') }}"></script>
+<script type="module" src="{{ asset('js/vendor/model-viewer.min.js') }}"></script>
 {% endif %}
 {% if live %}
-<script src="{{ url_for('static', path='js/vendor/mqtt.min.js') }}"></script>
-<script src="{{ url_for('static', path='js/rci-live.js') }}"></script>
+{# 목업 게이트웨이는 rci-live 보다 먼저 — 목업 모드로 시작하면 즉시 필요하다. #}
+<script src="{{ asset('js/mock-rci.js') }}"></script>
+<script src="{{ asset('js/rci-live.js') }}"></script>
+<script src="{{ asset('js/transport-switch.js') }}"></script>
+{% if is_composer %}
+<script src="{{ asset('js/can-composer.js') }}"></script>
+{# can-composer 뒤에 와야 잠긴 단계의 입력 비활성화가 덮이지 않는다. #}
+<script src="{{ asset('js/step-progress.js') }}"></script>
+{% elif sequence %}
+{# rci-live 뒤 — window.RCI 와 "rci:answer" 이벤트에 올라탄다. #}
+<script src="{{ asset('js/auto-sequence.js') }}"></script>
+{% endif %}
 {% endif %}
 {% endblock %}
