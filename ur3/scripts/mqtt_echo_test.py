@@ -16,8 +16,8 @@ UR3 진단 MQTT 왕복 연결 테스트 (RCI 측).
 
 실행:
     python scripts/mqtt_echo_test.py                       # config.py 값 사용
-    python scripts/mqtt_echo_test.py --host 192.168.0.10   # 브로커만 바꿔서
-    RCI_BROKER_HOST=192.168.0.10 python scripts/mqtt_echo_test.py
+    python scripts/mqtt_echo_test.py --host 172.20.10.3    # 브로커만 바꿔서
+    RCI_BROKER_HOST=172.20.10.3 python scripts/mqtt_echo_test.py
 """
 import argparse
 import contextlib

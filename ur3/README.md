@@ -56,13 +56,24 @@ ROBOT_IP = "192.168.1.101"  # <- 실제 값으로 변경
 
 ```bash
 python scripts/mqtt_echo_test.py                       # config.py 의 브로커 사용
-python scripts/mqtt_echo_test.py --host 192.168.0.10   # 브로커만 바꿔서
-RCI_BROKER_HOST=192.168.0.10 python scripts/mqtt_echo_test.py
+python scripts/mqtt_echo_test.py --host 172.20.10.3    # 브로커만 바꿔서
+RCI_BROKER_HOST=172.20.10.3 python scripts/mqtt_echo_test.py
 ```
 
 브로커 주소·계정은 `config.py` 기본값을 환경변수로 덮어쓴다 — `RCI_BROKER_HOST`,
 `RCI_BROKER_PORT`, `RCI_BROKER_USERNAME`, `RCI_BROKER_PASSWORD`, `RCI_BROKER_TLS`.
-클라우드 웹(FastAPI)도 같은 이름을 읽으므로 양쪽에 같은 값을 주면 된다.
+
+클라우드 웹(FastAPI)도 **같은 이름**을 읽지만 **값은 다르다.** 변수 이름이 같다고
+같은 값을 넣으면 한쪽이 반드시 깨진다 — 각자 '자기 위치에서 브로커까지 가는 길'을
+적는 것이기 때문이다. 클라우드 브로커를 받기 전까지 브로커는 PC 에 얹혀 있으므로:
+
+| 실행 위치 | `RCI_BROKER_HOST` | 이유 |
+|---|---|---|
+| PC (클라우드 웹) | `127.0.0.1` (기본값, 설정 불필요) | 브로커가 같은 기계에 있다 |
+| 라즈베리파이 (RCI) | `172.20.10.3` — PC 의 무선 IP | 네트워크를 건너가야 한다 |
+
+`0.0.0.0` 은 어느 쪽에도 넣지 않는다. 접속 목적지가 아니라 브로커가 귀 기울일
+주소(bind)이고, 그건 PC 에서 `dev.bat -Lan` 이 알아서 설정한다.
 
 `[성공] 연결됨` 이 뜨면 CONNACK 까지 확인된 것이다(TCP 만 붙은 상태와 구분됨).
 연결이 안 되면 원인(`reason_code=5` 인증 실패 등)을 그대로 출력한다.
