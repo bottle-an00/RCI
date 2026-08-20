@@ -7,8 +7,12 @@
 
 ## 설치
 
+처음 받았다면 [`cloud/SETUP.md`](../../SETUP.md) 를 따른다 — venv 는 `cloud/.venv` 여야 하고
+(`dev.ps1` 이 그 경로를 직접 지목한다), `Codes/Cloud/requirements.txt` 까지 **같은 venv** 에
+설치해야 한다. 세 서비스가 한 인터프리터로 뜨기 때문이다.
+
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt      # 이미 환경이 구성된 경우 board 쪽만
 ```
 
 ## 한 번에 실행 (권장)

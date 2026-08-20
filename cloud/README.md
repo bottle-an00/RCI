@@ -82,3 +82,10 @@ Universal Robots **UR3 (CB3)** 협동로봇을 이용해, 입문자가 **진단�
 | 클라이언트 UI | HTML/JS 웹앱 (MQTT over WebSocket) |
 
 상세 역할·읽을 수 있는 값·프로토콜 매트릭스는 `Requirements_Definition.md` 참조.
+
+---
+
+## 로컬 개발
+
+이 저장소를 처음 받았다면 [`SETUP.md`](SETUP.md) — 가상환경 구축부터 `dev.bat` 실행까지.
+이미 환경이 있으면 `cloud/dev.bat` 더블클릭 후 <http://localhost:8123>.
