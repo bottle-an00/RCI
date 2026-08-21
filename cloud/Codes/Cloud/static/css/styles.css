@@ -325,14 +325,18 @@ body {
 .tag--uds { background: var(--select-bg); color: var(--brand-blue); }
 
 /* =========================================================================
-   이론 교육 (Figma 21:2) — 좌 자료목록 / 우 PDF 뷰어
+   이론 교육 — 좌 자료목록 / 우 md 뷰어 (이미지·SVG·mermaid)
+   자료 원천: content/theory/*.md → 서버 변환(theory_content.py)
    ========================================================================= */
 
 .material { justify-content: space-between; }
 .material__label { display: flex; align-items: center; gap: 10px; font-size: 14px; }
 .material.is-selected .material__label { color: var(--brand-blue); font-weight: 600; }
 .material.is-selected .material__label .icon { color: var(--brand-blue); }
-.material__pdf { font-size: 10px; color: var(--muted); }
+.material__level {
+  font-size: 10px; font-weight: 600; color: var(--muted);
+  background: #eef1f5; padding: 2px 7px; flex: none;
+}
 
 .viewer { flex: 1; }
 .viewer__head {
@@ -343,42 +347,43 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .viewer__title { font-weight: 700; font-size: 16px; }
-.viewer__tools { margin-left: auto; font-size: 13px; color: var(--muted); display: flex; gap: 16px; }
-.viewer__tools a { color: inherit; text-decoration: none; }
-.viewer__body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  color: var(--muted);
-  background: #f2f4f7;
-  text-align: center;
-  padding: 20px;
+
+.viewer__empty {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 14px; text-align: center; padding: 24px;
 }
-.viewer__pdf-card {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  background: #fff; border: 1px solid var(--border);
-  padding: 16px 18px 14px;
+.viewer__empty code { background: #f2f4f7; padding: 1px 5px; }
+
+/* md 본문 — 뷰어 스크롤 영역 */
+.viewer__md {
+  flex: 1; overflow: auto; padding: 22px 26px 32px;
+  font-size: 14px; line-height: 1.7; color: var(--ink);
 }
-.viewer__pdf-glyph { width: 30px; height: 40px; color: var(--muted); }
-.viewer__pdf-label { font-size: 15px; font-weight: 600; color: var(--pdf-tag); }
-.viewer__placeholder-title { font-size: 15px; color: var(--ink); }
-.viewer__placeholder-sub { font-size: 13px; color: var(--muted); }
-.viewer__pager {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 10px;
-  border-top: 1px solid var(--border);
-  font-size: 14px;
+.viewer__md h1 { font-size: 22px; margin: 0 0 14px; }
+.viewer__md h2 { font-size: 17px; margin: 26px 0 10px; padding-bottom: 5px; border-bottom: 1px solid var(--border); }
+.viewer__md h3 { font-size: 15px; margin: 20px 0 8px; }
+.viewer__md p { margin: 10px 0; }
+.viewer__md ul, .viewer__md ol { margin: 10px 0; padding-left: 22px; }
+.viewer__md li { margin: 4px 0; }
+.viewer__md img, .viewer__md svg { max-width: 100%; height: auto; display: block; margin: 14px 0; }
+.viewer__md a { color: var(--brand-blue); }
+.viewer__md code {
+  font-family: ui-monospace, "Consolas", monospace; font-size: 13px;
+  background: #f2f4f7; padding: 1px 5px;
 }
-.viewer__pager button {
-  border: 0; background: transparent; cursor: pointer;
-  color: var(--icon); font-size: 14px;
+.viewer__md pre {
+  background: #f7f9fb; border: 1px solid var(--border);
+  padding: 12px 14px; overflow: auto; margin: 14px 0;
 }
+.viewer__md pre code { background: none; padding: 0; }
+.viewer__md blockquote {
+  margin: 14px 0; padding: 8px 14px; color: #374151;
+  background: #f9f8f6; border-left: 3px solid var(--brand-blue);
+}
+.viewer__md table { border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+.viewer__md th, .viewer__md td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+.viewer__md th { background: #f2f4f7; }
+.viewer__md .mermaid { margin: 16px 0; text-align: center; }
 
 /* =========================================================================
    실습 컨텐츠 (Figma 22:29) — 좌 실습목록 / 우 상세

@@ -3,7 +3,8 @@
 {% block title %}RCI · 이론 교육{% endblock %}
 
 {% block content %}
-{# Step3 · 이론 교육 — 좌 자료목록 / 우 PDF 뷰어 (공통 자료) #}
+{# Step3 · 이론 교육 — 좌 자료목록 / 우 md 뷰어(이미지·SVG·mermaid).
+   자료 원천은 content/theory/*.md, 서버가 HTML 로 변환(theory_content.py). #}
 <div class="md">
   <div class="md__list">
     <div class="md__list-head">교육 자료</div>
@@ -11,7 +12,7 @@
     <a class="md__item material {% if selected and selected.id == m.id %}is-selected{% endif %}"
        href="/{{ target.id }}/theory?doc={{ m.id }}">
       <span class="material__label">{{ icon("file-lines") }}{{ m.title }}</span>
-      <span class="material__pdf">PDF</span>
+      {% if m.difficulty %}<span class="material__level">{{ m.difficulty }}</span>{% endif %}
     </a>
     {% endfor %}
   </div>
@@ -19,24 +20,22 @@
   <div class="md__detail viewer">
     {% if selected %}
     <div class="viewer__head">
-      <span class="viewer__title">{{ selected.viewer_title }}</span>
-      <span class="tag tag--pdf">PDF</span>
-      <span class="viewer__tools"><a href="#">⤓ 저장</a><a href="#">⤢ 전체화면</a></span>
+      <span class="viewer__title">{{ selected.title }}</span>
+      {% if selected.difficulty %}<span class="tag tag--uds">{{ selected.difficulty }}</span>{% endif %}
     </div>
-    <div class="viewer__body">
-      <div class="viewer__pdf-card">
-        {{ icon("file-lines", "viewer__pdf-glyph") }}
-        <span class="viewer__pdf-label">PDF</span>
-      </div>
-      <span class="viewer__placeholder-title">PDF 미리보기 영역</span>
-      <span class="viewer__placeholder-sub">선택한 교육 자료의 PDF가 여기에 표시됩니다 · 스크롤로 열람</span>
-    </div>
-    <div class="viewer__pager">
-      <button aria-label="이전 페이지">{{ icon("chevron-left") }}</button>
-      <span>1 / {{ selected.pages }}</span>
-      <button aria-label="다음 페이지">{{ icon("chevron-right") }}</button>
+    <article class="viewer__md">{{ selected.html | safe }}</article>
+    {% else %}
+    <div class="viewer__empty">
+      표시할 교육 자료가 없습니다. <code>content/theory/</code> 에 .md 파일을 추가하세요.
     </div>
     {% endif %}
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{# mermaid 는 브라우저에서만 그릴 수 있다(base_shell 의 link-status 와 별개 라인). #}
+<script src="{{ asset('js/vendor/mermaid.min.js') }}"></script>
+<script src="{{ asset('js/theory-mermaid.js') }}"></script>
 {% endblock %}

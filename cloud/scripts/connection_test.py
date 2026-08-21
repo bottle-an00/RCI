@@ -171,8 +171,8 @@ def check_input_validation(http: Http, rep: Report, device: str):
 
 def main():
     parser = argparse.ArgumentParser(description="RCI ↔ 브로커 ↔ FastAPI 연결 테스트")
-    parser.add_argument("--base-url", default="http://127.0.0.1:8123",
-                        help="FastAPI 주소 (기본 http://127.0.0.1:8123)")
+    parser.add_argument("--base-url", default="http://0.0.0.0:8123",
+                        help="FastAPI 주소 (기본 http://0.0.0.0:8123)")
     parser.add_argument("--device", default="urrobot", choices=["urrobot", "rccar"])
     parser.add_argument("--timeout", type=float, default=10.0, help="HTTP 타임아웃(초)")
     parser.add_argument("--stub", action="store_true",

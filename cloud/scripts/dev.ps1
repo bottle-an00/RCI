@@ -54,7 +54,7 @@ if ($busy) {
 }
 
 # LAN 모드: 모든 인터페이스 바인딩 + 접속용 IPv4 후보 안내.
-$webHost = "127.0.0.1"
+$webHost = "0.0.0.0"
 if ($Lan) {
   $env:RCI_BIND_HOST = "0.0.0.0"            # dev_broker.py 가 읽는다
   $webHost = "0.0.0.0"

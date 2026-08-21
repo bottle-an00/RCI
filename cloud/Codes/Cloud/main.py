@@ -30,6 +30,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
+import theory_content
 from mqtt_bridge import BridgeError, BrokerConfig, MqttBridge, RequestTimeout
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)-7s %(name)s: %(message)s")
@@ -55,6 +56,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="RCI 진단 교육 플랫폼", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+# 이론 교육 자료(md 안에서 참조하는 이미지·SVG)를 /content 로 서빙한다.
+# theory_content.ASSET_URL_BASE(/content/theory/) 와 짝을 이룬다.
+app.mount("/content", StaticFiles(directory=BASE_DIR / "content"), name="content")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 
@@ -91,7 +95,9 @@ templates.env.globals["asset"] = asset
 _RC_MODEL = "hyundai_ioniq_5_lowpoly.glb"
 _UR_MODEL = "UR_Robot.glb"
 TARGETS = [
-    {"id": "rc-car", "label": "RC Car", "status": "RC카", "device": "rccar",
+    # 표시 명칭은 "진단 모사 차량"(리뷰 피드백 §1). URL 슬러그 id="rc-car" 와 MQTT
+    # device="rccar" 는 계약이라 그대로 둔다 — 바꾸면 라우트·토픽이 깨진다.
+    {"id": "rc-car", "label": "진단 모사 차량", "status": "진단 모사 차량", "device": "rccar",
      "transport": "CAN", "tile_sub": "CAN · OBD", "icon": "car",
      "model": _RC_MODEL},
     {"id": "ur-robot", "label": "UR Robot", "status": "UR Robot", "device": "urrobot",
@@ -108,11 +114,8 @@ BOTTOM_NAV = [
     {"label": "환경 설정", "icon": "gear"},
 ]
 
-# 이론 교육 자료 (공통 — 대상 무관).
-THEORY_MATERIALS = [
-    {"id": "can", "title": "CAN 통신", "viewer_title": "CAN 통신 기초", "pages": 24},
-    {"id": "uds", "title": "UDS 진단 통신", "viewer_title": "UDS 진단 통신", "pages": 18},
-]
+# 이론 교육 자료는 더 이상 여기 하드코딩하지 않는다 — content/theory/*.md 를 스캔한다
+# (theory_content). 자료 추가 = 그 폴더에 .md 파일 하나 떨어뜨리기.
 
 
 def _load_quiz_topics():
@@ -903,8 +906,13 @@ def content_view(request: Request, target_id: str, content_id: str,
     view = content["view"]
     selected = None
     if view == "theory":
-        selected = find_leaf(THEORY_MATERIALS, doc)
-        ctx.update({"materials": THEORY_MATERIALS, "selected": selected})
+        # 좌 목록은 폴더 스캔(메타만), 우 본문은 선택 자료의 md → HTML.
+        # 선택이 없거나 없는 doc 이면 목록 첫 자료로 폴백한다.
+        materials = theory_content.load_materials()
+        selected = theory_content.load_material(doc)
+        if selected is None and materials:
+            selected = theory_content.load_material(materials[0]["id"])
+        ctx.update({"materials": materials, "selected": selected})
         tmpl = "theory.html"
     elif view == "quiz":
         # 좌 주제 목록 / 우 문항. 문항 진행·채점은 static/js/quiz.js (클라이언트) 몫이라

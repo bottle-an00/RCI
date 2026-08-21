@@ -1,0 +1,3 @@
+# 이론 교육 저작 도구(import_doc.py) 전용 의존성 — 웹앱 런타임에는 필요 없다.
+# Confluence '.doc'(MHTML) 내보내기를 md + 이미지로 변환할 때만 쓴다.
+markdownify>=1.2      # HTML → markdown (beautifulsoup4 를 함께 끌어온다)
