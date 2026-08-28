@@ -4,7 +4,7 @@
  * data-questions 에 통째로 실어 보낸다. 문항 이동·선택·채점은 전부 여기서
  * 처리해 서버 왕복이 없다(주제 전환만 링크로 리로드).
  *
- * 문항 스키마 (data/quiz.json): {id, text, choices[4], answer(정답 인덱스), explain?}
+ * 문항 스키마 (data/quiz.json): {id, text, code?, choices[4], answer(정답 인덱스), explain?}
  *
  * 보기 순서는 응시할 때마다 섞는다. 원문(특히 UDS 사전)은 정답이 A에 몰려 있어
  * 문제를 안 읽어도 찍어 맞힐 수 있기 때문. 섞는 건 '표시 순서'뿐이고 quiz.json 은
@@ -36,6 +36,7 @@
     percent: root.querySelector("[data-quiz-percent]"),
     bar: root.querySelector("[data-quiz-bar]"),
     text: root.querySelector("[data-quiz-text]"),
+    code: root.querySelector("[data-quiz-code]"),
     opts: root.querySelector("[data-quiz-opts]"),
     score: root.querySelector("[data-quiz-score]"),
     sub: root.querySelector("[data-quiz-sub]"),
@@ -92,6 +93,12 @@
     el.percent.textContent = "진행률 " + ratio + "%";
     el.bar.style.width = ratio + "%";
     el.text.textContent = q.text;
+
+    // 지문에 딸린 바이트열(code)은 있는 문항에만 있다 — 없으면 자리째 감춘다.
+    if (el.code) {
+      el.code.textContent = q.code || "";
+      el.code.hidden = !q.code;
+    }
 
     // 섞인 순서로 그리되, 고른 값은 원본 인덱스로 기록한다
     el.opts.textContent = "";

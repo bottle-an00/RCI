@@ -121,10 +121,11 @@ BOTTOM_NAV = [
 def _load_quiz_topics():
     """퀴즈 주제·문항 (data/quiz.json). 대상 무관 공통.
 
-    담당자에게 받은 JSON 으로 파일만 갈아끼우면 되도록 여기서만 읽는다. 스키마는
-    topics[] = {id, title, subtitle, questions[]}, questions[] = {id, text,
-    choices[4], answer(정답 인덱스), explain?}. 정답을 문구가 아닌 인덱스로 두어
-    보기 문구가 바뀌어도 채점이 깨지지 않는다.
+    quiz.json 은 담당자가 준 원문(content/quiz/*.doc)에서 tools/import_quiz.py
+    로 생성한다 — 퀴즈 갱신 = 그 폴더에 .doc 갈아끼우고 도구 한 번 돌리기.
+    서버는 여기서만 읽는다. 스키마는 topics[] = {id, title, subtitle, questions[]},
+    questions[] = {id, text, code?, choices[4], answer(정답 인덱스), explain?}.
+    정답을 문구가 아닌 인덱스로 두어 보기 문구가 바뀌어도 채점이 깨지지 않는다.
     """
     with (BASE_DIR / "data" / "quiz.json").open(encoding="utf-8") as fp:
         return json.load(fp)["topics"]

@@ -338,6 +338,13 @@ body {
   background: #eef1f5; padding: 2px 7px; flex: none;
 }
 
+/* 이론 교육 좌측 목록 — 큰 주제(그룹) 헤더는 실습 트리 스타일을 재사용하되,
+   난이도 배지를 오른쪽 끝으로 민다. 소제목(.material)은 한 단 들여쓴다. */
+.md__group { display: flex; align-items: center; }
+.md__group-title { flex: 1; }
+.md__group .material__level { margin-left: 8px; }
+.md__list .tree__row.material { padding-left: 34px; }
+
 .viewer { flex: 1; }
 .viewer__head {
   display: flex;
@@ -687,6 +694,15 @@ input.composer__input:focus { outline: none; border-color: var(--brand-blue); }
   transition: width .2s ease;
 }
 .quiz-q { font-size: 17px; font-weight: 600; color: var(--ink); line-height: 1.5; }
+/* 지문에 딸린 바이트열·코드 (심화 문항). 원문 줄바꿈을 살려 그대로 보여준다. */
+.quiz-code {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: #f6f8fa; color: #3d4a57;
+  font-family: Consolas, "D2Coding", monospace; font-size: 13px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-all;
+}
 .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
 .quiz-opt {
   display: flex; align-items: center; gap: 12px;
