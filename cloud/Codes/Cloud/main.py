@@ -148,6 +148,129 @@ CONTENTS = [
 
 
 # --------------------------------------------------------------------------- #
+# 실습 준비 — 세부 항목별 안내문
+#
+# 준비 탭은 '장비 체결'만 있었지만, 교육생이 실제로 먼저 부딪히는 것은 화면 사용법
+# 이다(이론 교육·퀴즈가 어떤 규칙으로 도는지 모르면 자료를 훑고 지나간다). 그래서
+# 준비 탭을 '실습 전에 읽는 것' 전반으로 넓히고, 안내문을 여기 데이터로 둔다.
+#
+# 템플릿(detail.html)은 이 구조만 그린다 — 항목을 늘리려면 여기 dict 하나를 더한다.
+#   id/title       좌측 트리 (content_tree 가 여기서 만든다)
+#   tag            우상단 배지
+#   meta           제목 아래 회색 한 줄
+#   sections[]     {heading, body?(문단) | steps?(번호 없는 줄 나열)}
+#   action?        {label, url} 해당 탭으로 바로 보내는 버튼. url 은 아래 형식 문자열.
+#
+# 본문의 `{label}` `{transport}` 는 대상(TARGETS)에 따라 달라지는 자리다 —
+# prep_guide() 가 채운다. 중괄호를 그대로 쓰려면 `{{ }}` 로 이스케이프할 것.
+# --------------------------------------------------------------------------- #
+PREP_GUIDES = [
+    {
+        "id": "prep-equip",
+        "title": "실습 장비 체결",
+        "tag": "준비",
+        "meta": "대상 {label} · 사전 준비 · 전송 {transport}",
+        "sections": [
+            {"heading": "준비물",
+             "body": "Mini VCI · {label} · 전원/통신 케이블 · 진단 PC (더미)"},
+            {"heading": "체결 절차",
+             "steps": ["1) 대상 전원 확인",
+                       "2) Mini VCI ↔ 대상 커넥터 체결",
+                       "3) Mini VCI ↔ PC 연결 ({transport})",
+                       "4) 연결 상태 '연결됨' 확인"]},
+            {"heading": "유의사항",
+             "body": "체결 전 전원 상태를 반드시 확인하세요. 상단 바의 연결 표시가 "
+                     "'연결됨'이 되어야 진단·강제구동·메시지 작성이 실제로 왕복합니다."},
+        ],
+    },
+    {
+        "id": "prep-theory",
+        "title": "이론 교육 탭 활용 방법",
+        "tag": "사용법",
+        "meta": "학습·준비 · 이론 교육 화면 안내",
+        "sections": [
+            {"heading": "화면 구성",
+             "body": "왼쪽은 교육 자료 목록, 오른쪽은 선택한 자료의 본문입니다. "
+                     "목록은 '큰 주제 ▸ 소제목' 2단이며, 큰 주제 줄을 누르면 접거나 펼 수 있습니다."},
+            {"heading": "보는 순서",
+             "steps": ["1) 큰 주제를 고른다 — 디지털 통신 → CAN → UDS → 차량용 이더넷 → DoIP 순서로 쌓입니다",
+                       "2) 같은 주제 안에서는 위에서 아래로 읽는다 — 소제목이 이미 학습 순서대로 정렬돼 있습니다",
+                       "3) 오른쪽 배지로 난이도(기초·기본·심화)를 확인한다 — 기초를 건너뛰면 심화가 막힙니다",
+                       "4) 한 주제를 끝내면 퀴즈 탭에서 같은 과목의 사후 퀴즈를 푼다"]},
+            {"heading": "본문에서 볼 수 있는 것",
+             "body": "그림·표는 물론 프레임 구조도, 통신 절차 다이어그램이 함께 들어 있습니다. "
+                     "다이어그램은 화면에서 직접 그려지므로 로딩이 한 박자 늦을 수 있습니다."},
+            {"heading": "실습과 이어보기",
+             "body": "심화 자료의 바이트열 예시는 '메시지 작성' 실습에서 그대로 조립해 볼 수 있습니다. "
+                     "읽고 끝내지 말고 해당 실습 코스를 한 번 밟아보세요."},
+        ],
+        "action": {"label": "이론 교육 열기", "url": "/{target_id}/theory"},
+    },
+    {
+        "id": "prep-quiz",
+        "title": "퀴즈 탭 활용 방법",
+        "tag": "사용법",
+        "meta": "학습·준비 · 퀴즈 화면 안내",
+        "sections": [
+            {"heading": "화면 구성",
+             "body": "왼쪽은 퀴즈 주제 목록으로, 과목마다 '사전'과 '사후'가 한 쌍입니다. "
+                     "주제 이름 옆 숫자가 그 퀴즈의 문항 수입니다. 오른쪽에서 한 문항씩 풉니다."},
+            {"heading": "푸는 순서",
+             "steps": ["1) 교육자료를 보기 '전'에 사전 퀴즈를 푼다 — 뭘 모르는지 먼저 드러내는 것이 목적입니다",
+                       "2) 이론 교육 탭에서 해당 과목을 학습한다",
+                       "3) 학습이 끝나면 사후 퀴즈를 푼다 — 사전 점수와 비교해 얼마나 올랐는지 봅니다",
+                       "4) 틀린 문항 번호를 교육자료에서 다시 찾아 읽는다"]},
+            {"heading": "진행 규칙",
+             "steps": ["· 보기 순서는 응시할 때마다 새로 섞입니다 — 답의 위치를 외우는 것은 의미가 없습니다",
+                       "· '이전 / 다음'으로 오갈 수 있고, 마지막 문항에서 '제출하기'로 채점합니다",
+                       "· 고르지 않고 넘어간 문항은 오답 처리됩니다",
+                       "· 점수는 100점 환산이며, 결과 화면의 O/X 칩으로 문항별 정오를 봅니다",
+                       "· '다시 풀기'를 누르면 보기 순서까지 새로 섞여 처음부터 시작합니다"]},
+            {"heading": "유의사항",
+             "body": "채점 결과는 저장되지 않습니다. 화면을 벗어나면 사라지니 "
+                     "사전·사후 점수는 따로 적어 두고 비교하세요."},
+        ],
+        "action": {"label": "퀴즈 열기", "url": "/{target_id}/quiz?item={first_quiz}"},
+    },
+]
+
+
+def prep_guide(node_id, target):
+    """실습 준비 세부 항목 id → 대상에 맞게 문구를 채운 안내문 (없으면 None).
+
+    본문의 `{label}`·`{transport}` 는 대상마다 다르고, action.url 의 `{target_id}`·
+    `{first_quiz}` 는 링크를 걸 주소라 여기서 한 번에 포맷한다. 원본(PREP_GUIDES)은
+    건드리지 않도록 새 dict 로 만들어 돌려준다.
+    """
+    guide = next((g for g in PREP_GUIDES if g["id"] == node_id), None)
+    if guide is None:
+        return None
+
+    fmt = {"label": target["label"], "transport": target["transport"],
+           "target_id": target["id"],
+           "first_quiz": QUIZ_TOPICS[0]["id"] if QUIZ_TOPICS else ""}
+
+    def fill(text):
+        return text.format(**fmt)
+
+    sections = []
+    for sec in guide["sections"]:
+        item = {"heading": sec["heading"]}
+        if "body" in sec:
+            item["body"] = fill(sec["body"])
+        if "steps" in sec:
+            item["steps"] = [fill(s) for s in sec["steps"]]
+        sections.append(item)
+
+    out = {"id": guide["id"], "title": guide["title"], "tag": guide["tag"],
+           "meta": fill(guide["meta"]), "sections": sections}
+    if "action" in guide:
+        out["action"] = {"label": guide["action"]["label"],
+                         "url": fill(guide["action"]["url"])}
+    return out
+
+
+# --------------------------------------------------------------------------- #
 # 메시지 작성 실습 — CAN/DoIP 프레임 조립 (주제별 코스)
 #
 # 좌측 트리는 UDS 서비스 분류표가 아니라 **실제 진단 순서**를 담는다. 주제마다
@@ -705,7 +828,7 @@ def content_tree(content_id, target):
     """콘텐츠·대상별 세부 항목 트리. 중첩 가능({children}). 깊이는 콘텐츠마다 다름."""
     t = target["id"]
     if content_id == "prep":
-        return [{"id": "prep-equip", "title": "실습 장비 체결"}]
+        return [{"id": g["id"], "title": g["title"]} for g in PREP_GUIDES]
     # quiz 는 이 트리를 쓰지 않는다 — 주제 목록을 QUIZ_TOPICS 에서 직접 렌더한다.
     if content_id == "diag":
         sensors = ([{"id": "rc-cds", "title": "CDS 조도센서 진단"},
@@ -937,6 +1060,8 @@ def content_view(request: Request, target_id: str, content_id: str,
         ctx.update({"nodes": nodes, "selected": selected})
         if view == "detail":
             tmpl = "detail.html"
+            # 실습 준비 본문은 PREP_GUIDES 가 원천이다 (템플릿에 하드코딩하지 않는다).
+            ctx["guide"] = prep_guide(selected["id"], target) if selected else None
         else:
             tmpl = "run.html"
             ctx["is_composer"] = content.get("composer", False)
