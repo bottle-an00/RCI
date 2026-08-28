@@ -1,0 +1,734 @@
+Date: Tue, 25 Aug 2026 13:41:32 +0900 (KST)
+Message-ID: <44849133.25544.1787632892909@MGPPGIMAPP03>
+Subject: Exported From Confluence
+MIME-Version: 1.0
+Content-Type: multipart/related; 
+	boundary="----=_Part_25543_2136656098.1787632892897"
+
+------=_Part_25543_2136656098.1787632892897
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///C:/exported.html
+
+<html xmlns:o=3D'urn:schemas-microsoft-com:office:office'
+      xmlns:w=3D'urn:schemas-microsoft-com:office:word'
+      xmlns:v=3D'urn:schemas-microsoft-com:vml'
+      xmlns=3D'urn:w3-org-ns:HTML'>
+<head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <title>(4) =EB=AC=BC=EB=A6=AC =EA=B3=84=EC=B8=B5 =EB=B0=8F =EC=97=B0=EA=
+=B2=B0 =ED=99=98=EA=B2=BD</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:TargetScreenSize>1024x640</o:TargetScreenSize>
+            <o:PixelsPerInch>72</o:PixelsPerInch>
+            <o:AllowPNG/>
+        </o:OfficeDocumentSettings>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>90</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+                <!--
+        @page Section1 {
+            size: 8.5in 11.0in;
+            margin: 1.0in;
+            mso-header-margin: .5in;
+            mso-footer-margin: .5in;
+            mso-paper-source: 0;
+        }
+
+        table {
+            border: solid 1px;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            border: solid 1px;
+            padding: 5px;
+        }
+
+        td {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-after: avoid;
+        }
+
+        div.Section1 {
+            page: Section1;
+        }
+
+        /* Confluence print stylesheet. Common to all themes for print medi=
+a */
+/* Full of !important until we improve batching for print CSS */
+
+@media print {
+    #main {
+        padding-bottom: 1em !important; /* The default padding of 6em is to=
+o much for printouts */
+    }
+
+    body {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2;
+    }
+
+    body, #full-height-container, #main, #page, #content, .has-personal-sid=
+ebar #content {
+        background: #fff !important;
+        color: #000 !important;
+        border: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    a, a:link, a:visited, a:focus, a:hover, a:active {
+        color: #000;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        page-break-after: avoid;
+    }
+
+    pre {
+        font-family: Monaco, "Courier New", monospace;
+    }
+
+    #header,
+    .aui-header-inner,
+    #navigation,
+    #sidebar,
+    .sidebar,
+    #personal-info-sidebar,
+    .ia-fixed-sidebar,
+    .page-actions,
+    .navmenu,
+    .ajs-menu-bar,
+    .noprint,
+    .inline-control-link,
+    .inline-control-link a,
+    a.show-labels-editor,
+    .global-comment-actions,
+    .comment-actions,
+    .quick-comment-container,
+    #addcomment {
+        display: none !important;
+    }
+
+    /* CONF-28544 cannot print multiple pages in IE */
+    #splitter-content {
+        position: relative !important;
+    }
+
+    .comment .date::before {
+        content: none !important; /* remove middot for print view */
+    }
+
+    h1.pagetitle img {
+        height: auto;
+        width: auto;
+    }
+
+    .print-only {
+        display: block;
+    }
+
+    #footer {
+        position: relative !important; /* CONF-17506 Place the footer at en=
+d of the content */
+        margin: 0;
+        padding: 0;
+        background: none;
+        clear: both;
+    }
+
+    #poweredby {
+        border-top: none;
+        background: none;
+    }
+
+    #poweredby li.print-only {
+        display: list-item;
+        font-style: italic;
+    }
+
+    #poweredby li.noprint {
+        display: none;
+    }
+
+    /* no width controls in print */
+    .wiki-content .table-wrap,
+    .wiki-content p,
+    .panel .codeContent,
+    .panel .codeContent pre,
+    .image-wrap {
+        overflow: visible !important;
+    }
+
+    /* TODO - should this work? */
+    #children-section,
+    #comments-section .comment,
+    #comments-section .comment .comment-body,
+    #comments-section .comment .comment-content,
+    #comments-section .comment p {
+        page-break-inside: avoid;
+    }
+
+    #page-children a {
+        text-decoration: none;
+    }
+
+    /**
+     hide twixies
+
+     the specificity here is a hack because print styles
+     are getting loaded before the base styles. */
+    #comments-section.pageSection .section-header,
+    #comments-section.pageSection .section-title,
+    #children-section.pageSection .section-header,
+    #children-section.pageSection .section-title,
+    .children-show-hide {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    .children-show-hide.icon {
+        display: none;
+    }
+
+    /* personal sidebar */
+    .has-personal-sidebar #content {
+        margin-right: 0px;
+    }
+
+    .has-personal-sidebar #content .pageSection {
+        margin-right: 0px;
+    }
+
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+-->
+    </style>
+</head>
+<body>
+    <h1>(4) =EB=AC=BC=EB=A6=AC =EA=B3=84=EC=B8=B5 =EB=B0=8F =EC=97=B0=EA=B2=
+=B0 =ED=99=98=EA=B2=BD</h1>
+    <div class=3D"Section1">
+        <h2 id=3D"id-(4)=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=8F=EC=97=
+=B0=EA=B2=B0=ED=99=98=EA=B2=BD-4.=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=
+=8F=EC=97=B0=EA=B2=B0=ED=99=98=EA=B2=BD"><strong>4. =EB=AC=BC=EB=A6=AC =EA=
+=B3=84=EC=B8=B5 =EB=B0=8F =EC=97=B0=EA=B2=B0 =ED=99=98=EA=B2=BD</strong></h=
+2>
+<h4 id=3D"id-(4)=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=8F=EC=97=B0=EA=
+=B2=B0=ED=99=98=EA=B2=BD-4.1=EC=B0=A8=EB=9F=89=EC=9A=A9=EC=9D=B4=EB=8D=94=
+=EB=84=B7=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5">4.1 =EC=B0=A8=EB=9F=89=EC=9A=
+=A9 =EC=9D=B4=EB=8D=94=EB=84=B7 =EB=AC=BC=EB=A6=AC =EA=B3=84=EC=B8=B5</h4>
+<p><strong>=EC=A7=84=EB=8B=A8=EC=97=90 =EC=82=AC=EC=9A=A9=EB=90=98=EB=8A=94=
+ =EB=AC=BC=EB=A6=AC =EA=B3=84=EC=B8=B5 =EA=B7=9C=EA=B2=A9</strong></p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">=EA=B7=9C=EA=B2=A9</th>
+<th class=3D"confluenceTh">=EC=86=8D=EB=8F=84</th>
+<th class=3D"confluenceTh">=EB=B0=B0=EC=84=A0</th>
+<th class=3D"confluenceTh">=EC=A3=BC=EC=9A=94 =EC=9A=A9=EB=8F=84</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>100BASE-TX</strong></td>
+<td class=3D"confluenceTd">100 Mbps</td>
+<td class=3D"confluenceTd">UTP 2=EC=8C=8D (4=EC=84=A0)</td>
+<td class=3D"confluenceTd">=EC=99=B8=EB=B6=80 =EC=A7=84=EB=8B=A8=EA=B8=B0 =
+=EC=97=B0=EA=B2=B0 =EA=B5=AC=EA=B0=84</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>100BASE-T1</strong></td>
+<td class=3D"confluenceTd">100 Mbps</td>
+<td class=3D"confluenceTd">UTP 1=EC=8C=8D (2=EC=84=A0)</td>
+<td class=3D"confluenceTd">=EC=B0=A8=EB=9F=89 =EB=82=B4=EB=B6=80 =EB=B0=B0=
+=EC=84=A0</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>1000BASE-T1</strong></td>
+<td class=3D"confluenceTd">1 Gbps</td>
+<td class=3D"confluenceTd">UTP 1=EC=8C=8D (2=EC=84=A0)</td>
+<td class=3D"confluenceTd">=EA=B3=A0=EC=86=8D =EB=8F=84=EB=A9=94=EC=9D=B8 =
+=EB=B0=B1=EB=B3=B8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<p><strong>T1(1-pair) =EA=B7=9C=EA=B2=A9=EC=9D=98 =ED=8A=B9=EC=A7=95</stron=
+g></p>
+<ul>
+<li>=EB=8B=A8=EC=9D=BC =EA=BC=AC=EC=9E=84=EC=8C=8D(2=EC=84=A0)=EC=9C=BC=EB=
+=A1=9C <strong>=EC=A0=84=EC=9D=B4=EC=A4=91 =ED=86=B5=EC=8B=A0</strong> =EC=
+=88=98=ED=96=89</li>
+<li>=EC=86=A1=EC=8B=A0=C2=B7=EC=88=98=EC=8B=A0 =EC=8B=A0=ED=98=B8=EA=B0=80 =
+=EA=B0=99=EC=9D=80 =EC=84=A0=EC=97=90 =EA=B2=B9=EC=B3=90 =ED=9D=90=EB=A5=B4=
+=EB=A9=B0, =EC=97=90=EC=BD=94 =EC=BA=94=EC=8A=AC=EB=9F=AC=EB=A1=9C =EB=B6=
+=84=EB=A6=AC</li>
+<li>=EB=B0=B0=EC=84=A0 =EB=AC=B4=EA=B2=8C=C2=B7=EB=B6=80=ED=94=BC =EA=B0=90=
+=EC=86=8C, =EC=BB=A4=EB=84=A5=ED=84=B0 =ED=81=AC=EA=B8=B0 =EC=B6=95=EC=86=
+=8C =E2=86=92 =EC=B0=A8=EB=9F=89 =EC=A0=81=EC=9A=A9=EC=97=90 =EC=9C=A0=EB=
+=A6=AC</li>
+<li>EMC =EC=9A=94=EA=B5=AC =EC=A1=B0=EA=B1=B4=EC=9D=B4 =EC=97=84=EA=B2=A9 (=
+=EC=B0=A8=EB=9F=89 =ED=99=98=EA=B2=BD=EC=9D=98 =EB=85=B8=EC=9D=B4=EC=A6=88 =
+=EB=8C=80=EC=9D=91)</li>
+</ul>
+<p><strong>=EC=99=B8=EB=B6=80 =EC=97=B0=EA=B2=B0 =EC=8B=9C =EB=AC=B8=EC=A0=
+=9C=EC=99=80 =ED=95=B4=EA=B2=B0</strong></p>
+<ul>
+<li>=EC=9D=BC=EB=B0=98 =EC=A7=84=EB=8B=A8=EA=B8=B0=C2=B7PC=EB=8A=94 100BASE=
+-TX(4=EC=84=A0) =ED=8F=AC=ED=8A=B8=EB=A7=8C =EB=B3=B4=EC=9C=A0</li>
+<li>=EC=B0=A8=EB=9F=89 =EB=82=B4=EB=B6=80=EB=8A=94 100BASE-T1(2=EC=84=A0) =
+=EA=B8=B0=EB=B0=98</li>
+<li>=E2=86=92 <strong>=EB=AF=B8=EB=94=94=EC=96=B4 =EC=BB=A8=EB=B2=84=ED=84=
+=B0</strong> =EB=98=90=EB=8A=94 <strong>=EA=B2=8C=EC=9D=B4=ED=8A=B8=EC=9B=
+=A8=EC=9D=B4 =EB=82=B4=EC=9E=A5 =EB=B3=80=ED=99=98 =ED=9A=8C=EB=A1=9C</stro=
+ng>=EB=A1=9C TX =E2=86=94 T1 =EB=B3=80=ED=99=98 =ED=95=84=EC=9A=94</li>
+</ul>
+<pre><code>  [PC / =EC=A7=84=EB=8B=A8=EA=B8=B0]        [=EB=B3=80=ED=99=98]=
+         [=EC=B0=A8=EB=9F=89 =EB=82=B4=EB=B6=80]
+   100BASE-TX  =E2=94=80=E2=94=80=E2=86=92  Media Converter  =E2=94=80=E2=
+=94=80=E2=86=92  100BASE-T1
+     RJ-45              (=EB=98=90=EB=8A=94 GW =EB=82=B4=EC=9E=A5)        O=
+BD-II</code></pre>
+<hr>
+<h4 id=3D"id-(4)=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=8F=EC=97=B0=EA=
+=B2=B0=ED=99=98=EA=B2=BD-4.2OBD-II=EC=BB=A4=EB=84=A5=ED=84=B0=ED=95=80=ED=
+=95=A0=EB=8B=B9">4.2 OBD-II =EC=BB=A4=EB=84=A5=ED=84=B0 =ED=95=80 =ED=95=A0=
+=EB=8B=B9</h4>
+<p><strong>ISO 13400-3 =EA=B7=9C=EC=A0=95 =ED=95=80 =EB=B0=B0=EC=B9=98</str=
+ong></p>
+<p><br></p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">=ED=95=80</th>
+<th class=3D"confluenceTh">=EC=8B=A0=ED=98=B8</th>
+<th class=3D"confluenceTh">=EC=84=A4=EB=AA=85</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>1</strong></td>
+<td class=3D"confluenceTd"><strong>Activation Line</strong></td>
+<td class=3D"confluenceTd">DoIP =ED=99=9C=EC=84=B1=ED=99=94 =EC=8B=A0=ED=98=
+=B8</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>3</strong></td>
+<td class=3D"confluenceTd">Ethernet RX+</td>
+<td class=3D"confluenceTd">=EC=88=98=EC=8B=A0 =EB=8D=B0=EC=9D=B4=ED=84=B0 +=
+</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>8</strong></td>
+<td class=3D"confluenceTd">Ethernet TX+</td>
+<td class=3D"confluenceTd">=EC=86=A1=EC=8B=A0 =EB=8D=B0=EC=9D=B4=ED=84=B0 +=
+</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>11</strong></td>
+<td class=3D"confluenceTd">Ethernet RX=E2=88=92</td>
+<td class=3D"confluenceTd">=EC=88=98=EC=8B=A0 =EB=8D=B0=EC=9D=B4=ED=84=B0 =
+=E2=88=92</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>12</strong></td>
+<td class=3D"confluenceTd">Ethernet TX=E2=88=92</td>
+<td class=3D"confluenceTd">=EC=86=A1=EC=8B=A0 =EB=8D=B0=EC=9D=B4=ED=84=B0 =
+=E2=88=92</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">4, 5</td>
+<td class=3D"confluenceTd">Ground</td>
+<td class=3D"confluenceTd">=EC=A0=91=EC=A7=80</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">16</td>
+<td class=3D"confluenceTd">Battery +</td>
+<td class=3D"confluenceTd">=EC=A0=84=EC=9B=90</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">6, 14</td>
+<td class=3D"confluenceTd">CAN High / Low</td>
+<td class=3D"confluenceTd">=EA=B8=B0=EC=A1=B4 CAN =EC=A7=84=EB=8B=A8 (=EB=
+=B3=91=ED=96=89 =EC=9C=A0=EC=A7=80)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<p><strong>=ED=95=B5=EC=8B=AC =ED=8F=AC=EC=9D=B8=ED=8A=B8</strong></p>
+<ul>
+<li>=EA=B8=B0=EC=A1=B4 <strong>CAN =EC=A7=84=EB=8B=A8 =ED=95=80(6, 14)=EC=
+=9D=80 =EA=B7=B8=EB=8C=80=EB=A1=9C =EC=9C=A0=EC=A7=80</strong> =E2=86=92 =
+=ED=95=98=EC=9C=84 =ED=98=B8=ED=99=98=EC=84=B1 =ED=99=95=EB=B3=B4</li>
+<li>=EC=9D=B4=EB=8D=94=EB=84=B7=EC=9D=80 =EA=B8=B0=EC=A1=B4 =EB=AF=B8=EC=82=
+=AC=EC=9A=A9 =ED=95=80=EC=9D=84 =ED=99=9C=EC=9A=A9 =E2=86=92 =EC=BB=A4=EB=
+=84=A5=ED=84=B0 =ED=98=95=EC=83=81 =EB=B3=80=EA=B2=BD =EB=B6=88=ED=95=84=EC=
+=9A=94</li>
+<li>=EB=8F=99=EC=9D=BC =EC=BB=A4=EB=84=A5=ED=84=B0=EB=A1=9C CAN =EC=A7=84=
+=EB=8B=A8=EA=B3=BC DoIP =EC=A7=84=EB=8B=A8=EC=9D=84 =EB=AA=A8=EB=91=90 =EC=
+=88=98=ED=96=89 =EA=B0=80=EB=8A=A5</li>
+<li>=EC=A7=84=EB=8B=A8=EA=B8=B0=EA=B0=80 =EC=9D=B4=EB=8D=94=EB=84=B7 =EB=A7=
+=81=ED=81=AC=EB=A5=BC =ED=99=95=EB=B3=B4=ED=95=98=EC=A7=80 =EB=AA=BB=ED=95=
+=98=EB=A9=B4 CAN=EC=9C=BC=EB=A1=9C =ED=8F=B4=EB=B0=B1=ED=95=98=EB=8A=94 =EA=
+=B5=AC=EC=84=B1=EB=8F=84 =EA=B0=80=EB=8A=A5</li>
+</ul>
+<hr>
+<h4 id=3D"id-(4)=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=8F=EC=97=B0=EA=
+=B2=B0=ED=99=98=EA=B2=BD-4.3ActivationLine">4.3 Activation Line</h4>
+<p><strong>Activation Line=EC=9D=B4=EB=9E=80</strong></p>
+<ul>
+<li>OBD-II <strong>1=EB=B2=88 =ED=95=80</strong>=EC=97=90 =EC=9D=B8=EA=B0=
+=80=ED=95=98=EB=8A=94 =EC=8B=A0=ED=98=B8=EC=84=A0</li>
+<li>=EC=B0=A8=EB=9F=89=EC=9D=98 =EC=9D=B4=EB=8D=94=EB=84=B7 =EC=A7=84=EB=8B=
+=A8 =EC=9D=B8=ED=84=B0=ED=8E=98=EC=9D=B4=EC=8A=A4=EB=A5=BC <strong>=ED=99=
+=9C=EC=84=B1=ED=99=94=ED=95=98=EB=8A=94 =EC=8A=A4=EC=9C=84=EC=B9=98 =EC=97=
+=AD=ED=95=A0</strong></li>
+<li>=EC=A7=84=EB=8B=A8=EA=B8=B0=EA=B0=80 =EC=9D=B4 =ED=95=80=EC=97=90 =EC=
+=A0=84=EC=95=95=EC=9D=84 =EC=9D=B8=EA=B0=80=ED=95=98=EB=A9=B4, =EC=B0=A8=EB=
+=9F=89=EC=9D=B4 DoIP =ED=86=B5=EC=8B=A0 =EC=A4=80=EB=B9=84 =EC=83=81=ED=83=
+=9C=EB=A1=9C =EC=A0=84=ED=99=98</li>
+</ul>
+<p><strong>=EC=99=9C =ED=95=84=EC=9A=94=ED=95=9C=EA=B0=80</strong></p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">=EC=9D=B4=EC=9C=A0</th>
+<th class=3D"confluenceTh">=EC=84=A4=EB=AA=85</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">=EC=86=8C=EB=B9=84 =EC=A0=84=EB=A0=A5 =EC=A0=88=
+=EA=B0=90</td>
+<td class=3D"confluenceTd">=EC=9D=B4=EB=8D=94=EB=84=B7 PHY=EB=8A=94 =EC=83=
+=81=EC=8B=9C =EB=8F=99=EC=9E=91 =EC=8B=9C =EC=A0=84=EB=A0=A5 =EC=86=8C=EB=
+=AA=A8=EA=B0=80 =ED=81=BC =E2=86=92 =ED=8F=89=EC=86=8C =EB=B9=84=ED=99=9C=
+=EC=84=B1 =EC=9C=A0=EC=A7=80</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">=EB=B3=B4=EC=95=88</td>
+<td class=3D"confluenceTd">=EB=AC=BC=EB=A6=AC=EC=A0=81 =EC=A0=91=EA=B7=BC =
+=EC=97=86=EC=9D=B4=EB=8A=94 =EC=A7=84=EB=8B=A8 =EC=9D=B8=ED=84=B0=ED=8E=98=
+=EC=9D=B4=EC=8A=A4=EA=B0=80 =EC=97=B4=EB=A6=AC=EC=A7=80 =EC=95=8A=EC=9D=8C<=
+/td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">=EC=98=A4=EB=8F=99=EC=9E=91 =EB=B0=A9=EC=A7=80</=
+td>
+<td class=3D"confluenceTd">=EC=A3=BC=ED=96=89 =EC=A4=91 =EB=B6=88=ED=95=84=
+=EC=9A=94=ED=95=9C =EC=A7=84=EB=8B=A8 =ED=8F=AC=ED=8A=B8 =ED=99=9C=EC=84=B1=
+=ED=99=94 =EC=B0=A8=EB=8B=A8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<p><strong>=EB=8F=99=EC=9E=91 =EC=88=9C=EC=84=9C</strong></p>
+<pre><code>  [1] =EC=A7=84=EB=8B=A8=EA=B8=B0 =EC=BC=80=EC=9D=B4=EB=B8=94 =
+=EC=97=B0=EA=B2=B0
+  [2] Activation Line=EC=97=90 =EC=A0=84=EC=95=95 =EC=9D=B8=EA=B0=80 (=ED=
+=95=80 1)
+  [3] =EC=B0=A8=EB=9F=89 =EC=B8=A1 =EC=9D=B4=EB=8D=94=EB=84=B7 PHY =EC=A0=
+=84=EC=9B=90 =EC=9D=B8=EA=B0=80 =EB=B0=8F =EC=B4=88=EA=B8=B0=ED=99=94
+  [4] Ethernet Link Up (=EB=AC=BC=EB=A6=AC =EB=A7=81=ED=81=AC =ED=99=95=EB=
+=A6=BD)
+  [5] IP =EC=A3=BC=EC=86=8C =ED=95=A0=EB=8B=B9 =EC=A0=88=EC=B0=A8 =EC=8B=9C=
+=EC=9E=91
+  [6] DoIP =ED=86=B5=EC=8B=A0 =EA=B0=80=EB=8A=A5 =EC=83=81=ED=83=9C</code><=
+/pre>
+<ul>
+<li>=EC=BC=80=EC=9D=B4=EB=B8=94=EB=A7=8C =EA=BD=82=EA=B3=A0 Activation Line=
+=EC=9D=84 =EC=9D=B8=EA=B0=80=ED=95=98=EC=A7=80 =EC=95=8A=EC=9C=BC=EB=A9=B4 =
+<strong>=EB=A7=81=ED=81=AC =EC=9E=90=EC=B2=B4=EA=B0=80 =EC=98=AC=EB=9D=BC=
+=EC=98=A4=EC=A7=80 =EC=95=8A=EC=9D=8C</strong></li>
+<li>=ED=98=84=EC=9E=A5=EC=97=90=EC=84=9C "=EC=97=B0=EA=B2=B0=EC=9D=B4 =EC=
+=95=88 =EB=90=9C=EB=8B=A4"=EA=B3=A0 =ED=95=A0 =EB=95=8C =EA=B0=80=EC=9E=A5 =
+=ED=9D=94=ED=95=9C =EC=9B=90=EC=9D=B8 =EC=A4=91 =ED=95=98=EB=82=98</li>
+</ul>
+<p><strong>=EC=A0=84=EA=B8=B0=EC=A0=81 =ED=8A=B9=EC=84=B1</strong></p>
+<ul>
+<li>=EC=B0=A8=EB=9F=89 =EB=B0=B0=ED=84=B0=EB=A6=AC =EC=A0=84=EC=95=95(=EC=
+=95=BD 12V) =EC=88=98=EC=A4=80=EC=9D=98 =EC=8B=A0=ED=98=B8 =EC=82=AC=EC=9A=
+=A9</li>
+<li>=EC=B0=A8=EB=9F=89 =EC=B8=A1=EC=9D=80 =EC=9D=B4 =EC=8B=A0=ED=98=B8=EB=
+=A5=BC =EA=B0=90=EC=A7=80=ED=95=98=EC=97=AC =EC=9B=A8=EC=9D=B4=ED=81=AC=EC=
+=97=85 =EC=B2=98=EB=A6=AC</li>
+<li>=EC=84=B8=EB=B6=80 =EC=9E=84=EA=B3=84 =EC=A0=84=EC=95=95=C2=B7=ED=83=80=
+=EC=9D=B4=EB=B0=8D=EC=9D=80 =EC=A0=9C=EC=A1=B0=EC=82=AC =EA=B7=9C=EA=B2=A9=
+=EC=97=90 =EB=94=B0=EB=A6=84</li>
+</ul>
+<hr>
+<h4 id=3D"id-(4)=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=8F=EC=97=B0=EA=
+=B2=B0=ED=99=98=EA=B2=BD-4.4IP=EC=A3=BC=EC=86=8C=ED=95=A0=EB=8B=B9">4.4 IP =
+=EC=A3=BC=EC=86=8C =ED=95=A0=EB=8B=B9</h4>
+<p><strong>=ED=95=A0=EB=8B=B9 =EB=B0=A9=EC=8B=9D 3=EA=B0=80=EC=A7=80</stron=
+g></p>
+<p><br></p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">=EB=B0=A9=EC=8B=9D</th>
+<th class=3D"confluenceTh">=EC=A3=BC=EC=86=8C =EB=B2=94=EC=9C=84</th>
+<th class=3D"confluenceTh">=ED=8A=B9=EC=A7=95</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>DHCP</strong></td>
+<td class=3D"confluenceTd">=EC=84=9C=EB=B2=84 =EC=A0=95=EC=B1=85=EC=97=90 =
+=EB=94=B0=EB=A6=84</td>
+<td class=3D"confluenceTd">=ED=91=9C=EC=A4=80 =EC=9A=B0=EC=84=A0 =EB=B0=A9=
+=EC=8B=9D, =EC=84=9C=EB=B2=84 =ED=95=84=EC=9A=94</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>AutoIP (Link-Local)</strong></td>
+<td class=3D"confluenceTd">IPv4: 169.254.x.x / IPv6: FE80::</td>
+<td class=3D"confluenceTd">=EC=84=9C=EB=B2=84 =EC=97=86=EC=9D=B4 =EC=9E=90=
+=EC=B2=B4 =EC=83=9D=EC=84=B1</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>=EA=B3=A0=EC=A0=95 IP</strong></td>
+<td class=3D"confluenceTd">=EC=82=AC=EC=A0=84 =EC=A0=95=EC=9D=98</td>
+<td class=3D"confluenceTd">=EA=B0=9C=EB=B0=9C=C2=B7=EC=83=9D=EC=82=B0 =ED=
+=99=98=EA=B2=BD=EC=97=90=EC=84=9C =EC=82=AC=EC=9A=A9</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<p><strong>=ED=91=9C=EC=A4=80 =EA=B6=8C=EC=9E=A5 =EC=A0=88=EC=B0=A8</strong=
+></p>
+<pre><code>  [1] Link Up =ED=9B=84 DHCP DISCOVER =EC=86=A1=EC=8B=A0
+  [2] =EC=9D=BC=EC=A0=95 =EC=8B=9C=EA=B0=84 =EB=82=B4 =EC=9D=91=EB=8B=B5 =
+=EC=88=98=EC=8B=A0 =EC=8B=9C =E2=86=92 =ED=95=A0=EB=8B=B9 =EC=A3=BC=EC=86=
+=8C =EC=82=AC=EC=9A=A9
+  [3] =EC=9D=91=EB=8B=B5 =EC=97=86=EC=9D=8C (=ED=83=80=EC=9E=84=EC=95=84=EC=
+=9B=83) =E2=86=92 AutoIP=EB=A1=9C =ED=8F=B4=EB=B0=B1
+  [4] AutoIP =EC=A3=BC=EC=86=8C =EC=83=9D=EC=84=B1 =ED=9B=84 ARP=EB=A1=9C =
+=EC=A4=91=EB=B3=B5 =ED=99=95=EC=9D=B8
+  [5] =EC=A4=91=EB=B3=B5 =EC=97=86=EC=9C=BC=EB=A9=B4 =ED=95=B4=EB=8B=B9 =EC=
+=A3=BC=EC=86=8C =ED=99=95=EC=A0=95</code></pre>
+<ul>
+<li>=EC=A7=84=EB=8B=A8=EA=B8=B0=EA=B0=80 DHCP =EC=84=9C=EB=B2=84 =EC=97=AD=
+=ED=95=A0=EC=9D=84 =ED=95=98=EB=8A=94 =EA=B5=AC=EC=84=B1=EC=9D=B4 =EC=9D=BC=
+=EB=B0=98=EC=A0=81</li>
+<li>=EC=B0=A8=EB=9F=89=EC=9D=B4 =ED=81=B4=EB=9D=BC=EC=9D=B4=EC=96=B8=ED=8A=
+=B8=EB=A1=9C =EB=8F=99=EC=9E=91=ED=95=98=EC=97=AC =EC=A3=BC=EC=86=8C=EB=A5=
+=BC =ED=95=A0=EB=8B=B9=EB=B0=9B=EC=9D=8C</li>
+<li>DHCP =ED=83=80=EC=9E=84=EC=95=84=EC=9B=83 =EB=8C=80=EA=B8=B0=EB=A1=9C =
+=EC=9D=B8=ED=95=B4 <strong>=EC=B4=88=EA=B8=B0 =EC=97=B0=EA=B2=B0=EC=97=90 =
+=EC=88=98 =EC=B4=88 =EC=A7=80=EC=97=B0</strong>=EC=9D=B4 =EB=B0=9C=EC=83=9D=
+=ED=95=A0 =EC=88=98 =EC=9E=88=EC=9D=8C</li>
+</ul>
+<p><strong>IPv6 =EC=82=AC=EC=9A=A9</strong></p>
+<ul>
+<li>=EC=B0=A8=EB=9F=89 =EB=82=B4=EB=B6=80 =EB=84=A4=ED=8A=B8=EC=9B=8C=ED=81=
+=AC=EB=8A=94 IPv6 Link-Local =EC=A3=BC=EC=86=8C(FE80::) =EC=82=AC=EC=9A=A9 =
+=EC=82=AC=EB=A1=80=EA=B0=80 =EB=A7=8E=EC=9D=8C</li>
+<li>MAC =EC=A3=BC=EC=86=8C =EA=B8=B0=EB=B0=98=EC=9C=BC=EB=A1=9C =EC=9E=90=
+=EB=8F=99 =EC=83=9D=EC=84=B1=EB=90=98=EB=AF=80=EB=A1=9C =EB=B3=84=EB=8F=84 =
+=ED=95=A0=EB=8B=B9 =EC=A0=88=EC=B0=A8 =EB=B6=88=ED=95=84=EC=9A=94</li>
+<li>=EB=A9=80=ED=8B=B0=EC=BA=90=EC=8A=A4=ED=8A=B8 =EA=B8=B0=EB=B0=98 =ED=83=
+=90=EC=83=89=EC=97=90 =EC=9C=A0=EB=A6=AC</li>
+</ul>
+<hr>
+<h4 id=3D"id-(4)=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=8F=EC=97=B0=EA=
+=B2=B0=ED=99=98=EA=B2=BD-4.5=EC=9C=A0=EC=84=A0vs=EB=AC=B4=EC=84=A0=EC=97=B0=
+=EA=B2=B0=ED=99=98=EA=B2=BD">4.5 =EC=9C=A0=EC=84=A0 vs =EB=AC=B4=EC=84=A0 =
+=EC=97=B0=EA=B2=B0 =ED=99=98=EA=B2=BD</h4>
+<p><strong>ISO 13400-3 : =EC=9C=A0=EC=84=A0 =EC=9D=B8=ED=84=B0=ED=8E=98=EC=
+=9D=B4=EC=8A=A4</strong></p>
+<ul>
+<li>OBD-II =EC=BB=A4=EB=84=A5=ED=84=B0=EB=A5=BC =ED=86=B5=ED=95=9C =EC=A7=
+=81=EC=A0=91 =EC=97=B0=EA=B2=B0</li>
+<li>=EB=8C=80=EC=83=81 : A/S =EC=A0=95=EB=B9=84=EC=86=8C, =EC=83=9D=EC=82=
+=B0 =EB=9D=BC=EC=9D=B8, =EA=B0=9C=EB=B0=9C =EB=B2=A4=EC=B9=98</li>
+<li>=ED=8A=B9=EC=A7=95 : =EB=AC=BC=EB=A6=AC=EC=A0=81 =EC=A0=91=EA=B7=BC =ED=
+=95=84=EC=9A=94, =EA=B3=A0=EC=86=8D=C2=B7=EC=95=88=EC=A0=95=EC=A0=81, Activ=
+ation Line=EC=9C=BC=EB=A1=9C =EC=A0=9C=EC=96=B4</li>
+</ul>
+<p><strong>=EB=AC=B4=EC=84=A0(=EC=9B=90=EA=B2=A9) =EC=97=B0=EA=B2=B0 =ED=99=
+=98=EA=B2=BD</strong></p>
+<pre><code>  [=EC=A7=84=EB=8B=A8 =EC=84=9C=EB=B2=84]
+       =E2=94=82 =EC=9D=B8=ED=84=B0=EB=84=B7 / =EC=9D=B4=EB=8F=99=ED=86=B5=
+=EC=8B=A0=EB=A7=9D
+       =E2=96=BC
+  [=ED=85=94=EB=A0=88=EB=A7=A4=ED=8B=B1=EC=8A=A4 =EC=9C=A0=EB=8B=9B (TCU)]
+       =E2=94=82 =EC=B0=A8=EB=9F=89 =EB=82=B4=EB=B6=80 =EC=9D=B4=EB=8D=94=
+=EB=84=B7
+       =E2=96=BC
+  [=EC=A4=91=EC=95=99 =EA=B2=8C=EC=9D=B4=ED=8A=B8=EC=9B=A8=EC=9D=B4]
+       =E2=94=82
+  [=EB=8C=80=EC=83=81 ECU]</code></pre>
+<ul>
+<li>TCU=EA=B0=80 =EC=99=B8=EB=B6=80=EB=A7=9D=EA=B3=BC =EC=B0=A8=EB=9F=89 =
+=EB=82=B4=EB=B6=80=EB=A7=9D=EC=9D=84 =EC=97=B0=EA=B2=B0=ED=95=98=EB=8A=94 =
+=EA=B4=80=EB=AC=B8 =EC=97=AD=ED=95=A0</li>
+<li>Activation Line =EC=97=86=EC=9D=B4 =EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=A8=
+=EC=96=B4=EC=A0=81=EC=9C=BC=EB=A1=9C =EC=A7=84=EB=8B=A8 =EC=84=B8=EC=85=98 =
+=EA=B0=9C=EC=8B=9C</li>
+<li>OTA =EC=97=85=EB=8D=B0=EC=9D=B4=ED=8A=B8, =EC=9B=90=EA=B2=A9 =EA=B3=A0=
+=EC=9E=A5 =EC=A7=84=EB=8B=A8=EC=97=90 =ED=99=9C=EC=9A=A9</li>
+</ul>
+<p><strong>=EC=9C=A0=EC=84=A0 / =EB=AC=B4=EC=84=A0 =EB=B9=84=EA=B5=90</stro=
+ng></p>
+<p><br></p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">=ED=95=AD=EB=AA=A9</th>
+<th class=3D"confluenceTh">=EC=9C=A0=EC=84=A0 (OBD-II)</th>
+<th class=3D"confluenceTh">=EB=AC=B4=EC=84=A0 (=EC=9B=90=EA=B2=A9)</th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">=ED=99=9C=EC=84=B1=ED=99=94 =EB=B0=A9=EC=8B=9D</=
+td>
+<td class=3D"confluenceTd">Activation Line</td>
+<td class=3D"confluenceTd">=EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=A8=EC=96=B4 =
+=EC=9D=B8=EC=A6=9D</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">=EB=8C=80=EC=97=AD=ED=8F=AD</td>
+<td class=3D"confluenceTd">100 Mbps ~ 1 Gbps</td>
+<td class=3D"confluenceTd">=EC=9D=B4=EB=8F=99=ED=86=B5=EC=8B=A0=EB=A7=9D=EC=
+=97=90 =EC=A2=85=EC=86=8D</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">=EC=A7=80=EC=97=B0</td>
+<td class=3D"confluenceTd">=EB=82=AE=EA=B3=A0 =EC=9D=BC=EC=A0=95</td>
+<td class=3D"confluenceTd">=EB=B3=80=EB=8F=99 =ED=81=BC</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">=EB=B3=B4=EC=95=88 =EC=9A=94=EA=B5=AC</td>
+<td class=3D"confluenceTd">=EB=AC=BC=EB=A6=AC =EC=A0=91=EA=B7=BC=EC=9D=B4 1=
+=EC=B0=A8 =EB=B0=A9=EC=96=B4</td>
+<td class=3D"confluenceTd"><strong>TLS=C2=B7=EC=9D=B8=EC=A6=9D =ED=95=84=EC=
+=88=98</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">=EC=A3=BC =EC=9A=A9=EB=8F=84</td>
+<td class=3D"confluenceTd">=EC=A0=95=EB=B9=84, =EC=83=9D=EC=82=B0, =EA=B0=
+=9C=EB=B0=9C</td>
+<td class=3D"confluenceTd">OTA, =EC=9B=90=EA=B2=A9 =EC=A7=84=EB=8B=A8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<hr>
+<h4 id=3D"id-(4)=EB=AC=BC=EB=A6=AC=EA=B3=84=EC=B8=B5=EB=B0=8F=EC=97=B0=EA=
+=B2=B0=ED=99=98=EA=B2=BD-4.6=EC=97=B0=EA=B2=B0=EC=8B=9C=ED=99=95=EC=9D=B8=
+=EC=82=AC=ED=95=AD">4.6 =EC=97=B0=EA=B2=B0 =EC=8B=9C =ED=99=95=EC=9D=B8 =EC=
+=82=AC=ED=95=AD</h4>
+<p><strong>=EB=8B=A8=EA=B3=84=EB=B3=84 =EC=A0=90=EA=B2=80 =ED=8F=AC=EC=9D=
+=B8=ED=8A=B8</strong></p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh">=EB=8B=A8=EA=B3=84</th>
+<th class=3D"confluenceTh">=ED=99=95=EC=9D=B8 =ED=95=AD=EB=AA=A9</th>
+<th class=3D"confluenceTh">=EC=9D=B4=EC=83=81 =EC=8B=9C =EC=A6=9D=EC=83=81<=
+/th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd">=EB=AC=BC=EB=A6=AC =EC=97=B0=EA=B2=B0</td>
+<td class=3D"confluenceTd">=EC=BC=80=EC=9D=B4=EB=B8=94, =EC=BB=A4=EB=84=A5=
+=ED=84=B0 =EC=A0=91=EC=B4=89</td>
+<td class=3D"confluenceTd">Link LED =EB=AF=B8=EC=A0=90=EB=93=B1</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">Activation Line</td>
+<td class=3D"confluenceTd">=ED=95=80 1 =EC=A0=84=EC=95=95 =EC=9D=B8=EA=B0=
+=80 =EC=97=AC=EB=B6=80</td>
+<td class=3D"confluenceTd">=EB=A7=81=ED=81=AC =EC=9E=90=EC=B2=B4=EA=B0=80 =
+=EC=95=88 =EC=98=AC=EB=9D=BC=EC=98=B4</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">Link =ED=99=95=EB=A6=BD</td>
+<td class=3D"confluenceTd">=EC=86=8D=EB=8F=84=C2=B7=EB=93=80=ED=94=8C=EB=A0=
+=89=EC=8A=A4 =ED=98=91=EC=83=81</td>
+<td class=3D"confluenceTd">=ED=86=B5=EC=8B=A0 =EB=B6=88=EC=95=88=EC=A0=95, =
+=ED=8C=A8=ED=82=B7 =EC=86=90=EC=8B=A4</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">IP =ED=95=A0=EB=8B=B9</td>
+<td class=3D"confluenceTd">DHCP =EC=9D=91=EB=8B=B5 =EB=98=90=EB=8A=94 AutoI=
+P</td>
+<td class=3D"confluenceTd">ping =EB=B6=88=EA=B0=80</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">UDP =ED=83=90=EC=83=89</td>
+<td class=3D"confluenceTd">=EB=B8=8C=EB=A1=9C=EB=93=9C=EC=BA=90=EC=8A=A4=ED=
+=8A=B8 =EB=8F=84=EB=8B=AC =EC=97=AC=EB=B6=80</td>
+<td class=3D"confluenceTd">=EC=B0=A8=EB=9F=89 =EC=9D=91=EB=8B=B5 =EC=97=86=
+=EC=9D=8C</td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd">TCP =EC=97=B0=EA=B2=B0</td>
+<td class=3D"confluenceTd">=ED=8F=AC=ED=8A=B8 13400 =EA=B0=9C=EB=B0=A9</td>
+<td class=3D"confluenceTd">=EC=97=B0=EA=B2=B0 =EA=B1=B0=EB=B6=80</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br></p>
+<p><strong>=ED=9D=94=ED=95=9C =EB=AC=B8=EC=A0=9C =EC=9B=90=EC=9D=B8</strong=
+></p>
+<ul>
+<li>Activation Line =EB=AF=B8=EC=9D=B8=EA=B0=80 =E2=86=92 =EA=B0=80=EC=9E=
+=A5 =EB=B9=88=EB=B2=88=ED=95=9C =EC=9B=90=EC=9D=B8</li>
+<li>=EB=AF=B8=EB=94=94=EC=96=B4 =EC=BB=A8=EB=B2=84=ED=84=B0 =EB=AF=B8=EC=82=
+=AC=EC=9A=A9 =EB=98=90=EB=8A=94 =EB=B6=88=EB=9F=89 (TX =E2=86=94 T1 =EB=B3=
+=80=ED=99=98 =EB=88=84=EB=9D=BD)</li>
+<li>=EC=A7=84=EB=8B=A8=EA=B8=B0 PC=EC=9D=98 =EB=B0=A9=ED=99=94=EB=B2=BD=EC=
+=9D=B4 UDP 13400 =EB=B8=8C=EB=A1=9C=EB=93=9C=EC=BA=90=EC=8A=A4=ED=8A=B8 =EC=
+=B0=A8=EB=8B=A8</li>
+<li>=EC=A7=84=EB=8B=A8=EA=B8=B0=EC=99=80 =EC=B0=A8=EB=9F=89=EC=9D=B4 =EC=84=
+=9C=EB=A1=9C =EB=8B=A4=EB=A5=B8 =EC=84=9C=EB=B8=8C=EB=84=B7=EC=97=90 =EC=9C=
+=84=EC=B9=98</li>
+<li>=EC=B0=A8=EB=9F=89 =EC=8A=AC=EB=A6=BD =EB=AA=A8=EB=93=9C =EC=A7=84=EC=
+=9E=85=EC=9C=BC=EB=A1=9C =EC=9D=B4=EB=8D=94=EB=84=B7 PHY =EB=B9=84=ED=99=9C=
+=EC=84=B1</li>
+</ul>
+    </div>
+</body>
+</html>
+------=_Part_25543_2136656098.1787632892897--

@@ -76,6 +76,90 @@ def _slugify(title):
     return s or "doc"
 
 
+# ── 폴더(=큰 주제) 일괄 변환 ────────────────────────────────────────────────
+# 이론 자료를 '큰 주제(폴더) ▸ 소제목(파일)' 2단으로 반영하기 위한 확장.
+# content/theory/<[n] 제목 (난이도)>/ 안에 .doc 를 넣어두면, 같은 폴더에 md 를 만든다.
+GROUP_NUM_RE = re.compile(r"^\s*\[(\d+)\]\s*")   # 폴더명 앞머리 [n]
+FILE_NUM_RE = re.compile(r"^\s*\((\d+)\)\s*")    # 파일명 앞머리 (k)
+
+
+def parse_folder_meta(folder):
+    """하위 폴더명 `[n] 제목 (난이도)` → (group_order, group_title, difficulty)."""
+    raw = folder.name.replace("+", " ")
+    m = GROUP_NUM_RE.match(raw)
+    group_order = int(m.group(1)) if m else 9999
+    difficulty = next((d for d in DIFFICULTIES if d in raw), "")
+    name = GROUP_NUM_RE.sub("", raw)
+    name = re.sub(r"\((?:%s)\)" % "|".join(DIFFICULTIES), "", name)   # (난이도)
+    group_title = re.sub(r"\s+", " ", name).strip()
+    return group_order, group_title, difficulty
+
+
+def parse_file_meta(path, folder_difficulty):
+    """폴더 안 .doc 파일명 `(k)+제목.doc` → (order, title, difficulty, doc_id).
+
+    order 는 파일명 앞 (k). 난이도는 파일명에 있으면 그걸, 없으면 폴더 난이도를 물려받는다.
+    """
+    raw = path.stem.replace("+", " ")
+    m = FILE_NUM_RE.match(raw)
+    order = int(m.group(1)) if m else 10
+    difficulty = next((d for d in DIFFICULTIES if d in raw), folder_difficulty)
+    name = FILE_NUM_RE.sub("", raw)                              # 앞머리 (k)
+    name = re.sub(r"^\s*\[\d+\]\s*", "", name)                   # 앞머리 [n]
+    name = re.sub(r"\((?:%s)\)" % "|".join(DIFFICULTIES), "", name)  # (난이도)
+    name = re.sub(r"\(\d+\)|복사본|-\s*복사본", "", name)         # (1)·복사본
+    title = re.sub(r"\s+", " ", name).strip() or path.stem
+    return order, title, difficulty, _slugify(title)
+
+
+def convert_one(doc_path, out_dir, doc_id, title, difficulty, order, group, group_order):
+    """단일 .doc(MHTML) → out_dir/<doc_id>.md (+ out_dir/assets/<doc_id>/ 이미지)."""
+    html, images = parse_mhtml(doc_path)
+    rels = save_images(images, doc_id, base_dir=out_dir)
+    body = to_markdown(rewrite_and_extract(html, rels))
+    fm = [f"title: {title}"]
+    if group:
+        fm.append(f"group: {group}")
+        fm.append(f"group_order: {group_order}")
+    if difficulty:
+        fm.append(f"difficulty: {difficulty}")
+    fm.append(f"order: {order}")
+    out = out_dir / f"{doc_id}.md"
+    out.write_text("---\n" + "\n".join(fm) + "\n---\n\n" + body, encoding="utf-8")
+    return out, len(rels)
+
+
+def process_folder(folder):
+    """폴더(=그룹) 안의 모든 .doc 를 변환한다. 산출물은 같은 폴더."""
+    group_order, group_title, folder_diff = parse_folder_meta(folder)
+    docs = sorted(p for p in folder.glob("*.doc") if "복사본" not in p.name)
+    results = []
+    seen = {}
+    for doc in docs:
+        order, title, difficulty, doc_id = parse_file_meta(doc, folder_diff)
+        seen[doc_id] = seen.get(doc_id, 0) + 1
+        if seen[doc_id] > 1:                       # 같은 슬러그 충돌 방지
+            doc_id = f"{doc_id}-{seen[doc_id]}"
+        out, n = convert_one(doc, folder, doc_id, title, difficulty, order,
+                             group_title, group_order)
+        results.append((out, title, difficulty, n))
+    return group_title, results
+
+
+def process_dir(root):
+    """content/theory 아래 하위 폴더(=그룹)를 모두 훑어 변환한다."""
+    total = 0
+    for folder in sorted(p for p in root.iterdir() if p.is_dir() and p.name != "assets"):
+        if not any(folder.glob("*.doc")):
+            continue
+        group_title, results = process_folder(folder)
+        print(f"■ 그룹 '{group_title}'  ({folder.name})")
+        for out, title, difficulty, n in results:
+            print(f"   ✔ {out.name}  (제목='{title}', 난이도='{difficulty or '-'}', 이미지 {n}개)")
+            total += 1
+    print(f"\n총 {total}개 자료 변환 완료.")
+
+
 def parse_mhtml(path):
     """MHTML(.doc) 을 (html: str, images: [bytes]) 로 가른다.
 
@@ -99,11 +183,11 @@ def parse_mhtml(path):
     return html, images
 
 
-def save_images(images, doc_id):
-    """이미지 파트들을 assets/<id>/ 에 순서대로 저장하고 상대경로 리스트(순서 유지)를 돌려준다."""
+def save_images(images, doc_id, base_dir=THEORY_DIR):
+    """이미지 파트들을 <base_dir>/assets/<id>/ 에 순서대로 저장하고 상대경로 리스트(순서 유지)를 돌려준다."""
     if not images:
         return []
-    asset_dir = THEORY_DIR / "assets" / doc_id
+    asset_dir = base_dir / "assets" / doc_id
     asset_dir.mkdir(parents=True, exist_ok=True)
     rels = []
     for i, data in enumerate(images, start=1):
@@ -156,7 +240,7 @@ def to_markdown(html):
 
 def main():
     ap = argparse.ArgumentParser(description="Confluence .doc(MHTML) → 이론 교육 md")
-    ap.add_argument("file", help=".doc(MHTML) 파일 경로")
+    ap.add_argument("file", help=".doc(MHTML) 파일 또는 폴더(=큰 주제 묶음) 경로")
     ap.add_argument("--id", help="문서 id(=URL 슬러그, 파일명). 미지정 시 제목에서 생성")
     ap.add_argument("--title", help="frontmatter 제목. 미지정 시 파일명에서 추론")
     ap.add_argument("--difficulty", choices=DIFFICULTIES, help="난이도. 미지정 시 파일명에서 추론")
@@ -164,6 +248,10 @@ def main():
     args = ap.parse_args()
 
     path = Path(args.file)
+    if path.is_dir():
+        # 폴더 모드: 하위 폴더 하나 = 큰 주제, 그 안 .doc 하나 = 소제목.
+        process_dir(path)
+        return
     if not path.is_file():
         raise SystemExit(f"파일이 없습니다: {path}")
 

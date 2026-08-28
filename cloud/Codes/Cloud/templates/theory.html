@@ -8,12 +8,24 @@
 <div class="md">
   <div class="md__list">
     <div class="md__list-head">교육 자료</div>
-    {% for m in materials %}
-    <a class="md__item material {% if selected and selected.id == m.id %}is-selected{% endif %}"
-       href="/{{ target.id }}/theory?doc={{ m.id }}">
-      <span class="material__label">{{ icon("file-lines") }}{{ m.title }}</span>
-      {% if m.difficulty %}<span class="material__level">{{ m.difficulty }}</span>{% endif %}
-    </a>
+    {% for g in materials %}
+    {# 큰 주제(그룹) = 접이식 헤더. tree-toggle.js 가 tree__group/tree__children 을 접는다. #}
+    <div class="tree__group md__group" data-group="{{ g.id }}" role="button" tabindex="0"
+         aria-expanded="true">
+      <span class="tree__caret">▾</span><span class="md__group-title">{{ g.title }}</span>
+      {% if g.difficulty %}<span class="material__level">{{ g.difficulty }}</span>{% endif %}
+    </div>
+    <div class="tree__children" data-children="{{ g.id }}">
+      {% for m in g.docs %}
+      <a class="tree__row material {% if selected and selected.id == m.id %}is-selected{% endif %}"
+         href="/{{ target.id }}/{{ content.id }}?doc={{ m.id | urlencode }}">
+        <span class="material__label">{{ icon("file-lines") }}{{ m.title }}</span>
+        {% if m.difficulty %}<span class="material__level">{{ m.difficulty }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="md__list-head">content/theory/ 에 자료가 없습니다.</div>
     {% endfor %}
   </div>
 
@@ -35,6 +47,8 @@
 
 {% block scripts %}
 {{ super() }}
+{# 큰 주제 접기/펴기 (실습 트리와 동일 동작). #}
+<script src="{{ asset('js/tree-toggle.js') }}"></script>
 {# mermaid 는 브라우저에서만 그릴 수 있다(base_shell 의 link-status 와 별개 라인). #}
 <script src="{{ asset('js/vendor/mermaid.min.js') }}"></script>
 <script src="{{ asset('js/theory-mermaid.js') }}"></script>

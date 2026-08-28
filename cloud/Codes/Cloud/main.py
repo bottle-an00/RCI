@@ -906,12 +906,14 @@ def content_view(request: Request, target_id: str, content_id: str,
     view = content["view"]
     selected = None
     if view == "theory":
-        # 좌 목록은 폴더 스캔(메타만), 우 본문은 선택 자료의 md → HTML.
+        # 좌 목록은 폴더 스캔(그룹 트리), 우 본문은 선택 자료의 md → HTML.
         # 선택이 없거나 없는 doc 이면 목록 첫 자료로 폴백한다.
         materials = theory_content.load_materials()
         selected = theory_content.load_material(doc)
-        if selected is None and materials:
-            selected = theory_content.load_material(materials[0]["id"])
+        if selected is None:
+            first_id = theory_content.first_material_id(materials)
+            if first_id:
+                selected = theory_content.load_material(first_id)
         ctx.update({"materials": materials, "selected": selected})
         tmpl = "theory.html"
     elif view == "quiz":

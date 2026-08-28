@@ -1,0 +1,2379 @@
+Date: Tue, 25 Aug 2026 13:39:31 +0900 (KST)
+Message-ID: <316039415.25514.1787632771260@MGPPGIMAPP03>
+Subject: Exported From Confluence
+MIME-Version: 1.0
+Content-Type: multipart/related; 
+	boundary="----=_Part_25513_941276922.1787632771260"
+
+------=_Part_25513_941276922.1787632771260
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///C:/exported.html
+
+<html xmlns:o=3D'urn:schemas-microsoft-com:office:office'
+      xmlns:w=3D'urn:schemas-microsoft-com:office:word'
+      xmlns:v=3D'urn:schemas-microsoft-com:vml'
+      xmlns=3D'urn:w3-org-ns:HTML'>
+<head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <title>(3) UDS =EC=A3=BC=EC=9A=94 =EC=84=9C=EB=B9=84=EC=8A=A4 =EC=83=81=
+=EC=84=B8 - 1</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:TargetScreenSize>1024x640</o:TargetScreenSize>
+            <o:PixelsPerInch>72</o:PixelsPerInch>
+            <o:AllowPNG/>
+        </o:OfficeDocumentSettings>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>90</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+                <!--
+        @page Section1 {
+            size: 8.5in 11.0in;
+            margin: 1.0in;
+            mso-header-margin: .5in;
+            mso-footer-margin: .5in;
+            mso-paper-source: 0;
+        }
+
+        table {
+            border: solid 1px;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            border: solid 1px;
+            padding: 5px;
+        }
+
+        td {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-after: avoid;
+        }
+
+        div.Section1 {
+            page: Section1;
+        }
+
+        /* Confluence print stylesheet. Common to all themes for print medi=
+a */
+/* Full of !important until we improve batching for print CSS */
+
+@media print {
+    #main {
+        padding-bottom: 1em !important; /* The default padding of 6em is to=
+o much for printouts */
+    }
+
+    body {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2;
+    }
+
+    body, #full-height-container, #main, #page, #content, .has-personal-sid=
+ebar #content {
+        background: #fff !important;
+        color: #000 !important;
+        border: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    a, a:link, a:visited, a:focus, a:hover, a:active {
+        color: #000;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        page-break-after: avoid;
+    }
+
+    pre {
+        font-family: Monaco, "Courier New", monospace;
+    }
+
+    #header,
+    .aui-header-inner,
+    #navigation,
+    #sidebar,
+    .sidebar,
+    #personal-info-sidebar,
+    .ia-fixed-sidebar,
+    .page-actions,
+    .navmenu,
+    .ajs-menu-bar,
+    .noprint,
+    .inline-control-link,
+    .inline-control-link a,
+    a.show-labels-editor,
+    .global-comment-actions,
+    .comment-actions,
+    .quick-comment-container,
+    #addcomment {
+        display: none !important;
+    }
+
+    /* CONF-28544 cannot print multiple pages in IE */
+    #splitter-content {
+        position: relative !important;
+    }
+
+    .comment .date::before {
+        content: none !important; /* remove middot for print view */
+    }
+
+    h1.pagetitle img {
+        height: auto;
+        width: auto;
+    }
+
+    .print-only {
+        display: block;
+    }
+
+    #footer {
+        position: relative !important; /* CONF-17506 Place the footer at en=
+d of the content */
+        margin: 0;
+        padding: 0;
+        background: none;
+        clear: both;
+    }
+
+    #poweredby {
+        border-top: none;
+        background: none;
+    }
+
+    #poweredby li.print-only {
+        display: list-item;
+        font-style: italic;
+    }
+
+    #poweredby li.noprint {
+        display: none;
+    }
+
+    /* no width controls in print */
+    .wiki-content .table-wrap,
+    .wiki-content p,
+    .panel .codeContent,
+    .panel .codeContent pre,
+    .image-wrap {
+        overflow: visible !important;
+    }
+
+    /* TODO - should this work? */
+    #children-section,
+    #comments-section .comment,
+    #comments-section .comment .comment-body,
+    #comments-section .comment .comment-content,
+    #comments-section .comment p {
+        page-break-inside: avoid;
+    }
+
+    #page-children a {
+        text-decoration: none;
+    }
+
+    /**
+     hide twixies
+
+     the specificity here is a hack because print styles
+     are getting loaded before the base styles. */
+    #comments-section.pageSection .section-header,
+    #comments-section.pageSection .section-title,
+    #children-section.pageSection .section-header,
+    #children-section.pageSection .section-title,
+    .children-show-hide {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    .children-show-hide.icon {
+        display: none;
+    }
+
+    /* personal sidebar */
+    .has-personal-sidebar #content {
+        margin-right: 0px;
+    }
+
+    .has-personal-sidebar #content .pageSection {
+        margin-right: 0px;
+    }
+
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+-->
+    </style>
+</head>
+<body>
+    <h1>(3) UDS =EC=A3=BC=EC=9A=94 =EC=84=9C=EB=B9=84=EC=8A=A4 =EC=83=81=EC=
+=84=B8 - 1</h1>
+    <div class=3D"Section1">
+        <p style=3D""><strong>=EB=8B=A4=EB=A3=AC =EC=84=9C=EB=B9=84=EC=8A=
+=A4 : 0x10 / 0x11 / 0x14 / 0x19 / 0x22</strong></p>
+<h2 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-8.SID0x10-DiagnosticSessionControl"><strong>8. SID 0x10=
+ - DiagnosticSessionControl</strong></h2>
+<h2 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-8.1=EC=84=9C=EB=B9=84=EC=8A=A4=EA=B0=9C=EC=9A=94=EB=B0=
+=8F=EC=9A=A9=EB=8F=84"><strong>8.1<span>&nbsp;</span></strong><strong>=EC=
+=84=9C=EB=B9=84=EC=8A=A4 =EA=B0=9C=EC=9A=94 =EB=B0=8F =EC=9A=A9=EB=8F=84</s=
+trong></h2>
+<p style=3D"">=EC=84=9C=EB=B9=84=EC=8A=A4 =EC=A0=95=EC=9D=98</p>
+<ul style=3D"">
+<li>ECU=EC=9D=98 =EC=A7=84=EB=8B=A8 =EC=84=B8=EC=85=98=EC=9D=84 =EC=8B=9C=
+=EC=9E=91=ED=95=98=EA=B1=B0=EB=82=98 =EB=B3=80=EA=B2=BD=ED=95=98=EB=8A=94 =
+=EC=84=9C=EB=B9=84=EC=8A=A4</li>
+<li>UDS =EC=A7=84=EB=8B=A8 =ED=86=B5=EC=8B=A0=EC=9D=98 =EC=B6=9C=EB=B0=9C=
+=EC=A0=90<span>,&nbsp;</span>=EA=B1=B0=EC=9D=98 =EB=AA=A8=EB=93=A0 =EC=A7=
+=84=EB=8B=A8 =EC=8B=9C=EB=82=98=EB=A6=AC=EC=98=A4=EC=9D=98 =EC=B2=AB =EB=B2=
+=88=EC=A7=B8 =EB=8B=A8=EA=B3=84</li>
+<li>ECU=EC=9D=98 =EB=8F=99=EC=9E=91 =EB=AA=A8=EB=93=9C=EB=A5=BC =EB=B3=80=
+=EA=B2=BD=ED=95=98=EC=97=AC =EC=82=AC=EC=9A=A9 =EA=B0=80=EB=8A=A5=ED=95=9C =
+=EC=84=9C=EB=B9=84=EC=8A=A4 =EB=B2=94=EC=9C=84 =EA=B2=B0=EC=A0=95</li>
+</ul>
+<p style=3D"">=EC=9A=A9=EB=8F=84</p>
+<ul style=3D"">
+<li>Default Session=EC=97=90=EC=84=9C<span>&nbsp;Extended Session</span>=EC=
+=9C=BC=EB=A1=9C =EC=A0=84=ED=99=98=ED=95=98=EC=97=AC =EA=B3=A0=EA=B8=89 =EC=
+=A7=84=EB=8B=A8 =EA=B8=B0=EB=8A=A5 =ED=99=9C=EC=84=B1=ED=99=94</li>
+<li>Programming Session =EC=A7=84=EC=9E=85=EC=9C=BC=EB=A1=9C =EB=A6=AC=ED=
+=94=84=EB=A1=9C=EA=B7=B8=EB=9E=98=EB=B0=8D =EC=A4=80=EB=B9=84</li>
+<li>=EC=A7=84=EB=8B=A8 =EC=9E=91=EC=97=85 =EC=99=84=EB=A3=8C =ED=9B=84<span=
+>&nbsp;Default Session</span>=EC=9C=BC=EB=A1=9C =EB=B3=B5=EA=B7=80</li>
+<li>ECU=EC=9D=98<span>&nbsp;P2/P2*&nbsp;</span>=ED=83=80=EC=9D=B4=EB=B0=8D =
+=ED=8C=8C=EB=9D=BC=EB=AF=B8=ED=84=B0 =EA=B0=92 =ED=99=95=EC=9D=B8</li>
+</ul>
+<p style=3D"">=ED=8A=B9=EC=A7=95</p>
+<ul style=3D"">
+<li>=EB=AA=A8=EB=93=A0 =EC=84=B8=EC=85=98=EC=97=90=EC=84=9C =ED=98=B8=EC=B6=
+=9C =EA=B0=80=EB=8A=A5<span>&nbsp;(</span>=EC=84=B8=EC=85=98 =EC=A0=9C=EC=
+=95=BD =EC=97=86=EC=9D=8C<span>)&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></l=
+i>
+<li>SecurityAccess =EC=9D=B8=EC=A6=9D =EB=B6=88=ED=95=84=EC=9A=94</li>
+<li>=EC=9D=91=EB=8B=B5=EC=97=90<span>&nbsp;ECU</span>=EC=9D=98 =ED=83=80=EC=
+=9D=B4=EB=B0=8D =ED=8C=8C=EB=9D=BC=EB=AF=B8=ED=84=B0 =EC=A0=95=EB=B3=B4 =ED=
+=8F=AC=ED=95=A8</li>
+</ul>
+<p style=3D""><strong>8.2 Sub-function<span>&nbsp;</span></strong><strong>=
+=EC=A2=85=EB=A5=98</strong></p>
+<p style=3D"">=ED=91=9C=EC=A4=80 =EC=A0=95=EC=9D=98<span>&nbsp;Sub-function=
+</span></p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>Sub-funct=
+ion</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=84=B8=
+=EC=85=98 =EC=9D=B4=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=95=BD=
+=EC=96=B4</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9A=A9=
+=EB=8F=84</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x01</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>defaultSession</p=
+></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>DS</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B8=B0=EB=B3=
+=B8 =EC=9A=B4=EC=98=81 =EC=83=81=ED=83=9C<span>,&nbsp;</span>=EC=A7=84=EB=
+=8B=A8 =EC=A2=85=EB=A3=8C =EC=8B=9C =EC=82=AC=EC=9A=A9</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x02</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>programmingSessio=
+n</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>PS</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECU =EB=A6=AC=ED=
+=94=84=EB=A1=9C=EA=B7=B8=EB=9E=98=EB=B0=8D =EC=A0=84=EC=9A=A9</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x03</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>extendedDiagnosti=
+cSession</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>EDS</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B3=A0=EA=B8=
+=89 =EC=A7=84=EB=8B=A8 =EA=B8=B0=EB=8A=A5 =ED=99=9C=EC=84=B1=ED=99=94<span>=
+&nbsp;(</span>=EA=B0=80=EC=9E=A5 =EB=A7=8E=EC=9D=B4 =EC=82=AC=EC=9A=A9<span=
+>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x04</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>safetySystemDiagn=
+osticSession</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SSDS</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=97=90=EC=96=
+=B4=EB=B0=B1<span>, ABS&nbsp;</span>=EB=93=B1 =EC=95=88=EC=A0=84 =EC=8B=9C=
+=EC=8A=A4=ED=85=9C =EC=A7=84=EB=8B=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x40~0x5F</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>vehicleManufactur=
+erSpecific</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>-</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC =EC=A0=95=EC=9D=98 =EC=84=B8=EC=85=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x60~0x7E</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>systemSupplierSpe=
+cific</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>-</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C =EA=B3=B5=EA=B8=89=EC=82=AC =EC=A0=95=EC=9D=98 =EC=84=B8=EC=85=
+=98</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">Suppress Positive Response =EC=A7=80=EC=9B=90</p>
+<ul style=3D"">
+<li>Sub-function=EC=9D=98<span>&nbsp;bit 7</span>=EC=9D=84<span>&nbsp;1</sp=
+an>=EB=A1=9C =EC=84=A4=EC=A0=95 =EC=8B=9C<span>&nbsp;Positive Response&nbsp=
+;</span>=EC=96=B5=EC=A0=9C</li>
+<li>=EC=98=88<span>: 0x83 =E2=86=92 Extended Session&nbsp;</span>=EC=9A=94=
+=EC=B2=AD<span>,&nbsp;</span>=EC=9D=91=EB=8B=B5 =EC=96=B5=EC=A0=9C</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-8.3Request/Response=EB=A9=94=EC=8B=9C=EC=A7=80=EA=B5=AC=
+=EC=A1=B0"><strong>8.3 Request/Response<span>&nbsp;</span></strong><strong>=
+=EB=A9=94=EC=8B=9C=EC=A7=80 =EA=B5=AC=EC=A1=B0</strong></h3>
+<p style=3D"">Request =EB=A9=94=EC=8B=9C=EC=A7=80</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID][Sub-function]</p>
+<p style=3D"">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;10&nbsp;&nbsp;&nbsp; XX</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp;XX: =EC=84=B8=EC=85=98 =EC=A2=85=
+=EB=A5=98<span>&nbsp;(0x01, 0x02, 0x03, 0x04&nbsp;</span>=EB=93=B1<span>)</=
+span></p>
+<p style=3D"">Positive Response =EB=A9=94=EC=8B=9C=EC=A7=80</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID + 0x40][Sub-function echo][P2_Serve=
+r(2=EB=B0=94=EC=9D=B4=ED=8A=B8<span>)][P2*_Server(2</span>=EB=B0=94=EC=9D=
+=B4=ED=8A=B8<span>)]</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;50 &nbsp; &nbsp; &nbs=
+p; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;XX&nbsp; &nb=
+sp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Y=
+Y YY&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &=
+nbsp; ZZ ZZ</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; XX: =EC=9A=94=EC=B2=AD=ED=95=9C<span>&nb=
+sp;Sub-function&nbsp;</span>=EA=B7=B8=EB=8C=80=EB=A1=9C =EB=B0=98=ED=99=98<=
+/p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; YY YY: P2_Server =EC=B5=9C=EB=8C=80=EA=
+=B0=92<span>&nbsp;(</span>=EB=8B=A8=EC=9C=84<span>&nbsp;1ms)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; ZZ ZZ: P2*_Server =EC=B5=9C=EB=8C=80=EA=
+=B0=92<span>&nbsp;(</span>=EB=8B=A8=EC=9C=84<span>&nbsp;10ms)</span></p>
+<p style=3D"">Negative Response =EB=A9=94=EC=8B=9C=EC=A7=80</p>
+<p style=3D"">[0x7F][=EC=9A=94=EC=B2=AD<span>&nbsp;SID][NRC]</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; 7F&nbsp;&nbsp;&nbsp;&nbsp; 10&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp; XX</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; XX: NRC =EC=BD=94=EB=93=9C<span>&nbsp;(0=
+x12, 0x13, 0x22&nbsp;</span>=EB=93=B1<span>)</span></p>
+<p style=3D"">=EB=A9=94=EC=8B=9C=EC=A7=80 =EC=98=88=EC=8B=9C</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=8F=99=
+=EC=9E=91</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>Request</=
+strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>Response<=
+/strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Default Session =
+=EC=A7=84=EC=9E=85</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>10 01</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50 01 00 32 01 F4=
+</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Programming Sessi=
+on =EC=A7=84=EC=9E=85</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>10 02</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50 02 00 32 13 88=
+</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Extended Session =
+=EC=A7=84=EC=9E=85</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>10 03</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50 03 00 32 01 F4=
+</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Extended Session =
+=EC=A7=84=EC=9E=85<span>&nbsp;(</span>=EC=9D=91=EB=8B=B5 =EC=96=B5=EC=A0=9C=
+<span>)</span></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>10 83</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>(=EC=9D=91=EB=8B=
+=B5 =EC=97=86=EC=9D=8C<span>)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-8.4=EC=9D=91=EB=8B=B5=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B6=
+=84=EC=84=9D(P2/P2*=EA=B0=92)"><strong>8.4<span>&nbsp;</span></strong><stro=
+ng>=EC=9D=91=EB=8B=B5 =EB=8D=B0=EC=9D=B4=ED=84=B0 =EB=B6=84=EC=84=9D<span>&=
+nbsp;(P2 / P2*&nbsp;</span>=EA=B0=92<span>)</span></strong></h3>
+<p style=3D"">=EC=9D=91=EB=8B=B5 =EB=8D=B0=EC=9D=B4=ED=84=B0 =ED=95=B4=EC=
+=84=9D</p>
+<p style=3D"">50 03 00 32 01 F4</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - 50 03&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : =
+Session =EC=A0=84=ED=99=98 =EC=99=84=EB=A3=8C<span>&nbsp;(Extended Session)=
+</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - 00 32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : =
+P2_Server =3D 0x0032 =3D 50ms</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - 01 F4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : =
+P2*_Server =3D 0x01F4 =C3=97 10ms =3D 500 =C3=97 10 =3D 5000ms</p>
+<p style=3D"">P2/P2* =EB=8B=A8=EC=9C=84 =EC=B0=A8=EC=9D=B4 =EC=A3=BC=EC=9D=
+=98</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=ED=8C=8C=
+=EB=9D=BC=EB=AF=B8=ED=84=B0</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=8B=A8=
+=EC=9C=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>16</stron=
+g><strong>=EC=A7=84=EC=88=98</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=8B=9C=
+=EA=B0=84</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>P2_Server</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>1ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x0032</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50ms</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>P2_Server</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>1ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x0064</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>100ms</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>P2*_Server</p></t=
+d>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>10ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x01F4</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>5000ms (5=EC=B4=
+=88<span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>P2*_Server</p></t=
+d>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>10ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x0BB8</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>30000ms (30=EC=B4=
+=88<span>)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">=EC=84=B8=EC=85=98=EB=B3=84 =EC=9D=BC=EB=B0=98=EC=A0=81=EC=9D=
+=B8<span>&nbsp;P2/P2*&nbsp;</span>=EA=B0=92</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=84=B8=
+=EC=85=98</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>P2_Server=
+</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>P2*_Serve=
+r</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EC=9C=A0</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Default</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>5000ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=9D=BC=EB=B0=
+=98 =EC=9D=91=EB=8B=B5 =EC=8B=9C=EA=B0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Extended</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>5000ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=9D=BC=EB=B0=
+=98 =EC=9D=91=EB=8B=B5 =EC=8B=9C=EA=B0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Programming</p></=
+td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>50000ms</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=94=8C=EB=9E=
+=98=EC=8B=9C =EC=9E=91=EC=97=85 =EC=8B=9C=EA=B0=84 =EA=B3=A0=EB=A0=A4</p></=
+td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-8.5=EC=84=B8=EC=85=98=EC=A0=84=ED=99=98=EC=8B=9CECU=EB=
+=82=B4=EB=B6=80=EB=8F=99=EC=9E=91"><strong>8.5<span>&nbsp;</span></strong><=
+strong>=EC=84=B8=EC=85=98 =EC=A0=84=ED=99=98 =EC=8B=9C<span>&nbsp;ECU&nbsp;=
+</span>=EB=82=B4=EB=B6=80 =EB=8F=99=EC=9E=91</strong></h3>
+<p style=3D"">Default =E2=86=92 Extended Session =EC=A7=84=EC=9E=85</p>
+<p style=3D"">ECU =EB=82=B4=EB=B6=80 =EB=8F=99=EC=9E=91<span>:</span></p>
+<ol style=3D"">
+<li>=EC=A7=84=EB=8B=A8 =EA=B8=B0=EB=8A=A5 =ED=99=95=EC=9E=A5 =EB=AA=A8=EB=
+=93=9C=EB=A1=9C =EC=A0=84=ED=99=98</li>
+<li>=EC=9D=BC=EB=B0=98 =EC=A3=BC=ED=96=89 =EB=AA=A8=EB=93=9C =EC=98=81=ED=
+=96=A5 =EC=97=86=EC=9D=8C</li>
+<li>S3 =ED=83=80=EC=9D=B4=EB=A8=B8 =EC=8B=9C=EC=9E=91<span>&nbsp;(5000ms)</=
+span></li>
+<li>=EB=B3=B4=EC=95=88 =EB=A0=88=EB=B2=A8=EC=9D=80 =EC=9E=A0=EA=B8=88 =EC=
+=83=81=ED=83=9C =EC=9C=A0=EC=A7=80</li>
+<li>P2/P2* =EC=9D=91=EB=8B=B5=EC=97=90 =ED=8F=AC=ED=95=A8=ED=95=98=EC=97=AC=
+ =EC=A0=84=EC=86=A1</li>
+</ol>
+<p style=3D"">Default =E2=86=92 Programming Session =EC=A7=84=EC=9E=85</p>
+<p style=3D"">ECU =EB=82=B4=EB=B6=80 =EB=8F=99=EC=9E=91<span>:</span></p>
+<ol style=3D"">
+<li>=EB=B6=80=ED=8A=B8=EB=A1=9C=EB=8D=94 =EB=AA=A8=EB=93=9C=EB=A1=9C =EC=A0=
+=84=ED=99=98<span>&nbsp;(</span>=EC=9D=BC=EB=B6=80<span>&nbsp;ECU)</span></=
+li>
+<li>=EC=9D=BC=EB=B0=98 =EC=95=A0=ED=94=8C=EB=A6=AC=EC=BC=80=EC=9D=B4=EC=85=
+=98 =EC=A4=91=EC=A7=80</li>
+<li>=ED=94=8C=EB=9E=98=EC=8B=9C =EC=86=8C=EA=B1=B0<span>/</span>=EC=93=B0=
+=EA=B8=B0 =EC=A4=80=EB=B9=84</li>
+<li>=EC=9D=BC=EB=B0=98<span>&nbsp;CAN&nbsp;</span>=EB=A9=94=EC=8B=9C=EC=A7=
+=80 =EC=86=A1=EC=88=98=EC=8B=A0 =EC=B0=A8=EB=8B=A8 =EA=B0=80=EB=8A=A5</li>
+<li>=EC=9D=91=EB=8B=B5 =ED=9B=84<span>&nbsp;ECU&nbsp;</span>=EC=9E=AC=EC=8B=
+=9C=EC=9E=91=EB=90=98=EB=8A=94 =EA=B2=BD=EC=9A=B0 =EC=9E=88=EC=9D=8C<span>&=
+nbsp;(</span>=EC=A0=9C=EC=A1=B0=EC=82=AC=EB=B3=84<span>)</span></li>
+</ol>
+<p style=3D"">=EC=84=B8=EC=85=98 =EC=A0=84=ED=99=98 =EC=8B=9C =EC=B4=88=EA=
+=B8=B0=ED=99=94=EB=90=98=EB=8A=94 =ED=95=AD=EB=AA=A9</p>
+<ul style=3D"">
+<li>SecurityAccess =EC=9D=B8=EC=A6=9D =EC=83=81=ED=83=9C<span>&nbsp;(</span=
+>=EB=8B=A4=EC=8B=9C =EC=9D=B8=EC=A6=9D =ED=95=84=EC=9A=94<span>)</span></li=
+>
+<li>IO =EC=A0=9C=EC=96=B4 =EC=83=81=ED=83=9C<span>&nbsp;(0x2F&nbsp;</span>=
+=EC=84=A4=EC=A0=95 =EC=9B=90=EB=B3=B5<span>)</span></li>
+<li>=ED=86=B5=EC=8B=A0 =EC=A0=9C=EC=96=B4 =EC=83=81=ED=83=9C<span>&nbsp;(0x=
+28&nbsp;</span>=EC=84=A4=EC=A0=95 =EC=9B=90=EB=B3=B5<span>)</span></li>
+<li>=EC=A7=84=EB=8B=A8 =EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=BA=90=EC=8B=9C</li>
+</ul>
+<p style=3D"">=EC=84=B8=EC=85=98 =EC=A0=84=ED=99=98 =EC=8B=9C =EC=9C=A0=EC=
+=A7=80=EB=90=98=EB=8A=94 =ED=95=AD=EB=AA=A9</p>
+<ul style=3D"">
+<li>DTC =EC=83=81=ED=83=9C =EB=B0=8F =EB=8D=B0=EC=9D=B4=ED=84=B0</li>
+<li>ECU =EC=8B=9D=EB=B3=84 =EC=A0=95=EB=B3=B4<span>&nbsp;(VIN, S/W&nbsp;</s=
+pan>=EB=B2=84=EC=A0=84 =EB=93=B1<span>)</span></li>
+<li>=EC=98=81=EA=B5=AC =EC=A0=80=EC=9E=A5=EB=90=9C =EC=BA=98=EB=A6=AC=EB=B8=
+=8C=EB=A0=88=EC=9D=B4=EC=85=98 =EB=8D=B0=EC=9D=B4=ED=84=B0</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-8.6=EB=B0=9C=EC=83=9D=EA=B0=80=EB=8A=A5=ED=95=9CNRC"><s=
+trong>8.6<span>&nbsp;</span></strong><strong>=EB=B0=9C=EC=83=9D =EA=B0=80=
+=EB=8A=A5=ED=95=9C<span>&nbsp;NRC</span></strong></h3>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>NRC</stro=
+ng></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=B0=9C=
+=EC=83=9D =EC=A1=B0=EA=B1=B4</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x12</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>subFunctionNotSup=
+ported</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A7=80=EC=9B=
+=90=ED=95=98=EC=A7=80 =EC=95=8A=EB=8A=94 =EC=84=B8=EC=85=98 =EC=9A=94=EC=B2=
+=AD</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x13</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>incorrectMessageL=
+engthOrInvalidFormat</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=A9=94=EC=8B=
+=9C=EC=A7=80 =EA=B8=B8=EC=9D=B4 =EC=98=A4=EB=A5=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x22</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>conditionsNotCorr=
+ect</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=B0=A8=EB=9F=
+=89 =EC=A1=B0=EA=B1=B4 =EB=B6=88=EB=A7=8C=EC=A1=B1<span>&nbsp;(</span>=EC=
+=8B=9C=EB=8F=99<span>,&nbsp;</span>=EC=B0=A8=EC=86=8D =EB=93=B1<span>)</spa=
+n></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x78</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>requestCorrectlyR=
+eceivedResponsePending</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=84=B8=EC=85=
+=98 =EC=A0=84=ED=99=98 =EC=B2=98=EB=A6=AC =EC=A4=91</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">NRC 0x22 =ED=9D=94=ED=95=9C =EC=9B=90=EC=9D=B8</p>
+<ul style=3D"">
+<li>=EC=B0=A8=EC=86=8D=EC=9D=B4<span>&nbsp;0</span>=EC=9D=B4 =EC=95=84=EB=
+=8B=8C =EC=83=81=ED=83=9C=EC=97=90=EC=84=9C<span>&nbsp;Programming Session&=
+nbsp;</span>=EC=9A=94=EC=B2=AD</li>
+<li>=EC=8B=9C=EB=8F=99=EC=9D=B4 =EC=BC=9C=EC=A7=84 =EC=83=81=ED=83=9C=EC=97=
+=90=EC=84=9C =EC=9D=BC=EB=B6=80 =EC=84=B8=EC=85=98 =EC=A0=84=ED=99=98 =EC=
+=9A=94=EC=B2=AD</li>
+<li>=EB=B0=B0=ED=84=B0=EB=A6=AC =EC=A0=84=EC=95=95 =EB=B6=80=EC=A1=B1</li>
+<li>=EA=B8=B0=EC=96=B4=EA=B0=80<span>&nbsp;P</span>=EA=B0=80 =EC=95=84=EB=
+=8B=8C =EC=83=81=ED=83=9C</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-8.7=EC=8B=A4=EB=AC=B4=EB=A1=9C=EA=B7=B8=EC=98=88=EC=8B=
+=9C"><strong>8.7<span>&nbsp;</span></strong><strong>=EC=8B=A4=EB=AC=B4 =EB=
+=A1=9C=EA=B7=B8 =EC=98=88=EC=8B=9C</strong></h3>
+<p style=3D"">=EA=B8=B0=EB=B3=B8 =EC=8B=9C=EB=82=98=EB=A6=AC=EC=98=A4<span>=
+: Extended Session&nbsp;</span>=EC=A7=84=EC=9E=85</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 10 03</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 50 03 00 32=
+ 01 F4</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=9A=94=EC=B2=AD<span>: Extended Dia=
+gnostic Session&nbsp;</span>=EC=A7=84=EC=9E=85</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=9D=91=EB=8B=B5<span>:&nbsp;</span>=
+=EC=84=B8=EC=85=98 =EC=A0=84=ED=99=98 =EC=84=B1=EA=B3=B5</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - P2 =3D 50ms, P2* =3D 5000ms</p>
+<p style=3D"">Programming Session =EC=A7=84=EC=9E=85<span>&nbsp;(</span>=EC=
+=8B=9C=EA=B0=84 =EC=86=8C=EC=9A=94<span>)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 10 02</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 7F 10 78&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; Response Pendin=
+g</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 7F 10 78&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; =EC=B6=94=EA=B0=
+=80 =EC=8B=9C=EA=B0=84 =ED=95=84=EC=9A=94</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 50 02 00 32=
+ 13 88</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EB=B6=80=ED=8A=B8=EB=A1=9C=EB=8D=94 =
+=EC=A0=84=ED=99=98=EC=97=90 =EC=8B=9C=EA=B0=84 =EC=86=8C=EC=9A=94</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=B5=9C=EC=A2=85<span>&nbsp;P2 =3D 5=
+0ms, P2* =3D 50000ms (</span>=ED=94=8C=EB=9E=98=EC=8B=9C =EC=9E=91=EC=97=85=
+ =EB=8C=80=EB=B9=84<span>)</span></p>
+<p style=3D"">=EC=A1=B0=EA=B1=B4 =EB=B6=88=EB=A7=8C=EC=A1=B1 =EC=8B=9C<span=
+>&nbsp;(</span>=EC=B0=A8=EB=9F=89 =EC=A3=BC=ED=96=89 =EC=A4=91<span>&nbsp;P=
+rogramming&nbsp;</span>=EC=9A=94=EC=B2=AD<span>)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 10 02</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 7F 10 22</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - conditionsNotCorrect</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=B0=A8=EC=86=8D=EC=9D=B4<span>&nbsp=
+;0</span>=EC=9D=B4 =EC=95=84=EB=8B=88=EA=B1=B0=EB=82=98 =EC=8B=9C=EB=8F=99 =
+=EC=83=81=ED=83=9C=EA=B0=80 =EB=B6=80=EC=A0=81=ED=95=A9</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=B0=A8=EB=9F=89 =EC=A0=95=EC=A7=80 =
+=ED=9B=84<span>&nbsp;P&nbsp;</span>=EB=8B=A8=EC=9C=BC=EB=A1=9C =EB=B3=80=EA=
+=B2=BD=ED=95=98=EA=B3=A0 =EC=9E=AC=EC=8B=9C=EB=8F=84</p>
+<p style=3D"">=EC=9D=91=EB=8B=B5 =EC=96=B5=EC=A0=9C =EC=82=AC=EC=9A=A9</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 10 83</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; (=EC=9D=91=
+=EB=8B=B5 =EC=97=86=EC=9D=8C<span>)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - Extended Session =EC=A7=84=EC=9E=85<sp=
+an>&nbsp;+ Suppress Positive Response</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=A0=95=EC=83=81 =EC=B2=98=EB=A6=AC=
+=EB=90=98=EC=97=88=EC=9C=BC=EB=82=98 =EC=9D=91=EB=8B=B5 =EC=97=86=EC=9D=8C<=
+/p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=98=A4=EB=A5=98 =EB=B0=9C=EC=83=9D =
+=EC=8B=9C=EC=97=90=EB=A7=8C<span>&nbsp;NRC&nbsp;</span>=EC=9D=91=EB=8B=B5</=
+p>
+<p style=3D""><br></p>
+<h2 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-9.SID0x11-ECUReset"><strong>9. SID 0x11 - ECUReset</str=
+ong></h2>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-9.1=EC=84=9C=EB=B9=84=EC=8A=A4=EA=B0=9C=EC=9A=94=EB=B0=
+=8F=EC=9A=A9=EB=8F=84"><strong>9.1<span>&nbsp;</span></strong><strong>=EC=
+=84=9C=EB=B9=84=EC=8A=A4 =EA=B0=9C=EC=9A=94 =EB=B0=8F =EC=9A=A9=EB=8F=84</s=
+trong></h3>
+<p style=3D"">=EC=84=9C=EB=B9=84=EC=8A=A4 =EC=A0=95=EC=9D=98</p>
+<ul style=3D"">
+<li>ECU=EB=A5=BC =EB=A6=AC=EC=85=8B<span>(</span>=EC=9E=AC=EC=8B=9C=EC=9E=
+=91<span>)</span>=ED=95=98=EB=8A=94 =EC=84=9C=EB=B9=84=EC=8A=A4</li>
+<li>=EB=8B=A4=EC=96=91=ED=95=9C =EC=A2=85=EB=A5=98=EC=9D=98 =EB=A6=AC=EC=85=
+=8B =EB=B0=A9=EC=8B=9D =EC=A0=9C=EA=B3=B5</li>
+</ul>
+<p style=3D"">=EC=9A=A9=EB=8F=84</p>
+<ul style=3D"">
+<li>ECU =ED=8E=8C=EC=9B=A8=EC=96=B4 =EC=97=85=EB=8D=B0=EC=9D=B4=ED=8A=B8 =
+=ED=9B=84 =EC=83=88 =ED=8E=8C=EC=9B=A8=EC=96=B4 =EC=A0=81=EC=9A=A9</li>
+<li>ECU =EB=8F=99=EC=9E=91 =EC=9D=B4=EC=83=81 =EC=8B=9C =EA=B0=95=EC=A0=9C =
+=EB=A6=AC=EC=85=8B</li>
+<li>=EC=84=A4=EC=A0=95 =EB=B3=80=EA=B2=BD =ED=9B=84 =EC=A0=81=EC=9A=A9</li>
+<li>=EC=A7=84=EB=8B=A8 =EC=9E=91=EC=97=85 =EC=99=84=EB=A3=8C =ED=9B=84 =EC=
+=A0=95=EC=83=81 =EC=83=81=ED=83=9C =EB=B3=B5=EA=B7=80</li>
+</ul>
+<p style=3D"">=ED=8A=B9=EC=A7=95</p>
+<ul style=3D"">
+<li>=EC=9D=BC=EB=B0=98=EC=A0=81=EC=9C=BC=EB=A1=9C<span>&nbsp;Extended Sessi=
+on&nbsp;</span>=EC=9D=B4=EC=83=81=EC=97=90=EC=84=9C =EC=82=AC=EC=9A=A9</li>
+<li>SecurityAccess=EA=B0=80 =ED=95=84=EC=9A=94=ED=95=9C =EA=B2=BD=EC=9A=B0 =
+=EC=9E=88=EC=9D=8C<span>&nbsp;(</span>=EC=A0=9C=EC=A1=B0=EC=82=AC=EB=B3=84<=
+span>)</span></li>
+<li>=EB=A6=AC=EC=85=8B =ED=9B=84<span>&nbsp;ECU</span>=EB=8A=94 =EC=9E=90=
+=EB=8F=99=EC=9C=BC=EB=A1=9C<span>&nbsp;Default Session</span>=EC=9C=BC=EB=
+=A1=9C =EB=B3=B5=EA=B7=80</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-9.2Sub-function=EC=A2=85=EB=A5=98"><strong>9.2 Sub-func=
+tion<span>&nbsp;</span></strong><strong>=EC=A2=85=EB=A5=98</strong></h3>
+<p style=3D"">=ED=91=9C=EC=A4=80 =EC=A0=95=EC=9D=98<span>&nbsp;Sub-function=
+</span></p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>Sub-funct=
+ion</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=A6=AC=
+=EC=85=8B =EC=A2=85=EB=A5=98</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=84=A4=
+=EB=AA=85</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x01</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>hardReset</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=84=EC=9B=
+=90=EC=9D=84 =EB=81=84=EA=B3=A0 =EB=8B=A4=EC=8B=9C =EC=BC=9C=EB=8A=94 =EA=
+=B2=83=EA=B3=BC =EB=8F=99=EC=9D=BC<span>,&nbsp;</span>=EA=B0=80=EC=9E=A5 =
+=EC=99=84=EC=A0=84=ED=95=9C =EB=A6=AC=EC=85=8B</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x02</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>keyOffOnReset</p>=
+</td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=82=A4<span>&n=
+bsp;OFF =E2=86=92 ON&nbsp;</span>=EC=8B=9C=EB=AE=AC=EB=A0=88=EC=9D=B4=EC=85=
+=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x03</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>softReset</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=86=8C=ED=94=
+=84=ED=8A=B8=EC=9B=A8=EC=96=B4 =EC=9E=AC=EC=8B=9C=EC=9E=91<span>,&nbsp;</sp=
+an>=ED=95=98=EB=93=9C=EC=9B=A8=EC=96=B4 =EC=B4=88=EA=B8=B0=ED=99=94 =EC=97=
+=86=EC=9D=8C</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x04</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>enableRapidPowerS=
+hutDown</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=B9=A0=EB=A5=
+=B8 =EC=A0=84=EC=9B=90 =EC=A2=85=EB=A3=8C =ED=99=9C=EC=84=B1=ED=99=94</p></=
+td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x05</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>disableRapidPower=
+ShutDown</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=B9=A0=EB=A5=
+=B8 =EC=A0=84=EC=9B=90 =EC=A2=85=EB=A3=8C =EB=B9=84=ED=99=9C=EC=84=B1=ED=99=
+=94</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x40~0x5F</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>vehicleManufactur=
+erSpecific</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC =EC=A0=95=EC=9D=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x60~0x7E</p></td=
+>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>systemSupplierSpe=
+cific</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B3=B5=EA=B8=
+=89=EC=82=AC =EC=A0=95=EC=9D=98</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-9.3Reset=EC=A2=85=EB=A5=98=EB=B3=84=EC=B0=A8=EC=9D=B4">=
+<strong>9.3 Reset<span>&nbsp;</span></strong><strong>=EC=A2=85=EB=A5=98=EB=
+=B3=84 =EC=B0=A8=EC=9D=B4</strong></h3>
+<p style=3D"">hardReset (0x01)</p>
+<ul style=3D"">
+<li>=EC=A0=84=EC=9B=90=EC=9D=84 =EB=81=8A=EC=97=88=EB=8B=A4=EA=B0=80 =EB=8B=
+=A4=EC=8B=9C =EA=B3=B5=EA=B8=89=ED=95=98=EB=8A=94 =EA=B2=83=EA=B3=BC =EB=8F=
+=99=EC=9D=BC=ED=95=9C =ED=9A=A8=EA=B3=BC</li>
+<li>=EB=AA=A8=EB=93=A0<span>&nbsp;RAM&nbsp;</span>=EB=8D=B0=EC=9D=B4=ED=84=
+=B0 =EC=B4=88=EA=B8=B0=ED=99=94</li>
+<li>=ED=95=98=EB=93=9C=EC=9B=A8=EC=96=B4 =ED=8E=98=EB=A6=AC=ED=8E=98=EB=9F=
+=B4 =EC=99=84=EC=A0=84 =EC=9E=AC=EC=B4=88=EA=B8=B0=ED=99=94</li>
+<li>=EA=B0=80=EC=9E=A5 =EA=B0=95=EB=A0=A5=ED=95=9C =EB=A6=AC=EC=85=8B=EC=9D=
+=B4=EC=A7=80=EB=A7=8C =EC=8B=9C=EA=B0=84 =EA=B0=80=EC=9E=A5 =EC=98=A4=EB=9E=
+=98 =EC=86=8C=EC=9A=94</li>
+<li>=EC=82=AC=EC=9A=A9 =EC=98=88<span>:&nbsp;</span>=ED=8E=8C=EC=9B=A8=EC=
+=96=B4 =EC=97=85=EB=8D=B0=EC=9D=B4=ED=8A=B8 =ED=9B=84 =EC=9E=AC=EC=8B=9C=EC=
+=9E=91</li>
+</ul>
+<p style=3D"">keyOffOnReset (0x02)</p>
+<ul style=3D"">
+<li>=EC=B0=A8=EB=9F=89 =ED=82=A4=EB=A5=BC<span>&nbsp;OFF</span>=ED=96=88=EB=
+=8B=A4=EA=B0=80<span>&nbsp;ON</span>=ED=95=98=EB=8A=94 =EA=B2=83=EA=B3=BC =
+=EA=B0=99=EC=9D=80 =ED=9A=A8=EA=B3=BC</li>
+<li>IGN =EC=82=AC=EC=9D=B4=ED=81=B4 =EC=8B=9C=EB=AE=AC=EB=A0=88=EC=9D=B4=EC=
+=85=98</li>
+<li>=EC=9D=BC=EB=B6=80 =EB=B9=84=ED=9C=98=EB=B0=9C=EC=84=B1 =EB=8D=B0=EC=9D=
+=B4=ED=84=B0=EB=8A=94 =EC=9C=A0=EC=A7=80</li>
+<li>DTC=EC=9D=98<span>&nbsp;Operation Cycle&nbsp;</span>=EC=B9=B4=EC=9A=B4=
+=ED=84=B0 =EA=B0=B1=EC=8B=A0</li>
+<li>=EC=82=AC=EC=9A=A9 =EC=98=88<span>:&nbsp;</span>=EC=A7=84=EB=8B=A8 =EC=
+=84=B8=EC=85=98 =EC=A2=85=EB=A3=8C =ED=9B=84 =EC=A0=95=EC=83=81 =EB=B3=B5=
+=EA=B7=80</li>
+</ul>
+<p style=3D"">softReset (0x03)</p>
+<ul style=3D"">
+<li>=EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=A8=EC=96=B4 =EB=A0=88=EB=B2=A8=EC=97=
+=90=EC=84=9C =EC=9E=AC=EC=8B=9C=EC=9E=91</li>
+<li>=ED=95=98=EB=93=9C=EC=9B=A8=EC=96=B4 =ED=8E=98=EB=A6=AC=ED=8E=98=EB=9F=
+=B4=EC=9D=80 =EC=B4=88=EA=B8=B0=ED=99=94=ED=95=98=EC=A7=80 =EC=95=8A=EC=9D=
+=8C</li>
+<li>=EB=B9=A0=EB=A5=B8 =EB=A6=AC=EC=85=8B =EA=B0=80=EB=8A=A5</li>
+<li>RAM =EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=9D=BC=EB=B6=80 =EC=9C=A0=EC=A7=80 =
+=EA=B0=80=EB=8A=A5</li>
+<li>=EC=82=AC=EC=9A=A9 =EC=98=88<span>:&nbsp;</span>=EC=84=A4=EC=A0=95 =EB=
+=B3=80=EA=B2=BD =EC=A0=81=EC=9A=A9</li>
+</ul>
+<p style=3D"">enableRapidPowerShutDown (0x04)</p>
+<ul style=3D"">
+<li>=EC=B0=A8=EB=9F=89 =ED=82=A4<span>&nbsp;OFF&nbsp;</span>=ED=9B=84 =EB=
+=B9=A0=EB=A5=B8 =EC=A2=85=EB=A3=8C =EB=AA=A8=EB=93=9C =ED=99=9C=EC=84=B1=ED=
+=99=94</li>
+<li>=EC=9D=BC=EB=B0=98=EC=A0=81=EC=9C=BC=EB=A1=9C<span>&nbsp;ECU</span>=EB=
+=8A=94 =ED=82=A4<span>&nbsp;OFF&nbsp;</span>=ED=9B=84=EC=97=90=EB=8F=84 =EC=
+=9D=BC=EC=A0=95 =EC=8B=9C=EA=B0=84 =EB=8F=99=EC=9E=91<span>&nbsp;(After-run=
+)</span></li>
+<li>=EC=9D=B4 =EA=B8=B0=EB=8A=A5 =ED=99=9C=EC=84=B1=ED=99=94 =EC=8B=9C<span=
+>&nbsp;After-run&nbsp;</span>=EC=8B=9C=EA=B0=84 =EB=8B=A8=EC=B6=95</li>
+</ul>
+<p style=3D"">disableRapidPowerShutDown (0x05)</p>
+<ul style=3D"">
+<li>enableRapidPowerShutDown =ED=95=B4=EC=A0=9C</li>
+<li>=EC=9D=BC=EB=B0=98<span>&nbsp;After-run&nbsp;</span>=EB=8F=99=EC=9E=91=
+=EC=9C=BC=EB=A1=9C =EB=B3=B5=EA=B7=80</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-9.4Reset=ED=9B=84=EC=84=B8=EC=85=98=EB=B3=B5=EA=B7=80=
+=EB=8F=99=EC=9E=91"><strong>9.4 Reset<span>&nbsp;</span></strong><strong>=
+=ED=9B=84 =EC=84=B8=EC=85=98 =EB=B3=B5=EA=B7=80 =EB=8F=99=EC=9E=91</strong>=
+</h3>
+<p style=3D"">Reset =EC=A7=81=ED=9B=84<span>&nbsp;ECU&nbsp;</span>=EC=83=81=
+=ED=83=9C</p>
+<ul style=3D"">
+<li>Default Session=EC=9C=BC=EB=A1=9C =EC=9E=90=EB=8F=99 =EB=B3=B5=EA=B7=80=
+</li>
+<li>=EB=AA=A8=EB=93=A0<span>&nbsp;SecurityAccess&nbsp;</span>=EC=9D=B8=EC=
+=A6=9D =ED=95=B4=EC=A0=9C</li>
+<li>IO =EC=A0=9C=EC=96=B4 =EC=83=81=ED=83=9C =EC=9B=90=EB=B3=B5</li>
+<li>=ED=86=B5=EC=8B=A0 =EC=A0=9C=EC=96=B4 =EC=83=81=ED=83=9C =EC=9B=90=EB=
+=B3=B5</li>
+<li>TesterPresent =EC=B9=B4=EC=9A=B4=ED=84=B0 =EC=B4=88=EA=B8=B0=ED=99=94</=
+li>
+</ul>
+<p style=3D"">=EC=A7=84=EB=8B=A8=EA=B8=B0 =EC=B8=A1 =EB=8C=80=EC=9D=91</p>
+<ul style=3D"">
+<li>=EB=A6=AC=EC=85=8B =EC=9D=91=EB=8B=B5 =EC=88=98=EC=8B=A0 =ED=9B=84 =EC=
+=9D=BC=EC=A0=95 =EC=8B=9C=EA=B0=84 =EB=8C=80=EA=B8=B0<span>&nbsp;(ECU&nbsp;=
+</span>=EB=B6=80=ED=8C=85 =EC=8B=9C=EA=B0=84<span>)</span></li>
+<li>=ED=95=84=EC=9A=94=EC=8B=9C =EB=8B=A4=EC=8B=9C =EC=84=B8=EC=85=98 =EC=
+=A7=84=EC=9E=85 =EB=B0=8F =EB=B3=B4=EC=95=88 =EC=9D=B8=EC=A6=9D =EC=88=98=
+=ED=96=89</li>
+<li>DoIP =ED=99=98=EA=B2=BD=EC=97=90=EC=84=9C=EB=8A=94<span>&nbsp;TCP&nbsp;=
+</span>=EC=97=B0=EA=B2=B0=EB=8F=84 =EC=9E=AC=EC=88=98=EB=A6=BD =ED=95=84=EC=
+=9A=94=ED=95=A0 =EC=88=98 =EC=9E=88=EC=9D=8C</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-9.5=EB=B0=9C=EC=83=9D=EA=B0=80=EB=8A=A5=ED=95=9CNRC"><s=
+trong>9.5<span>&nbsp;</span></strong><strong>=EB=B0=9C=EC=83=9D =EA=B0=80=
+=EB=8A=A5=ED=95=9C<span>&nbsp;NRC</span></strong></h3>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>NRC</stro=
+ng></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=B0=9C=
+=EC=83=9D =EC=A1=B0=EA=B1=B4</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x12</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>subFunctionNotSup=
+ported</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A7=80=EC=9B=
+=90=ED=95=98=EC=A7=80 =EC=95=8A=EB=8A=94 =EB=A6=AC=EC=85=8B =EC=A2=85=EB=A5=
+=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x13</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>incorrectMessageL=
+engthOrInvalidFormat</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=A9=94=EC=8B=
+=9C=EC=A7=80 =EA=B8=B8=EC=9D=B4 =EC=98=A4=EB=A5=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x22</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>conditionsNotCorr=
+ect</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=B0=A8=EB=9F=
+=89 =EC=9A=B4=ED=96=89 =EC=A1=B0=EA=B1=B4 =EB=B6=88=EB=A7=8C=EC=A1=B1</p></=
+td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x33</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>securityAccessDen=
+ied</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SecurityAccess =
+=ED=95=84=EC=9A=94</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x7F</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>serviceNotSupport=
+edInActiveSession</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=98=84=EC=9E=
+=AC =EC=84=B8=EC=85=98=EC=97=90=EC=84=9C =EC=82=AC=EC=9A=A9 =EB=B6=88=EA=B0=
+=80</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-9.6=EC=8B=A4=EB=AC=B4=EB=A1=9C=EA=B7=B8=EC=98=88=EC=8B=
+=9C"><strong>9.6<span>&nbsp;</span></strong><strong>=EC=8B=A4=EB=AC=B4 =EB=
+=A1=9C=EA=B7=B8 =EC=98=88=EC=8B=9C</strong></h3>
+<p style=3D"">=EA=B8=B0=EB=B3=B8 =EC=8B=9C=EB=82=98=EB=A6=AC=EC=98=A4<span>=
+: Hard Reset</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 10 03&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; ; Extended Session =EC=A7=84=EC=9E=85</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 50 03 00 32=
+ 01 F4</p>
+<p style=3D""><br></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 11 01&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; ; Hard Reset =EC=9A=94=EC=B2=AD</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 51 01&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; ; =EB=A6=AC=EC=85=8B =EC=8B=9C=EC=9E=91</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; ; (ECU =EC=9E=AC=EC=8B=9C=EC=9E=91<span>,&nbsp;</span>=EC=
+=9D=BC=EC=A0=95 =EC=8B=9C=EA=B0=84 =ED=9B=84 =ED=86=B5=EC=8B=A0 =EA=B0=80=
+=EB=8A=A5<span>)</span></p>
+<p style=3D"">=ED=94=8C=EB=9E=98=EC=8B=9C =EC=97=85=EB=8D=B0=EC=9D=B4=ED=8A=
+=B8 =ED=9B=84 =EB=A6=AC=EC=85=8B</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 37&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp; ; =EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=A0=84=EC=86=A1 =
+=EC=A2=85=EB=A3=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 77</p>
+<p style=3D""><br></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 31 01 FF 01=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; =EB=AC=B4=EA=B2=B0=
+=EC=84=B1 =EA=B2=80=EC=A6=9D</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 71 01 FF 01=
+</p>
+<p style=3D""><br></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 11 01&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; ; Hard Reset</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 51 01&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; ; ECU =EC=9E=AC=EC=8B=9C=EC=9E=91<span>,&nbsp;</span>=EC=83=88 =
+=ED=8E=8C=EC=9B=A8=EC=96=B4 =EC=A0=81=EC=9A=A9</p>
+<p style=3D"">=EC=9D=91=EB=8B=B5 =EC=96=B5=EC=A0=9C =EC=82=AC=EC=9A=A9</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 11 81</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; (=EC=9D=91=
+=EB=8B=B5 =EC=97=86=EC=9D=8C<span>)</span></p>
+<p style=3D"">=ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">- Hard Reset + Suppress Positive Response</p>
+<p style=3D"">- =EC=A0=95=EC=83=81 =EC=B2=98=EB=A6=AC=EB=90=98=EC=97=88=EC=
+=9C=BC=EB=82=98 =EC=9D=91=EB=8B=B5 =EC=97=86=EC=9D=8C</p>
+<h2 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-10.SID0x14-ClearDiagnosticInformation"><strong>10. SID =
+0x14 - ClearDiagnosticInformation</strong></h2>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-10.1=EC=84=9C=EB=B9=84=EC=8A=A4=EA=B0=9C=EC=9A=94=EB=B0=
+=8F=EC=9A=A9=EB=8F=84"><strong>10.1<span>&nbsp;</span></strong><strong>=EC=
+=84=9C=EB=B9=84=EC=8A=A4 =EA=B0=9C=EC=9A=94 =EB=B0=8F =EC=9A=A9=EB=8F=84</s=
+trong></h3>
+<p style=3D"">=EC=84=9C=EB=B9=84=EC=8A=A4 =EC=A0=95=EC=9D=98</p>
+<ul style=3D"">
+<li>ECU=EC=9D=98<span>&nbsp;DTC(Diagnostic Trouble Code)&nbsp;</span>=EB=B0=
+=8F =EA=B4=80=EB=A0=A8 =EC=A0=95=EB=B3=B4=EB=A5=BC =EC=82=AD=EC=A0=9C=ED=95=
+=98=EB=8A=94 =EC=84=9C=EB=B9=84=EC=8A=A4</li>
+<li>=EC=A7=84=EB=8B=A8 =EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=B4=88=EA=B8=B0=ED=99=
+=94 =EB=AA=A9=EC=A0=81</li>
+</ul>
+<p style=3D"">=EC=9A=A9=EB=8F=84</p>
+<ul style=3D"">
+<li>=EC=A0=95=EB=B9=84 =EC=99=84=EB=A3=8C =ED=9B=84<span>&nbsp;DTC&nbsp;</s=
+pan>=EC=82=AD=EC=A0=9C</li>
+<li>=EA=B2=80=EC=82=AC =EC=A0=84<span>&nbsp;ECU&nbsp;</span>=EC=83=81=ED=83=
+=9C =EC=B4=88=EA=B8=B0=ED=99=94</li>
+<li>=EC=8B=9C=ED=97=98<span>/</span>=EA=B0=9C=EB=B0=9C =EB=8B=A8=EA=B3=84=
+=EC=97=90=EC=84=9C =EC=A7=84=EB=8B=A8 =EB=8D=B0=EC=9D=B4=ED=84=B0 =EB=A6=AC=
+=EC=85=8B</li>
+<li>Snapshot =EB=8D=B0=EC=9D=B4=ED=84=B0<span>, Extended Data&nbsp;</span>=
+=ED=95=A8=EA=BB=98 =EC=82=AD=EC=A0=9C</li>
+</ul>
+<p style=3D"">=ED=8A=B9=EC=A7=95</p>
+<ul style=3D"">
+<li>DTC =EA=B7=B8=EB=A3=B9 =EB=8B=A8=EC=9C=84=EB=A1=9C =EC=82=AD=EC=A0=9C =
+=EA=B0=80=EB=8A=A5<span>&nbsp;(</span>=EA=B0=9C=EB=B3=84<span>&nbsp;DTC&nbs=
+p;</span>=EB=8B=A8=EC=9C=84<span>&nbsp;X)</span></li>
+<li>=EC=9D=BC=EB=B0=98=EC=A0=81=EC=9C=BC=EB=A1=9C<span>&nbsp;Extended Sessi=
+on&nbsp;</span>=EC=9D=B4=EC=83=81=EC=97=90=EC=84=9C =EC=82=AC=EC=9A=A9</li>
+<li>=EC=9D=BC=EB=B6=80<span>&nbsp;DTC</span>=EB=8A=94 =EC=82=AD=EC=A0=9C =
+=EB=B6=88=EA=B0=80<span>&nbsp;(</span>=EC=98=81=EA=B5=AC<span>&nbsp;DTC&nbs=
+p;</span>=EB=93=B1<span>)</span></li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-10.2Request=EB=A9=94=EC=8B=9C=EC=A7=80=EA=B5=AC=EC=A1=
+=B0(GroupofDTC)"><strong>10.2 Request<span>&nbsp;</span></strong><strong>=
+=EB=A9=94=EC=8B=9C=EC=A7=80 =EA=B5=AC=EC=A1=B0<span>&nbsp;(Group of DTC)</s=
+pan></strong></h3>
+<p style=3D"">Request =EB=A9=94=EC=8B=9C=EC=A7=80</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID][groupOfDTC(3=EB=B0=94=EC=9D=B4=ED=
+=8A=B8<span>)]</span></p>
+<p style=3D"">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;14&nbsp;&nbsp;&nbsp; XX YY ZZ=
+</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; XX YY ZZ: =EC=82=AD=EC=A0=9C=ED=95=A0<sp=
+an>&nbsp;DTC&nbsp;</span>=EA=B7=B8=EB=A3=B9 =EC=BD=94=EB=93=9C</p>
+<p style=3D"">Positive Response =EB=A9=94=EC=8B=9C=EC=A7=80</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID + 0x40]</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;54</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =EC=9D=91=EB=8B=B5=EC=9D=B4 =EB=A7=A4=EC=
+=9A=B0 =EB=8B=A8=EC=88=9C=ED=95=A8<span>&nbsp;(Sub-function echo&nbsp;</spa=
+n>=EC=97=86=EC=9D=8C<span>,&nbsp;</span>=EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=97=
+=86=EC=9D=8C<span>)</span></p>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-10.3DTC=EA=B7=B8=EB=A3=B9=EC=BD=94=EB=93=9C"><strong>10=
+.3 DTC<span>&nbsp;</span></strong><strong>=EA=B7=B8=EB=A3=B9 =EC=BD=94=EB=
+=93=9C</strong></h3>
+<p style=3D"">=ED=91=9C=EC=A4=80 =EC=A0=95=EC=9D=98 =EA=B7=B8=EB=A3=B9 =EC=
+=BD=94=EB=93=9C</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EA=B7=B8=
+=EB=A3=B9 =EC=BD=94=EB=93=9C</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=98=
+=EB=AF=B8</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xFFFFFF</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=AA=A8=EB=93=
+=A0<span>&nbsp;DTC&nbsp;</span>=EA=B7=B8=EB=A3=B9 =EC=82=AD=EC=A0=9C<span>&=
+nbsp;(</span>=EC=A0=84=EC=B2=B4 =EC=82=AD=EC=A0=9C<span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x000000~0xEFFFFF=
+</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C=EB=B3=84<span>/</span>=EA=B7=B8=EB=A3=B9=EB=B3=84<span>&nbsp;D=
+TC</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xFFFF33</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Emissions-related=
+ =EC=8B=9C=EC=8A=A4=ED=85=9C</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">ISO 15031-6 =ED=91=9C=EC=A4=80 =EA=B7=B8=EB=A3=B9</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EA=B7=B8=
+=EB=A3=B9 =EC=BD=94=EB=93=9C</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=8B=9C=
+=EC=8A=A4=ED=85=9C</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x000000</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Powertrain</p></t=
+d>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x400000</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Chassis</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x800000</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Body</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xC00000</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Network Communica=
+tion</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">=EC=8B=A4=EB=AC=B4=EC=97=90=EC=84=9C =EA=B0=80=EC=9E=A5 =EB=
+=A7=8E=EC=9D=B4 =EC=82=AC=EC=9A=A9</p>
+<ul style=3D"">
+<li>0xFFFFFF: =EC=A0=84=EC=B2=B4<span>&nbsp;DTC&nbsp;</span>=EC=82=AD=EC=A0=
+=9C<span>,&nbsp;</span>=EA=B0=80=EC=9E=A5 =EC=9D=BC=EB=B0=98=EC=A0=81</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-10.4OBD=EA=B4=80=EB=A0=A8DTCvs=EC=A0=9C=EC=A1=B0=EC=82=
+=ACDTC=EC=82=AD=EC=A0=9C=EB=B2=94=EC=9C=84"><strong>10.4 OBD<span>&nbsp;</s=
+pan></strong><strong>=EA=B4=80=EB=A0=A8<span>&nbsp;DTC vs&nbsp;</span>=EC=
+=A0=9C=EC=A1=B0=EC=82=AC<span>&nbsp;DTC&nbsp;</span>=EC=82=AD=EC=A0=9C =EB=
+=B2=94=EC=9C=84</strong></h3>
+<p style=3D"">OBD-II =EA=B4=80=EB=A0=A8<span>&nbsp;DTC</span></p>
+<ul style=3D"">
+<li>=EB=B0=B0=EA=B8=B0=EA=B0=80=EC=8A=A4 =EA=B4=80=EB=A0=A8<span>&nbsp;DTC =
+(</span>=EC=98=88<span>: P0001~P0FFF)</span></li>
+<li>=EB=B2=95=EA=B7=9C=EC=97=90 =EB=94=B0=EB=9D=BC =EC=82=AD=EC=A0=9C =EC=
+=A0=9C=ED=95=9C=EC=9D=B4 =EC=9E=88=EC=9D=84 =EC=88=98 =EC=9E=88=EC=9D=8C</l=
+i>
+<li>=EC=9D=BC=EB=B6=80=EB=8A=94<span>&nbsp;ECU&nbsp;</span>=EC=9E=90=EA=B0=
+=80 =EC=A7=84=EB=8B=A8=EC=9C=BC=EB=A1=9C=EB=A7=8C =ED=81=B4=EB=A6=AC=EC=96=
+=B4 =EA=B0=80=EB=8A=A5</li>
+</ul>
+<p style=3D"">=EC=A0=9C=EC=A1=B0=EC=82=AC =EC=A0=95=EC=9D=98<span>&nbsp;DTC=
+</span></p>
+<ul style=3D"">
+<li>0x14 =EC=84=9C=EB=B9=84=EC=8A=A4=EB=A1=9C =EC=82=AD=EC=A0=9C =EA=B0=80=
+=EB=8A=A5</li>
+<li>=EC=B0=A8=EC=A2=85<span>/ECU</span>=EB=B3=84 =EC=9E=90=EC=B2=B4 =EC=A0=
+=95=EC=9D=98<span>&nbsp;DTC</span></li>
+</ul>
+<p style=3D"">=EC=82=AD=EC=A0=9C=EB=90=98=EC=A7=80 =EC=95=8A=EB=8A=94<span>=
+&nbsp;DTC</span></p>
+<ul style=3D"">
+<li>Permanent DTC (=EC=98=81=EA=B5=AC<span>&nbsp;DTC): OBD-II&nbsp;</span>=
+=EB=B2=95=EA=B7=9C=EC=83=81<span>&nbsp;ECU</span>=EA=B0=80 =EC=9E=90=EC=B2=
+=B4 =ED=8C=90=EB=8B=A8=EC=9C=BC=EB=A1=9C=EB=A7=8C =EC=82=AD=EC=A0=9C</li>
+<li>=EC=9D=BC=EB=B6=80 =EC=95=88=EC=A0=84 =EA=B4=80=EB=A0=A8<span>&nbsp;DTC=
+:&nbsp;</span>=EB=B3=84=EB=8F=84 =EC=A1=B0=EA=B1=B4 =EB=A7=8C=EC=A1=B1 =EC=
+=8B=9C=EC=97=90=EB=A7=8C =EC=82=AD=EC=A0=9C =EA=B0=80=EB=8A=A5</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-10.5=EB=B0=9C=EC=83=9D=EA=B0=80=EB=8A=A5=ED=95=9CNRC"><=
+strong>10.5<span>&nbsp;</span></strong><strong>=EB=B0=9C=EC=83=9D =EA=B0=80=
+=EB=8A=A5=ED=95=9C<span>&nbsp;NRC</span></strong></h3>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>NRC</stro=
+ng></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=B0=9C=
+=EC=83=9D =EC=A1=B0=EA=B1=B4</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x13</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>incorrectMessageL=
+engthOrInvalidFormat</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=A9=94=EC=8B=
+=9C=EC=A7=80 =EA=B8=B8=EC=9D=B4 =EC=98=A4=EB=A5=98<span>&nbsp;(3</span>=EB=
+=B0=94=EC=9D=B4=ED=8A=B8 =ED=95=84=EC=88=98<span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x22</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>conditionsNotCorr=
+ect</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EB=8F=
+=99 =EC=BC=9C=EC=A7=84 =EC=83=81=ED=83=9C =EB=93=B1</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x31</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>requestOutOfRange=
+</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A7=80=EC=9B=
+=90=ED=95=98=EC=A7=80 =EC=95=8A=EB=8A=94<span>&nbsp;DTC&nbsp;</span>=EA=B7=
+=B8=EB=A3=B9</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x33</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>securityAccessDen=
+ied</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SecurityAccess =
+=ED=95=84=EC=9A=94<span>&nbsp;(</span>=EC=A0=9C=EC=A1=B0=EC=82=AC=EB=B3=84<=
+span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x72</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>generalProgrammin=
+gFailure</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>DTC =EC=82=AD=EC=
+=A0=9C =EC=8B=A4=ED=8C=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x7F</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>serviceNotSupport=
+edInActiveSession</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=98=84=EC=9E=
+=AC =EC=84=B8=EC=85=98=EC=97=90=EC=84=9C =EB=B6=88=EA=B0=80</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-10.6=EC=8B=A4=EB=AC=B4=EB=A1=9C=EA=B7=B8=EC=98=88=EC=8B=
+=9C"><strong>10.6<span>&nbsp;</span></strong><strong>=EC=8B=A4=EB=AC=B4 =EB=
+=A1=9C=EA=B7=B8 =EC=98=88=EC=8B=9C</strong></h3>
+<p style=3D"">=EA=B8=B0=EB=B3=B8 =EC=8B=9C=EB=82=98=EB=A6=AC=EC=98=A4<span>=
+:&nbsp;</span>=EC=A0=84=EC=B2=B4<span>&nbsp;DTC&nbsp;</span>=EC=82=AD=EC=A0=
+=9C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 10 03&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; ; Extended Session =EC=A7=84=EC=9E=85</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 50 03 00 32=
+ 01 F4</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 14 FF FF FF=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; =EB=AA=A8=EB=93=A0=
+<span>&nbsp;DTC&nbsp;</span>=EC=82=AD=EC=A0=9C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 54&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp; ; =EC=82=AD=EC=A0=9C =EC=99=84=EB=A3=8C</p>
+<p style=3D"">=ED=8A=B9=EC=A0=95 =EA=B7=B8=EB=A3=B9=EB=A7=8C =EC=82=AD=EC=
+=A0=9C<span>&nbsp;(Powertrain DTC)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 14 00 00 00=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; Powertrain DTC =EC=
+=82=AD=EC=A0=9C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 54</p>
+<p style=3D"">=EC=A1=B0=EA=B1=B4 =EB=B6=88=EB=A7=8C=EC=A1=B1 =EC=8B=9C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 14 FF FF FF=
+</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 7F 14 22&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; con=
+ditionsNotCorrect</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=8B=9C=EB=8F=99<span>&nbsp;ON&nbsp;=
+</span>=EC=83=81=ED=83=9C=EC=97=90=EC=84=9C =EC=9D=BC=EB=B6=80<span>&nbsp;D=
+TC&nbsp;</span>=EC=82=AD=EC=A0=9C =EB=B6=88=EA=B0=80</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=8B=9C=EB=8F=99<span>&nbsp;OFF&nbsp=
+;</span>=ED=9B=84 =EC=9E=AC=EC=8B=9C=EB=8F=84</p>
+<h2 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-11.SID0x19-ReadDTCInformation"><strong>11. SID 0x19 - R=
+eadDTCInformation</strong></h2>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-11.1=EC=84=9C=EB=B9=84=EC=8A=A4=EA=B0=9C=EC=9A=94=EB=B0=
+=8F=EC=9A=A9=EB=8F=84"><strong>11.1<span>&nbsp;</span></strong><strong>=EC=
+=84=9C=EB=B9=84=EC=8A=A4 =EA=B0=9C=EC=9A=94 =EB=B0=8F =EC=9A=A9=EB=8F=84</s=
+trong></h3>
+<p style=3D"">=EC=84=9C=EB=B9=84=EC=8A=A4 =EC=A0=95=EC=9D=98</p>
+<ul style=3D"">
+<li>DTC =EA=B4=80=EB=A0=A8 =EC=A0=95=EB=B3=B4=EB=A5=BC =EB=8B=A4=EC=96=91=
+=ED=95=9C =EB=B0=A9=EC=8B=9D=EC=9C=BC=EB=A1=9C =EC=9D=BD=EB=8A=94 =EC=84=9C=
+=EB=B9=84=EC=8A=A4</li>
+<li>UDS=EC=97=90=EC=84=9C<span>&nbsp;Sub-function</span>=EC=9D=B4 =EA=B0=80=
+=EC=9E=A5 =EB=8B=A4=EC=96=91=ED=95=9C =EC=84=9C=EB=B9=84=EC=8A=A4 =EC=A4=91=
+ =ED=95=98=EB=82=98<span>&nbsp;(20</span>=EA=B0=9C =EC=9D=B4=EC=83=81<span>=
+)</span></li>
+</ul>
+<p style=3D"">=EC=9A=A9=EB=8F=84</p>
+<ul style=3D"">
+<li>=ED=98=84=EC=9E=AC =EB=B0=9C=EC=83=9D=ED=95=9C<span>&nbsp;DTC&nbsp;</sp=
+an>=EB=AA=A9=EB=A1=9D =EC=A1=B0=ED=9A=8C</li>
+<li>DTC =EB=B0=9C=EC=83=9D =EB=8B=B9=EC=8B=9C=EC=9D=98 =ED=99=98=EA=B2=BD =
+=EB=8D=B0=EC=9D=B4=ED=84=B0<span>(Snapshot)&nbsp;</span>=EC=A1=B0=ED=9A=8C<=
+/li>
+<li>DTC =EB=B0=9C=EC=83=9D =EB=B9=88=EB=8F=84<span>,&nbsp;</span>=ED=86=B5=
+=EA=B3=84 =EC=A0=95=EB=B3=B4 =EC=A1=B0=ED=9A=8C</li>
+<li>ECU=EA=B0=80 =EC=A7=80=EC=9B=90=ED=95=98=EB=8A=94<span>&nbsp;DTC&nbsp;<=
+/span>=EB=AA=A9=EB=A1=9D =EC=A1=B0=ED=9A=8C</li>
+</ul>
+<p style=3D"">=ED=8A=B9=EC=A7=95</p>
+<ul style=3D"">
+<li>Default Session=EC=97=90=EC=84=9C=EB=8F=84 =EC=9D=BC=EB=B6=80<span>&nbs=
+p;Sub-function&nbsp;</span>=EC=82=AC=EC=9A=A9 =EA=B0=80=EB=8A=A5</li>
+<li>SecurityAccess =EB=B6=88=ED=95=84=EC=9A=94<span>&nbsp;(</span>=EB=8C=80=
+=EB=B6=80=EB=B6=84<span>)</span></li>
+<li>=EB=A9=80=ED=8B=B0=ED=94=84=EB=A0=88=EC=9E=84 =EC=9D=91=EB=8B=B5 =EB=B9=
+=88=EB=B2=88<span>&nbsp;(DTC&nbsp;</span>=EA=B0=9C=EC=88=98 =EB=A7=8E=EC=9D=
+=84 =EB=95=8C<span>)</span></li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-11.2=EC=A3=BC=EC=9A=94Sub-function=EC=83=81=EC=84=B8"><=
+strong>11.2<span>&nbsp;</span></strong><strong>=EC=A3=BC=EC=9A=94<span>&nbs=
+p;Sub-function&nbsp;</span>=EC=83=81=EC=84=B8</strong></h3>
+<p style=3D"">=EC=9E=90=EC=A3=BC =EC=82=AC=EC=9A=A9=EB=90=98=EB=8A=94<span>=
+&nbsp;Sub-function</span></p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>Sub-funct=
+ion</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9A=A9=
+=EB=8F=84</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x01</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportNumberOfDTC=
+ByStatusMask</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=83=81=ED=83=
+=9C =EC=A1=B0=EA=B1=B4=EC=97=90 =ED=95=B4=EB=8B=B9=ED=95=98=EB=8A=94<span>&=
+nbsp;DTC&nbsp;</span>=EA=B0=9C=EC=88=98 =EC=A1=B0=ED=9A=8C</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x02</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportDTCByStatus=
+Mask</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=83=81=ED=83=
+=9C =EC=A1=B0=EA=B1=B4=EC=97=90 =ED=95=B4=EB=8B=B9=ED=95=98=EB=8A=94<span>&=
+nbsp;DTC&nbsp;</span>=EB=AA=A9=EB=A1=9D =EC=A1=B0=ED=9A=8C<span>&nbsp;(</sp=
+an>=EA=B0=80=EC=9E=A5 =EB=A7=8E=EC=9D=B4 =EC=82=AC=EC=9A=A9<span>)</span></=
+p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x03</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportDTCSnapshot=
+Identification</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Snapshot=EC=9D=B4=
+ =EC=9E=88=EB=8A=94<span>&nbsp;DTC&nbsp;</span>=EC=8B=9D=EB=B3=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x04</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportDTCSnapshot=
+RecordByDTCNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=8A=B9=EC=A0=
+=95<span>&nbsp;DTC</span>=EC=9D=98<span>&nbsp;Snapshot&nbsp;</span>=EB=8D=
+=B0=EC=9D=B4=ED=84=B0</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x06</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportDTCExtDataR=
+ecordByDTCNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=8A=B9=EC=A0=
+=95<span>&nbsp;DTC</span>=EC=9D=98<span>&nbsp;Extended Data</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x0A</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportSupportedDT=
+C</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECU=EA=B0=80 =EC=
+=A7=80=EC=9B=90=ED=95=98=EB=8A=94 =EB=AA=A8=EB=93=A0<span>&nbsp;DTC</span><=
+/p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x14</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportDTCFaultDet=
+ectionCounter</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>DTC =EA=B2=80=EC=
+=B6=9C =EC=B9=B4=EC=9A=B4=ED=84=B0</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x15</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>reportDTCWithPerm=
+anentStatus</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=98=81=EA=B5=
+=AC<span>&nbsp;DTC&nbsp;</span>=EC=A1=B0=ED=9A=8C</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">0x02 reportDTCByStatusMask =EB=A9=94=EC=8B=9C=EC=A7=80 =EA=B5=
+=AC=EC=A1=B0</p>
+<p style=3D"">Request:</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID][Sub-function][DTCStatusMask]</p>
+<p style=3D"">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;19 &nbsp; &nbsp; &nbsp; &nbsp=
+;&nbsp; 02 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;XX=
+</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp;XX: =EC=83=81=ED=83=9C =EB=A7=88=
+=EC=8A=A4=ED=81=AC<span>&nbsp;(1</span>=EB=B0=94=EC=9D=B4=ED=8A=B8<span>,&n=
+bsp;</span>=EB=B9=84=ED=8A=B8 =EC=A1=B0=ED=95=A9<span>)</span></p>
+<p style=3D"">Response:</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID + 0x40][Sub-function][DTCStatusAvai=
+labilityMask][DTC 1(3=EB=B0=94=EC=9D=B4=ED=8A=B8<span>)][Status 1(1</span>=
+=EB=B0=94=EC=9D=B4=ED=8A=B8<span>)]...</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;59&nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;02 &nbsp; &nbsp; &nbsp; &nbsp; &=
+nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; YY&nbsp; &nbsp=
+; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; &nbsp; AA BB CC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; ZZ</p>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-11.3DTCStatusMask=EB=B9=84=ED=8A=B8=ED=95=B4=EC=84=9D">=
+<strong>11.3 DTC Status Mask<span>&nbsp;</span></strong><strong>=EB=B9=84=
+=ED=8A=B8 =ED=95=B4=EC=84=9D</strong></h3>
+<p style=3D"">DTC Status (1=EB=B0=94=EC=9D=B4=ED=8A=B8<span>)&nbsp;</span>=
+=EB=B9=84=ED=8A=B8 =EC=A0=95=EC=9D=98</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=B9=84=
+=ED=8A=B8</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=98=
+=EB=AF=B8</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 0</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>testFailed</p></t=
+d>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=98=84=EC=9E=
+=AC =ED=85=8C=EC=8A=A4=ED=8A=B8 =EC=8B=A4=ED=8C=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 1</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>testFailedThisOpe=
+rationCycle</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=9D=B4=EB=B2=
+=88 =EB=8F=99=EC=9E=91 =EC=82=AC=EC=9D=B4=ED=81=B4=EC=97=90=EC=84=9C =EC=8B=
+=A4=ED=8C=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 2</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>pendingDTC</p></t=
+d>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Pending DTC (=ED=
+=99=95=EC=A0=95 =EC=A0=84<span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 3</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>confirmedDTC</p><=
+/td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Confirmed DTC (=
+=ED=99=95=EC=A0=95<span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 4</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>testNotCompletedS=
+inceLastClear</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=A7=88=EC=A7=
+=80=EB=A7=89 =ED=81=B4=EB=A6=AC=EC=96=B4 =ED=9B=84 =ED=85=8C=EC=8A=A4=ED=8A=
+=B8 =EB=AF=B8=EC=99=84=EB=A3=8C</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 5</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>testFailedSinceLa=
+stClear</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=A7=88=EC=A7=
+=80=EB=A7=89 =ED=81=B4=EB=A6=AC=EC=96=B4 =ED=9B=84 =EC=8B=A4=ED=8C=A8=ED=95=
+=9C =EC=A0=81 =EC=9E=88=EC=9D=8C</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 6</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>testNotCompletedT=
+hisOperationCycle</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=9D=B4=EB=B2=
+=88 =EC=82=AC=EC=9D=B4=ED=81=B4=EC=97=90=EC=84=9C =ED=85=8C=EC=8A=A4=ED=8A=
+=B8 =EB=AF=B8=EC=99=84=EB=A3=8C</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>bit 7</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>warningIndicatorR=
+equested</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B2=BD=EA=B3=
+=A0=EB=93=B1 =EC=A0=90=EB=93=B1 =EC=9A=94=EC=B2=AD</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">=EC=83=81=ED=83=9C =EB=A7=88=EC=8A=A4=ED=81=AC =EC=98=88=EC=
+=8B=9C</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=A7=88=
+=EC=8A=A4=ED=81=AC =EA=B0=92</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=98=
+=EB=AF=B8</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xFF</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=AA=A8=EB=93=
+=A0<span>&nbsp;DTC (</span>=EC=96=B4=EB=96=A4 =EC=83=81=ED=83=9C=EB=93=A0<s=
+pan>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x08</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Confirmed DTC=EB=
+=A7=8C<span>&nbsp;(bit 3&nbsp;</span>=ED=99=9C=EC=84=B1<span>)</span></p></=
+td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x04</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Pending DTC=EB=A7=
+=8C<span>&nbsp;(bit 2&nbsp;</span>=ED=99=9C=EC=84=B1<span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x09</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Confirmed + testF=
+ailed</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">Status =ED=95=B4=EC=84=9D =EC=98=88=EC=8B=9C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; DTC Status =3D 0x2F (=EC=9D=B4=EC=A7=84=
+=EC=88=98<span>: 0010 1111)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - bit 0 (testFailed): 1 =E2=86=92 =ED=98=
+=84=EC=9E=AC =EC=8B=A4=ED=8C=A8</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - bit 1 (testFailedThisOpCycle): 1 =E2=
+=86=92 =EC=9D=B4=EB=B2=88 =EC=82=AC=EC=9D=B4=ED=81=B4 =EC=8B=A4=ED=8C=A8</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - bit 2 (pendingDTC): 1 =E2=86=92 Pendin=
+g</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - bit 3 (confirmedDTC): 1 =E2=86=92 Conf=
+irmed</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - bit 5 (testFailedSinceLastClear): 1 =
+=E2=86=92 =ED=81=B4=EB=A6=AC=EC=96=B4 =ED=9B=84 =EC=8B=A4=ED=8C=A8=ED=95=9C=
+ =EC=A0=81 =EC=9E=88=EC=9D=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EB=82=98=EB=A8=B8=EC=A7=80<span>: 0</=
+span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =E2=86=92 =ED=99=9C=EC=84=B1=ED=99=94=EB=
+=90=9C<span>&nbsp;Confirmed DTC</span>=EB=A1=9C =ED=98=84=EC=9E=AC=EB=8F=84=
+ =EB=B0=9C=EC=83=9D =EC=A4=91</p>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-11.4DTC=EC=BD=94=EB=93=9C=EA=B5=AC=EC=A1=B0(3=EB=B0=94=
+=EC=9D=B4=ED=8A=B8)"><strong>11.4 DTC<span>&nbsp;</span></strong><strong>=
+=EC=BD=94=EB=93=9C =EA=B5=AC=EC=A1=B0<span>&nbsp;(3</span>=EB=B0=94=EC=9D=
+=B4=ED=8A=B8<span>)</span></strong></h3>
+<p style=3D"">DTC =EC=BD=94=EB=93=9C =ED=98=95=EC=8B=9D</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [1=EB=B0=94=EC=9D=B4=ED=8A=B8<span>][1</=
+span>=EB=B0=94=EC=9D=B4=ED=8A=B8<span>][1</span>=EB=B0=94=EC=9D=B4=ED=8A=B8=
+<span>]</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;XX&nbsp; &nbsp; &nbsp; &nbsp=
+; YY&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ZZ</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =EC=83=81=EC=9C=84<span>&nbsp;2</span>=
+=EB=B9=84=ED=8A=B8=EB=A1=9C =EC=8B=9C=EC=8A=A4=ED=85=9C =EB=B6=84=EB=A5=98<=
+/p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=83=81=
+=EC=9C=84<span>&nbsp;2</span>=EB=B9=84=ED=8A=B8</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=8B=9C=
+=EC=8A=A4=ED=85=9C</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=BD=94=
+=EB=93=9C =EC=A0=91=EB=91=90=EC=96=B4</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>00</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Powertrain</p></t=
+d>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>P</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>01</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Chassis</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>C</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>10</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Body</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>B</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>11</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Network</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>U</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">DTC =EC=BD=94=EB=93=9C =EB=B3=80=ED=99=98 =EC=98=88=EC=8B=9C<=
+/p>
+<p style=3D"">&nbsp; HEX: P0301</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =EC=9D=B4=EC=A7=84<span>: 00 00 0011 000=
+0 0001</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=83=81=EC=9C=84<span>&nbsp;2</span>=
+=EB=B9=84=ED=8A=B8<span>&nbsp;00 =E2=86=92 P (Powertrain)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EB=82=98=EB=A8=B8=EC=A7=80<span>: 030=
+1</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EA=B2=B0=EA=B3=BC<span>: P0301 (3</sp=
+an>=EB=B2=88 =EC=8B=A4=EB=A6=B0=EB=8D=94 =EB=AF=B8=EC=8A=A4=ED=8C=8C=EC=9D=
+=B4=EC=96=B4<span>)</span></p>
+<p style=3D"">&nbsp; &nbsp;HEX: B1234</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=83=81=EC=9C=84<span>&nbsp;2</span>=
+=EB=B9=84=ED=8A=B8<span>&nbsp;10 =E2=86=92 B (Body)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EB=82=98=EB=A8=B8=EC=A7=80<span>: 123=
+4</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EA=B2=B0=EA=B3=BC<span>: B1234</span>=
+</p>
+<p style=3D"">&nbsp; &nbsp;HEX 3=EB=B0=94=EC=9D=B4=ED=8A=B8<span>: 03 01 00=
+</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=B2=AB =EB=B0=94=EC=9D=B4=ED=8A=B8<=
+span>&nbsp;03 =3D 00000011 =E2=86=92&nbsp;</span>=EC=83=81=EC=9C=84<span>&n=
+bsp;2</span>=EB=B9=84=ED=8A=B8<span>&nbsp;00 =E2=86=92 P</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EC=BD=94=EB=93=9C<span>: P0301</span>=
+</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EB=A7=88=EC=A7=80=EB=A7=89 =EB=B0=94=
+=EC=9D=B4=ED=8A=B8<span>&nbsp;00</span>=EC=9D=80 =EC=B6=94=EA=B0=80 =EC=A0=
+=95=EB=B3=B4<span>&nbsp;(</span>=EC=A0=9C=EC=A1=B0=EC=82=AC =EC=A0=95=EC=9D=
+=98<span>)</span></p>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-11.5Snapshot/ExtendedData=EA=B0=9C=EB=85=90"><strong>11=
+.5 Snapshot/Extended Data<span>&nbsp;</span></strong><strong>=EA=B0=9C=EB=
+=85=90</strong></h3>
+<p style=3D"">Snapshot Data</p>
+<ul style=3D"">
+<li>DTC =EB=B0=9C=EC=83=9D =EB=8B=B9=EC=8B=9C=EC=9D=98 =EC=B0=A8=EB=9F=89 =
+=EC=83=81=ED=83=9C =EC=BA=A1=EC=B2=98</li>
+<li>=EC=97=94=EC=A7=84<span>&nbsp;RPM,&nbsp;</span>=EC=B0=A8=EC=86=8D<span>=
+,&nbsp;</span>=EC=98=A8=EB=8F=84<span>,&nbsp;</span>=EC=97=B0=EB=A3=8C=EB=
+=9F=89 =EB=93=B1 =ED=99=98=EA=B2=BD =EC=A0=95=EB=B3=B4</li>
+<li>DTC =EC=9B=90=EC=9D=B8 =EB=B6=84=EC=84=9D=EC=97=90 =EB=A7=A4=EC=9A=B0 =
+=EC=9C=A0=EC=9A=A9</li>
+<li>Sub-function 0x04=EB=A1=9C =EC=A1=B0=ED=9A=8C</li>
+</ul>
+<p style=3D"">Extended Data</p>
+<ul style=3D"">
+<li>DTC=EC=9D=98 =EC=B6=94=EA=B0=80 =EB=A9=94=ED=83=80 =EC=A0=95=EB=B3=B4</=
+li>
+<li>=EB=B0=9C=EC=83=9D =ED=9A=9F=EC=88=98 =EC=B9=B4=EC=9A=B4=ED=84=B0</li>
+<li>=EC=B2=AB =EB=B0=9C=EC=83=9D =EC=8B=9C=EA=B0=81<span>,&nbsp;</span>=EB=
+=A7=88=EC=A7=80=EB=A7=89 =EB=B0=9C=EC=83=9D =EC=8B=9C=EA=B0=81</li>
+<li>=EB=B0=9C=EC=83=9D =EC=82=AC=EC=9D=B4=ED=81=B4 =EC=A0=95=EB=B3=B4</li>
+<li>Sub-function 0x06=EC=9C=BC=EB=A1=9C =EC=A1=B0=ED=9A=8C</li>
+</ul>
+<p style=3D""><strong>11.6<span>&nbsp;</span></strong><strong>=EC=8B=A4=EB=
+=AC=B4 =EB=A1=9C=EA=B7=B8 =EC=98=88=EC=8B=9C</strong></p>
+<p style=3D"">=EA=B8=B0=EB=B3=B8 =EC=8B=9C=EB=82=98=EB=A6=AC=EC=98=A4<span>=
+: Confirmed DTC&nbsp;</span>=EC=A1=B0=ED=9A=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 19 02 08&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; Con=
+firmed DTC=EB=A7=8C =EC=A1=B0=ED=9A=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 59 02 FF</p=
+>
+<p style=3D"">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P0301=EC=BD=94=EB=93=9C<span>&nbsp;2F</span><=
+/p>
+<p style=3D"">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P0420=EC=BD=94=EB=93=9C<span>&nbsp;2F</span><=
+/p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - 2=EA=B0=9C=EC=9D=98<span>&nbsp;Confirm=
+ed DTC&nbsp;</span>=EB=B0=9C=EC=83=9D</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - DTC 1: P0301, Status 0x2F (Confirmed +=
+ =ED=98=84=EC=9E=AC =EC=8B=A4=ED=8C=A8<span>)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - DTC 2: P0420, Status 0x2F</p>
+<p style=3D"">=EB=AA=A8=EB=93=A0<span>&nbsp;DTC&nbsp;</span>=EC=A1=B0=ED=9A=
+=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 19 02 FF&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; =EB=
+=AA=A8=EB=93=A0 =EC=83=81=ED=83=9C<span>&nbsp;DTC&nbsp;</span>=EC=A1=B0=ED=
+=9A=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 59 02 FF</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;=
+ &nbsp; &nbsp; &nbsp;[DTC 1][Status 1]</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+;&nbsp; &nbsp; &nbsp;[DTC 2][Status 2]</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; [DTC 3][Status 3]</p>
+<p style=3D"">DTC =EA=B0=9C=EC=88=98=EB=A7=8C =EC=A1=B0=ED=9A=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 19 01 08</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 59 01 FF 01=
+ 00 03</p>
+<p style=3D"">=ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - 0x01: =ED=98=95=EC=8B=9D =EC=A0=95=EB=
+=B3=B4</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - 0xFF: Status Availability Mask</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - 0x01 00 03: DTC =EA=B0=9C=EC=88=98<spa=
+n>&nbsp;=3D 3</span>=EA=B0=9C</p>
+<p style=3D"">Snapshot =EC=A1=B0=ED=9A=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 19 04 P0301=
+ FF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; P0301=EC=9D=98 =EB=AA=A8=EB=93=A0=
+<span>&nbsp;Snapshot</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 59 04 [Snap=
+shot =EB=8D=B0=EC=9D=B4=ED=84=B0<span>]</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;=
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RPM 1800</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; =EC=B0=A8=EC=86=8D<span>&nbsp;60=
+km/h</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; =EC=97=94=EC=A7=84=EC=98=A8=EB=
+=8F=84<span>&nbsp;90</span>=EB=8F=84</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; ...</p>
+<p style=3D"">DTC =EC=97=86=EC=9D=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 19 02 FF</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 59 02 FF&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; DTC=
+ =EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=97=86=EC=9D=8C</p>
+<p style=3D""><br></p>
+<h2 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.SID0x22-ReadDataByIdentifier"><strong>12. SID 0x22 -=
+ ReadDataByIdentifier</strong></h2>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.1=EC=84=9C=EB=B9=84=EC=8A=A4=EA=B0=9C=EC=9A=94=EB=B0=
+=8F=EC=9A=A9=EB=8F=84"><strong>12.1<span>&nbsp;</span></strong><strong>=EC=
+=84=9C=EB=B9=84=EC=8A=A4 =EA=B0=9C=EC=9A=94 =EB=B0=8F =EC=9A=A9=EB=8F=84</s=
+trong></h3>
+<p style=3D"">=EC=84=9C=EB=B9=84=EC=8A=A4 =EC=A0=95=EC=9D=98</p>
+<ul style=3D"">
+<li>DID(Data Identifier)=EB=A1=9C =EC=8B=9D=EB=B3=84=EB=90=98=EB=8A=94 =EB=
+=8D=B0=EC=9D=B4=ED=84=B0=EB=A5=BC<span>&nbsp;ECU</span>=EB=A1=9C=EB=B6=80=
+=ED=84=B0 =EC=9D=BD=EB=8A=94 =EC=84=9C=EB=B9=84=EC=8A=A4</li>
+<li>UDS=EC=97=90=EC=84=9C =EA=B0=80=EC=9E=A5 =EB=B9=88=EB=B2=88=ED=95=98=EA=
+=B2=8C =EC=82=AC=EC=9A=A9=EB=90=98=EB=8A=94 =EC=84=9C=EB=B9=84=EC=8A=A4 =EC=
+=A4=91 =ED=95=98=EB=82=98</li>
+</ul>
+<p style=3D"">=EC=9A=A9=EB=8F=84</p>
+<ul style=3D"">
+<li>ECU =EC=8B=9D=EB=B3=84 =EC=A0=95=EB=B3=B4 =EC=A1=B0=ED=9A=8C<span>&nbsp=
+;(VIN,&nbsp;</span>=ED=8E=8C=EC=9B=A8=EC=96=B4 =EB=B2=84=EC=A0=84<span>,&nb=
+sp;</span>=ED=95=98=EB=93=9C=EC=9B=A8=EC=96=B4 =EB=B2=88=ED=98=B8 =EB=93=B1=
+<span>)</span></li>
+<li>=EC=84=BC=EC=84=9C =EA=B0=92 =EC=9D=BD=EA=B8=B0<span>&nbsp;(RPM,&nbsp;<=
+/span>=EC=B0=A8=EC=86=8D<span>,&nbsp;</span>=EC=98=A8=EB=8F=84 =EB=93=B1<sp=
+an>)</span></li>
+<li>=EC=A7=84=EB=8B=A8 =EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=A1=B0=ED=9A=8C</li>
+<li>=EC=BA=98=EB=A6=AC=EB=B8=8C=EB=A0=88=EC=9D=B4=EC=85=98 =EA=B0=92 =ED=99=
+=95=EC=9D=B8</li>
+</ul>
+<p style=3D"">=ED=8A=B9=EC=A7=95</p>
+<ul style=3D"">
+<li>DID =ED=95=98=EB=82=98=EB=A1=9C =EB=8B=A4=EC=96=91=ED=95=9C =EB=8D=B0=
+=EC=9D=B4=ED=84=B0 =EC=A0=91=EA=B7=BC</li>
+<li>=EC=9D=BC=EB=B6=80<span>&nbsp;DID</span>=EB=8A=94<span>&nbsp;SecurityAc=
+cess&nbsp;</span>=ED=95=84=EC=9A=94</li>
+<li>=EB=A9=80=ED=8B=B0<span>&nbsp;DID&nbsp;</span>=EB=8F=99=EC=8B=9C =EC=9A=
+=94=EC=B2=AD =EA=B0=80=EB=8A=A5</li>
+<li>=EC=9D=91=EB=8B=B5 =EB=8D=B0=EC=9D=B4=ED=84=B0 =EA=B8=B8=EC=9D=B4=EB=8A=
+=94<span>&nbsp;DID</span>=EC=97=90 =EB=94=B0=EB=9D=BC =EA=B0=80=EB=B3=80</l=
+i>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.2DID(DataIdentifier)=EA=B0=9C=EB=85=90"><strong>12.2=
+ DID (Data Identifier)<span>&nbsp;</span></strong><strong>=EA=B0=9C=EB=85=
+=90</strong></h3>
+<p style=3D"">DID =EC=A0=95=EC=9D=98</p>
+<ul style=3D"">
+<li>2=EB=B0=94=EC=9D=B4=ED=8A=B8<span>(16</span>=EB=B9=84=ED=8A=B8<span>)&n=
+bsp;</span>=EC=8B=9D=EB=B3=84=EC=9E=90=EB=A1=9C<span>&nbsp;ECU</span>=EC=9D=
+=98 =EB=8D=B0=EC=9D=B4=ED=84=B0=EB=A5=BC =EA=B0=80=EB=A6=AC=ED=82=B4</li>
+<li>0x0000 ~ 0xFFFF =EB=B2=94=EC=9C=84</li>
+<li>=ED=91=9C=EC=A4=80<span>&nbsp;DID</span>=EC=99=80 =EC=A0=9C=EC=A1=B0=EC=
+=82=AC =EC=A0=95=EC=9D=98<span>&nbsp;DID</span>=EB=A1=9C =EA=B5=AC=EB=B6=84=
+</li>
+</ul>
+<p style=3D"">DID =EB=B2=94=EC=9C=84=EB=B3=84 =EC=9A=A9=EB=8F=84</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>DID<span>=
+&nbsp;</span></strong><strong>=EB=B2=94=EC=9C=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9A=A9=
+=EB=8F=84</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x0000 ~ 0xEFFF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C =EA=B3=B5=EA=B8=89=EC=82=AC =EC=A0=95=EC=9D=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF000 ~ 0xF00F</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=84=A4=ED=8A=
+=B8=EC=9B=8C=ED=81=AC =EC=84=A4=EC=A0=95</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF010 ~ 0xF0FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C =EA=B3=B5=EA=B8=89=EC=82=AC =EC=A0=95=EC=9D=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF100 ~ 0xF17F</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ID =EC=8B=9D=EB=
+=B3=84<span>&nbsp;(Identification)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF180 ~ 0xF1FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>UDS =ED=91=9C=EC=
+=A4=80 =EC=8B=9D=EB=B3=84 =EC=A0=95=EB=B3=B4</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF200 ~ 0xF2FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Periodic =EB=8D=
+=B0=EC=9D=B4=ED=84=B0</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF300 ~ 0xF3FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>Dynamic =EB=8D=B0=
+=EC=9D=B4=ED=84=B0</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF400 ~ 0xF4FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>OBD =EA=B4=80=EB=
+=A0=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF500 ~ 0xF5FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>OBD =EA=B4=80=EB=
+=A0=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF600 ~ 0xF6FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>OBD =EA=B4=80=EB=
+=A0=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF700 ~ 0xF7FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>OBD =EA=B4=80=EB=
+=A0=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF800 ~ 0xF8FF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>OBD =EA=B4=80=EB=
+=A0=A8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xFA00 ~ 0xFA0F</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C =EA=B3=B5=EA=B8=89=EC=82=AC =EC=8B=9D=EB=B3=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xFA10 ~ 0xFAFF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C =EA=B3=B5=EA=B8=89=EC=82=AC =EC=A0=95=EC=9D=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xFD00 ~ 0xFEFF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC =EC=A0=95=EC=9D=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xFF00 ~ 0xFFFF</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=98=88=EC=95=
+=BD</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.3=EC=A3=BC=EC=9A=94=ED=91=9C=EC=A4=80DID=EC=A0=95=EB=
+=A6=AC"><strong>12.3<span>&nbsp;</span></strong><strong>=EC=A3=BC=EC=9A=94 =
+=ED=91=9C=EC=A4=80<span>&nbsp;DID&nbsp;</span>=EC=A0=95=EB=A6=AC</strong></=
+h3>
+<p style=3D"">ECU =EC=8B=9D=EB=B3=84 =EC=A0=95=EB=B3=B4<span>&nbsp;DID (0xF=
+180 ~ 0xF1FF)</span></p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>DID</stro=
+ng></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=84=A4=
+=EB=AA=85</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF180</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>BootSoftwareIdent=
+ification</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=B6=80=ED=8A=
+=B8=EB=A1=9C=EB=8D=94 =EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=A8=EC=96=B4 =EB=B2=
+=84=EC=A0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF181</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ApplicationSoftwa=
+reIdentification</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=95=A0=ED=94=
+=8C=EB=A6=AC=EC=BC=80=EC=9D=B4=EC=85=98 =EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=
+=A8=EC=96=B4 =EB=B2=84=EC=A0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF182</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ApplicationDataId=
+entification</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=95=A0=ED=94=
+=8C=EB=A6=AC=EC=BC=80=EC=9D=B4=EC=85=98 =EB=8D=B0=EC=9D=B4=ED=84=B0 =EB=B2=
+=84=EC=A0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF183</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>BootSoftwareFinge=
+rprint</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=B6=80=ED=8A=
+=B8=EB=A1=9C=EB=8D=94 =ED=95=91=EA=B1=B0=ED=94=84=EB=A6=B0=ED=8A=B8</p></td=
+>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF184</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ApplicationSoftwa=
+reFingerprint</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=95=A0=ED=94=
+=8C=EB=A6=AC=EC=BC=80=EC=9D=B4=EC=85=98 =ED=95=91=EA=B1=B0=ED=94=84=EB=A6=
+=B0=ED=8A=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF185</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ApplicationDataFi=
+ngerprint</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=8D=B0=EC=9D=
+=B4=ED=84=B0 =ED=95=91=EA=B1=B0=ED=94=84=EB=A6=B0=ED=8A=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF186</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ActiveDiagnosticS=
+essionDataIdentifier</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=98=84=EC=9E=
+=AC =ED=99=9C=EC=84=B1 =EC=A7=84=EB=8B=A8 =EC=84=B8=EC=85=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF187</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>VehicleManufactur=
+erSparePartNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC =EB=B6=80=ED=92=88 =EB=B2=88=ED=98=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF188</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>VehicleManufactur=
+erECUSoftwareNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC<span>&nbsp;ECU&nbsp;</span>=EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=
+=A8=EC=96=B4 =EB=B2=88=ED=98=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF189</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>VehicleManufactur=
+erECUSoftwareVersionNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC<span>&nbsp;ECU&nbsp;</span>=EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=
+=A8=EC=96=B4 =EB=B2=84=EC=A0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF18A</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SystemSupplierIde=
+ntifier</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C =EA=B3=B5=EA=B8=89=EC=82=AC<span>&nbsp;ID</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF18B</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECUManufacturingD=
+ate</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECU =EC=A0=9C=EC=
+=A1=B0=EC=9D=BC</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF18C</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECUSerialNumber</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECU =EC=8B=9C=EB=
+=A6=AC=EC=96=BC =EB=B2=88=ED=98=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF18D</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SupportedFunction=
+alUnits</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A7=80=EC=9B=
+=90 =EA=B8=B0=EB=8A=A5 =EB=8B=A8=EC=9C=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF190</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>VIN (Vehicle Iden=
+tification Number)</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=B0=A8=EB=9F=
+=89 =EC=8B=9D=EB=B3=84 =EB=B2=88=ED=98=B8<span>&nbsp;(17</span>=EC=9E=90=EB=
+=A6=AC<span>)</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF191</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>VehicleManufactur=
+erECUHardwareNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC<span>&nbsp;ECU&nbsp;</span>=ED=95=98=EB=93=9C=EC=9B=A8=EC=96=
+=B4 =EB=B2=88=ED=98=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF192</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SystemSupplierECU=
+HardwareNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B3=B5=EA=B8=
+=89=EC=82=AC<span>&nbsp;ECU&nbsp;</span>=ED=95=98=EB=93=9C=EC=9B=A8=EC=96=
+=B4 =EB=B2=88=ED=98=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF193</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SystemSupplierECU=
+HardwareVersionNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B3=B5=EA=B8=
+=89=EC=82=AC<span>&nbsp;ECU&nbsp;</span>=ED=95=98=EB=93=9C=EC=9B=A8=EC=96=
+=B4 =EB=B2=84=EC=A0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF194</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SystemSupplierECU=
+SoftwareNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B3=B5=EA=B8=
+=89=EC=82=AC<span>&nbsp;ECU&nbsp;</span>=EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=
+=A8=EC=96=B4 =EB=B2=88=ED=98=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF195</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SystemSupplierECU=
+SoftwareVersionNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B3=B5=EA=B8=
+=89=EC=82=AC<span>&nbsp;ECU&nbsp;</span>=EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=
+=A8=EC=96=B4 =EB=B2=84=EC=A0=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF196</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ExhaustRegulation=
+OrTypeApprovalNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=B0=B0=EC=B6=
+=9C=EA=B0=80=EC=8A=A4 =EA=B7=9C=EC=A0=9C =EC=9D=B8=EC=A6=9D =EB=B2=88=ED=98=
+=B8</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF197</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>SystemNameOrEngin=
+eType</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=8B=9C=EC=8A=
+=A4=ED=85=9C =EC=9D=B4=EB=A6=84 =EB=98=90=EB=8A=94 =EC=97=94=EC=A7=84 =ED=
+=83=80=EC=9E=85</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF198</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>RepairShopCodeOrT=
+esterSerialNumber</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=95=EB=B9=
+=84=EC=86=8C =EC=BD=94=EB=93=9C =EB=98=90=EB=8A=94 =EC=A7=84=EB=8B=A8=EA=B8=
+=B0 =EC=8B=9C=EB=A6=AC=EC=96=BC</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF199</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ProgrammingDate</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=94=84=EB=A1=
+=9C=EA=B7=B8=EB=9E=98=EB=B0=8D =EB=82=A0=EC=A7=9C</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF19D</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECUInstallationDa=
+te</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ECU =EC=84=A4=EC=
+=B9=98=EC=9D=BC</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">=EC=9E=90=EC=A3=BC =EC=82=AC=EC=9A=A9=EB=90=98=EB=8A=94<span>=
+&nbsp;DID</span></p>
+<ul style=3D"">
+<li>0xF190 VIN: =EA=B0=80=EC=9E=A5 =EB=A7=8E=EC=9D=B4 =EC=A1=B0=ED=9A=8C=EB=
+=90=98=EB=8A=94<span>&nbsp;DID</span></li>
+<li>0xF188 / 0xF189: =ED=8E=8C=EC=9B=A8=EC=96=B4 =EB=B2=84=EC=A0=84 =ED=99=
+=95=EC=9D=B8</li>
+<li>0xF186: =ED=98=84=EC=9E=AC =EC=84=B8=EC=85=98 =ED=99=95=EC=9D=B8<span>&=
+nbsp;(1</span>=EB=B0=94=EC=9D=B4=ED=8A=B8 =EC=9D=91=EB=8B=B5<span>)</span><=
+/li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.4=EB=8F=99=EC=8B=9C=EB=8B=A4=EC=A4=91DID=EC=9A=94=EC=
+=B2=AD"><strong>12.4<span>&nbsp;</span></strong><strong>=EB=8F=99=EC=8B=9C =
+=EB=8B=A4=EC=A4=91<span>&nbsp;DID&nbsp;</span>=EC=9A=94=EC=B2=AD</strong></=
+h3>
+<p style=3D"">=EC=97=AC=EB=9F=AC<span>&nbsp;DID</span>=EB=A5=BC =ED=95=9C =
+=EB=B2=88=EC=97=90 =EC=9A=94=EC=B2=AD =EA=B0=80=EB=8A=A5</p>
+<p style=3D"">Request:</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID][DID 1(2=EB=B0=94=EC=9D=B4=ED=8A=B8=
+<span>)][DID 2(2</span>=EB=B0=94=EC=9D=B4=ED=8A=B8<span>)][DID 3(2</span>=
+=EB=B0=94=EC=9D=B4=ED=8A=B8<span>)]...</span></p>
+<p style=3D"">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;22&nbsp;&nbsp;&nbsp; XX XX&nb=
+sp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; YY YY&nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; &nbsp; &nbsp;ZZ ZZ</p>
+<p style=3D"">Response:</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [SID + 0x40][DID 1][Data 1][DID 2][Data =
+2]...</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 62&nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; XX XX&nbsp; ...&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; YY YY&n=
+bsp; ...</p>
+<p style=3D"">=EC=98=88=EC=8B=9C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 22 F1 90 F1=
+ 88</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 62</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;=
+ &nbsp; &nbsp; &nbsp;F1 90 [VIN 17=EB=B0=94=EC=9D=B4=ED=8A=B8<span>]</span>=
+</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+;&nbsp; &nbsp; &nbsp;F1 88 [S/W =EB=B2=88=ED=98=B8 =EB=8D=B0=EC=9D=B4=ED=84=
+=B0<span>]</span></p>
+<p style=3D"">=EC=9E=A5=EC=A0=90</p>
+<ul style=3D"">
+<li>=ED=86=B5=EC=8B=A0 =ED=9A=9F=EC=88=98 =EA=B0=90=EC=86=8C</li>
+<li>=EC=A7=84=EB=8B=A8 =EC=8B=9C=EA=B0=84 =EB=8B=A8=EC=B6=95</li>
+</ul>
+<p style=3D"">=EB=8B=A8=EC=A0=90</p>
+<ul style=3D"">
+<li>=EB=A9=80=ED=8B=B0=ED=94=84=EB=A0=88=EC=9E=84 =EC=9D=91=EB=8B=B5 =ED=95=
+=84=EC=9A=94<span>&nbsp;(</span>=EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=96=91 =EC=
+=A6=9D=EA=B0=80<span>)</span></li>
+<li>=EC=9D=BC=EB=B6=80<span>&nbsp;ECU</span>=EC=97=90=EC=84=9C =EC=A7=80=EC=
+=9B=90=ED=95=98=EC=A7=80 =EC=95=8A=EC=9D=8C</li>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.5DID=EB=8D=B0=EC=9D=B4=ED=84=B0=EA=B8=B8=EC=9D=B4=EA=
+=B0=80=EB=B3=80=EC=84=B1"><strong>12.5 DID<span>&nbsp;</span></strong><stro=
+ng>=EB=8D=B0=EC=9D=B4=ED=84=B0 =EA=B8=B8=EC=9D=B4 =EA=B0=80=EB=B3=80=EC=84=
+=B1</strong></h3>
+<p style=3D"">DID=EB=A7=88=EB=8B=A4 =EC=9D=91=EB=8B=B5 =EB=8D=B0=EC=9D=B4=
+=ED=84=B0 =EA=B8=B8=EC=9D=B4=EA=B0=80 =EB=8B=A4=EB=A6=84</p>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>DID</stro=
+ng></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=8D=B0=
+=EC=9D=B4=ED=84=B0 =EA=B8=B8=EC=9D=B4</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=98=88=
+=EC=8B=9C</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF190 (VIN)</p><=
+/td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>17=EB=B0=94=EC=9D=
+=B4=ED=8A=B8</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>"KMHXX00000000000=
+1"</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF186 (Active Se=
+ssion)</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>1=EB=B0=94=EC=9D=
+=B4=ED=8A=B8</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x03 (Extended)</=
+p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF188 (S/W =EB=
+=B2=88=ED=98=B8<span>)</span></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B0=80=EB=B3=
+=80</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A0=9C=EC=A1=
+=B0=EC=82=AC=EB=B3=84</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0xF180 (Boot S/W =
+ID)</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EA=B0=80=EB=B3=
+=80</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>ASCII =EB=AC=B8=
+=EC=9E=90=EC=97=B4</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style=3D"">DID =EB=8D=B0=EC=9D=B4=ED=84=B0 =EA=B8=B8=EC=9D=B4=EB=8A=94<s=
+pan>&nbsp;ODX&nbsp;</span>=ED=8C=8C=EC=9D=BC=EC=97=90 =EC=A0=95=EC=9D=98</p=
+>
+<ul style=3D"">
+<li>=EC=A7=84=EB=8B=A8=EA=B8=B0=EB=8A=94<span>&nbsp;ODX&nbsp;</span>=ED=8C=
+=8C=EC=9D=BC=EC=97=90=EC=84=9C =EA=B0=81<span>&nbsp;DID</span>=EC=9D=98 =EC=
+=A0=95=ED=99=95=ED=95=9C =EA=B8=B8=EC=9D=B4=EC=99=80 =ED=98=95=EC=8B=9D =ED=
+=8C=8C=EC=95=85</li>
+<li>=EC=9D=91=EB=8B=B5 =EB=8D=B0=EC=9D=B4=ED=84=B0 =ED=8C=8C=EC=8B=B1 =EC=
+=8B=9C<span>&nbsp;ODX&nbsp;</span>=EC=A0=95=EB=B3=B4 =ED=95=84=EC=88=98</li=
+>
+</ul>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.6=EB=B0=9C=EC=83=9D=EA=B0=80=EB=8A=A5=ED=95=9CNRC"><=
+strong>12.6<span>&nbsp;</span></strong><strong>=EB=B0=9C=EC=83=9D =EA=B0=80=
+=EB=8A=A5=ED=95=9C<span>&nbsp;NRC</span></strong></h3>
+<div class=3D"table-wrap">
+<table class=3D"confluenceTable">
+<tbody class=3D"">
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>NRC</stro=
+ng></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EC=9D=B4=
+=EB=A6=84</strong></p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p><strong>=EB=B0=9C=
+=EC=83=9D =EC=A1=B0=EA=B1=B4</strong></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x13</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>incorrectMessageL=
+engthOrInvalidFormat</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>DID =ED=98=95=EC=
+=8B=9D =EC=98=A4=EB=A5=98</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x14</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>responseTooLong</=
+p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=9D=91=EB=8B=
+=B5 =EB=8D=B0=EC=9D=B4=ED=84=B0=EA=B0=80 =EB=84=88=EB=AC=B4 =ED=81=BC</p></=
+td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x22</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>conditionsNotCorr=
+ect</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A1=B0=EA=B1=
+=B4 =EB=B6=88=EB=A7=8C=EC=A1=B1</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x31</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>requestOutOfRange=
+</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EC=A7=80=EC=9B=
+=90=ED=95=98=EC=A7=80 =EC=95=8A=EB=8A=94<span>&nbsp;DID</span></p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x33</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>securityAccessDen=
+ied</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=EB=B3=B4=EC=95=
+=88 =EC=9D=B8=EC=A6=9D =ED=95=84=EC=9A=94</p></td>
+</tr>
+<tr class=3D"">
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>0x7F</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>serviceNotSupport=
+edInActiveSession</p></td>
+<td style=3D"text-align: left;" class=3D"confluenceTd"><p>=ED=98=84=EC=9E=
+=AC =EC=84=B8=EC=85=98=EC=97=90=EC=84=9C =EB=B6=88=EA=B0=80</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 style=3D"" id=3D"id-(3)UDS=EC=A3=BC=EC=9A=94=EC=84=9C=EB=B9=84=EC=8A=A4=
+=EC=83=81=EC=84=B81-12.7=EC=8B=A4=EB=AC=B4=EB=A1=9C=EA=B7=B8=EC=98=88=EC=8B=
+=9C"><strong>12.7<span>&nbsp;</span></strong><strong>=EC=8B=A4=EB=AC=B4 =EB=
+=A1=9C=EA=B7=B8 =EC=98=88=EC=8B=9C</strong></h3>
+<p style=3D"">VIN =EC=A1=B0=ED=9A=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 22 F1 90</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 62 F1 90 4B=
+ 4D 48 58 58 30 30 30 30 30 30 30 30 30 30 30 31</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - DID: F1 90 (VIN)</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EB=8D=B0=EC=9D=B4=ED=84=B0<span>: ASC=
+II</span>=EB=A1=9C<span>&nbsp;"KMHXX000000000001"</span></p>
+<p style=3D"">=EC=86=8C=ED=94=84=ED=8A=B8=EC=9B=A8=EC=96=B4 =EB=B2=84=EC=A0=
+=84 =EC=A1=B0=ED=9A=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 22 F1 88</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 62 F1 88 56=
+ 31 2E 32 2E 33</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - DID: F1 88 (S/W =EB=B2=88=ED=98=B8<spa=
+n>)</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =EB=8D=B0=EC=9D=B4=ED=84=B0<span>: ASC=
+II</span>=EB=A1=9C<span>&nbsp;"V1.2.3"</span></p>
+<p style=3D"">=ED=98=84=EC=9E=AC =EC=84=B8=EC=85=98 =ED=99=95=EC=9D=B8</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 22 F1 86</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 62 F1 86 03=
+</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - =ED=98=84=EC=9E=AC<span>&nbsp;Extended=
+ Diagnostic Session (0x03)&nbsp;</span>=ED=99=9C=EC=84=B1</p>
+<p style=3D"">=EB=8B=A4=EC=A4=91<span>&nbsp;DID&nbsp;</span>=EC=9A=94=EC=B2=
+=AD</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 22 F1 90 F1=
+ 88 F1 86</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 62</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; F1 90 [VIN 17=EB=B0=94=EC=9D=B4=ED=8A=B8<span>]</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; F1 88 [S/W =EB=B2=88=ED=98=B8<span>]</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; F1 86 03</p>
+<p style=3D"">=EC=A7=80=EC=9B=90=ED=95=98=EC=A7=80 =EC=95=8A=EB=8A=94<span>=
+&nbsp;DID&nbsp;</span>=EC=9A=94=EC=B2=AD</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 22 12 34</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 7F 22 31</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - DID 0x1234=EB=8A=94<span>&nbsp;ECU</sp=
+an>=EA=B0=80 =EC=A7=80=EC=9B=90=ED=95=98=EC=A7=80 =EC=95=8A=EC=9D=8C</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - requestOutOfRange</p>
+<p style=3D"">=EB=B3=B4=EC=95=88 =EC=9D=B8=EC=A6=9D =EB=AF=B8=EC=88=98=ED=
+=96=89</p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [Tester =E2=86=92 ECU]&nbsp; 22 F1 9D</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; [ECU =E2=86=92 Tester]&nbsp; 7F 22 33</p=
+>
+<p style=3D"">&nbsp; &nbsp; &nbsp; =ED=95=B4=EC=84=9D<span>:</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - ECUInstallationDate=EB=8A=94 =EB=B3=B4=
+=EC=95=88<span>&nbsp;DID</span></p>
+<p style=3D"">&nbsp; &nbsp; &nbsp; - SecurityAccess =ED=95=84=EC=9A=94</p>
+    </div>
+</body>
+</html>
+------=_Part_25513_941276922.1787632771260--

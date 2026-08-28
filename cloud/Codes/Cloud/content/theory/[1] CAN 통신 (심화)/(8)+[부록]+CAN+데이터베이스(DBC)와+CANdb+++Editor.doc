@@ -1,0 +1,384 @@
+Date: Tue, 25 Aug 2026 13:38:41 +0900 (KST)
+Message-ID: <154916777.25508.1787632721273@MGPPGIMAPP03>
+Subject: Exported From Confluence
+MIME-Version: 1.0
+Content-Type: multipart/related; 
+	boundary="----=_Part_25507_778788809.1787632721273"
+
+------=_Part_25507_778788809.1787632721273
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///C:/exported.html
+
+<html xmlns:o=3D'urn:schemas-microsoft-com:office:office'
+      xmlns:w=3D'urn:schemas-microsoft-com:office:word'
+      xmlns:v=3D'urn:schemas-microsoft-com:vml'
+      xmlns=3D'urn:w3-org-ns:HTML'>
+<head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <title>(8) [=EB=B6=80=EB=A1=9D] CAN =EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=
+=A0=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80 CANdb++ Editor</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:TargetScreenSize>1024x640</o:TargetScreenSize>
+            <o:PixelsPerInch>72</o:PixelsPerInch>
+            <o:AllowPNG/>
+        </o:OfficeDocumentSettings>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>90</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+                <!--
+        @page Section1 {
+            size: 8.5in 11.0in;
+            margin: 1.0in;
+            mso-header-margin: .5in;
+            mso-footer-margin: .5in;
+            mso-paper-source: 0;
+        }
+
+        table {
+            border: solid 1px;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            border: solid 1px;
+            padding: 5px;
+        }
+
+        td {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-after: avoid;
+        }
+
+        div.Section1 {
+            page: Section1;
+        }
+
+        /* Confluence print stylesheet. Common to all themes for print medi=
+a */
+/* Full of !important until we improve batching for print CSS */
+
+@media print {
+    #main {
+        padding-bottom: 1em !important; /* The default padding of 6em is to=
+o much for printouts */
+    }
+
+    body {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2;
+    }
+
+    body, #full-height-container, #main, #page, #content, .has-personal-sid=
+ebar #content {
+        background: #fff !important;
+        color: #000 !important;
+        border: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    a, a:link, a:visited, a:focus, a:hover, a:active {
+        color: #000;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        page-break-after: avoid;
+    }
+
+    pre {
+        font-family: Monaco, "Courier New", monospace;
+    }
+
+    #header,
+    .aui-header-inner,
+    #navigation,
+    #sidebar,
+    .sidebar,
+    #personal-info-sidebar,
+    .ia-fixed-sidebar,
+    .page-actions,
+    .navmenu,
+    .ajs-menu-bar,
+    .noprint,
+    .inline-control-link,
+    .inline-control-link a,
+    a.show-labels-editor,
+    .global-comment-actions,
+    .comment-actions,
+    .quick-comment-container,
+    #addcomment {
+        display: none !important;
+    }
+
+    /* CONF-28544 cannot print multiple pages in IE */
+    #splitter-content {
+        position: relative !important;
+    }
+
+    .comment .date::before {
+        content: none !important; /* remove middot for print view */
+    }
+
+    h1.pagetitle img {
+        height: auto;
+        width: auto;
+    }
+
+    .print-only {
+        display: block;
+    }
+
+    #footer {
+        position: relative !important; /* CONF-17506 Place the footer at en=
+d of the content */
+        margin: 0;
+        padding: 0;
+        background: none;
+        clear: both;
+    }
+
+    #poweredby {
+        border-top: none;
+        background: none;
+    }
+
+    #poweredby li.print-only {
+        display: list-item;
+        font-style: italic;
+    }
+
+    #poweredby li.noprint {
+        display: none;
+    }
+
+    /* no width controls in print */
+    .wiki-content .table-wrap,
+    .wiki-content p,
+    .panel .codeContent,
+    .panel .codeContent pre,
+    .image-wrap {
+        overflow: visible !important;
+    }
+
+    /* TODO - should this work? */
+    #children-section,
+    #comments-section .comment,
+    #comments-section .comment .comment-body,
+    #comments-section .comment .comment-content,
+    #comments-section .comment p {
+        page-break-inside: avoid;
+    }
+
+    #page-children a {
+        text-decoration: none;
+    }
+
+    /**
+     hide twixies
+
+     the specificity here is a hack because print styles
+     are getting loaded before the base styles. */
+    #comments-section.pageSection .section-header,
+    #comments-section.pageSection .section-title,
+    #children-section.pageSection .section-header,
+    #children-section.pageSection .section-title,
+    .children-show-hide {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    .children-show-hide.icon {
+        display: none;
+    }
+
+    /* personal sidebar */
+    .has-personal-sidebar #content {
+        margin-right: 0px;
+    }
+
+    .has-personal-sidebar #content .pageSection {
+        margin-right: 0px;
+    }
+
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+-->
+    </style>
+</head>
+<body>
+    <h1>(8) [=EB=B6=80=EB=A1=9D] CAN =EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=
+=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80 CANdb++ Editor</h1>
+    <div class=3D"Section1">
+        <h2 id=3D"id-(8)[=EB=B6=80=EB=A1=9D]CAN=EB=8D=B0=EC=9D=B4=ED=84=B0=
+=EB=B2=A0=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80CANdb++Editor-8.CAN=EB=8D=B0=EC=9D=
+=B4=ED=84=B0=EB=B2=A0=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80CANdb++Editor"><strong=
+>8. CAN =EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=EC=9D=B4=EC=8A=A4(DBC)=EC=99=
+=80 CANdb++ Editor</strong><br><br></h2>
+<h3 id=3D"id-(8)[=EB=B6=80=EB=A1=9D]CAN=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=
+=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80CANdb++Editor-8.1=EB=A9=94=EC=8B=9C=EC=A7=
+=80=EC=99=80=EC=8B=A0=ED=98=B8(Signal)"><strong>8.1 =EB=A9=94=EC=8B=9C=EC=
+=A7=80=EC=99=80 =EC=8B=A0=ED=98=B8(Signal)</strong></h3>
+<ul>
+<li><strong>CAN =ED=94=84=EB=A1=9C=ED=86=A0=EC=BD=9C =EC=9E=90=EC=B2=B4=EB=
+=8A=94 =EB=8D=B0=EC=9D=B4=ED=84=B0=EC=9D=98 =EC=9D=98=EB=AF=B8=EB=A5=BC =EC=
+=A0=95=EC=9D=98=ED=95=98=EC=A7=80 =EC=95=8A=EB=8A=94=EB=8B=A4.</strong></li=
+>
+<li><strong>=EB=A9=94=EC=8B=9C=EC=A7=80(Message): Identifier + DLC + Data F=
+ield(=EC=B5=9C=EB=8C=80 8byte, CAN FD=EB=8A=94 =EC=B5=9C=EB=8C=80 64byte)=
+=EB=A1=9C =EA=B5=AC=EC=84=B1=EB=90=98=EB=8A=94 =ED=86=B5=EC=8B=A0 =EA=B0=9D=
+=EC=B2=B4</strong></li>
+<li><strong>=EC=8B=A0=ED=98=B8(Signal): =EB=A9=94=EC=8B=9C=EC=A7=80=EC=9D=
+=98 Data Field =EB=82=B4 =ED=8A=B9=EC=A0=95 =EA=B5=AC=EA=B0=84(1~64bit)=EC=
+=9D=B4 =EB=82=98=ED=83=80=EB=82=B4=EB=8A=94 =EC=8B=A4=EC=A0=9C =EC=9D=98=EB=
+=AF=B8 =EC=9E=88=EB=8A=94 =EC=A0=95=EB=B3=B4</strong>
+<ul>
+<li><strong>=EC=8B=A0=ED=98=B8 =EC=84=A4=EB=AA=85 =EC=9A=94=EC=86=8C: =EC=
+=9D=B4=EB=A6=84(symbolic name), =EB=8B=A8=EC=9C=84(unit), =EB=B3=80=ED=99=
+=98=EC=8B=9D(conversion formula), =EC=8B=AC=EB=B3=BC=EB=A6=AD =EA=B0=92(sym=
+bolic value)</strong></li>
+<li><strong>=EB=AC=BC=EB=A6=AC=EA=B0=92 =EB=B3=80=ED=99=98=EC=8B=9D: <code>=
+=EB=AC=BC=EB=A6=AC=EA=B0=92 =3D Raw=EA=B0=92 =C3=97 Factor + Offset</code><=
+/strong></li>
+</ul></li>
+</ul>
+<h3 id=3D"id-(8)[=EB=B6=80=EB=A1=9D]CAN=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=
+=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80CANdb++Editor-8.2IntelvsMotorola=ED=8F=AC=
+=EB=A7=B7(ByteOrder)"><br><strong>8.2 Intel vs Motorola =ED=8F=AC=EB=A7=B7 =
+(Byte Order)</strong></h3>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh"><strong>=ED=8F=AC=EB=A7=B7</strong></th>
+<th class=3D"confluenceTh"><strong>=EB=B0=A9=ED=96=A5</strong></th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Motorola</strong></td>
+<td class=3D"confluenceTd"><strong>MSB(=EC=B5=9C=EC=83=81=EC=9C=84 =EB=B0=
+=94=EC=9D=B4=ED=8A=B8)=EA=B0=80 =EC=95=9E=EC=AA=BD(=EB=82=AE=EC=9D=80 byte =
+=EB=B2=88=ED=98=B8)</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Intel</strong></td>
+<td class=3D"confluenceTd"><strong>LSB(=EC=B5=9C=ED=95=98=EC=9C=84 =EB=B0=
+=94=EC=9D=B4=ED=8A=B8)=EA=B0=80 =EC=95=9E=EC=AA=BD(=EB=82=AE=EC=9D=80 byte =
+=EB=B2=88=ED=98=B8)</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>=EB=B0=94=EC=9D=B4=ED=8A=B8 =EB=82=B4=EB=B6=80=EC=9D=98 =EB=B9=
+=84=ED=8A=B8 =EC=9C=A0=EC=9D=98=EC=84=B1(significance)=EC=9D=80 =EB=91=90 =
+=ED=8F=AC=EB=A7=B7=EC=97=90=EC=84=9C =EB=8F=99=EC=9D=BC=ED=95=A8 (bit7=3Dms=
+b, bit0=3Dlsb)</strong></li>
+<li><strong>=EC=8B=A0=ED=98=B8 =EA=B8=B8=EC=9D=B4=EA=B0=80 8bit =EC=9D=B4=
+=ED=95=98=EC=9D=B8 =EA=B2=BD=EC=9A=B0 =ED=8F=AC=EB=A7=B7 =EC=B0=A8=EC=9D=B4=
+=EB=8A=94 =EC=9D=98=EB=AF=B8 =EC=97=86=EC=9D=8C</strong></li>
+</ul>
+<h3 id=3D"id-(8)[=EB=B6=80=EB=A1=9D]CAN=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=
+=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80CANdb++Editor-8.3CANDatabase(DBC)=EC=9D=98=
+=EC=97=AD=ED=95=A0"><br><strong>8.3 CAN Database(DBC)=EC=9D=98 =EC=97=AD=ED=
+=95=A0</strong></h3>
+<ul>
+<li><strong>=EB=AA=A8=EB=93=A0 =ED=86=B5=EC=8B=A0 =EC=A0=95=EC=9D=98(=EB=A9=
+=94=EC=8B=9C=EC=A7=80, =EC=8B=A0=ED=98=B8, =EB=85=B8=EB=93=9C, =EA=B4=80=EA=
+=B3=84)=EB=A5=BC =EB=8B=B4=EB=8A=94 =EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=EC=
+=9D=B4=EC=8A=A4=EB=A1=9C, Vector =EB=8F=84=EA=B5=AC =EC=A0=84=EB=B0=98(CANo=
+e, CANalyzer, CANape =EB=93=B1)=EC=97=90=EC=84=9C =EA=B3=B5=ED=86=B5=EC=9C=
+=BC=EB=A1=9C =EC=82=AC=EC=9A=A9</strong></li>
+<li><strong>=ED=8A=B8=EB=A0=88=EC=9D=B4=EC=8A=A4 =EC=B0=BD(Trace Window)=EC=
+=97=90=EC=84=9C =EC=9B=90=EC=8B=9C hex =EA=B0=92=EC=9D=84 =E2=86=92 =EB=A9=
+=94=EC=8B=9C=EC=A7=80=EB=AA=85/=EC=8B=A0=ED=98=B8=EB=AA=85/=EB=AC=BC=EB=A6=
+=AC=EA=B0=92/=EC=8B=AC=EB=B3=BC=EB=A6=AD=EA=B0=92=EC=9C=BC=EB=A1=9C =ED=95=
+=B4=EC=84=9D=ED=95=B4=EC=84=9C =EB=B3=B4=EC=97=AC=EC=A3=BC=EB=8A=94 =EC=97=
+=AD=ED=95=A0</strong></li>
+<li><strong>=ED=99=9C=EC=9A=A9 =EB=B6=84=EC=95=BC: =EB=B6=84=EC=84=9D(Analy=
+sis), =EC=8B=9C=EB=AE=AC=EB=A0=88=EC=9D=B4=EC=85=98(Simulation), =ED=85=8C=
+=EC=8A=A4=ED=8A=B8(Test), =EC=9E=84=EB=B2=A0=EB=94=94=EB=93=9C SW(=EC=BD=94=
+=EB=93=9C =EC=83=9D=EC=84=B1)</strong></li>
+</ul>
+<h3 id=3D"id-(8)[=EB=B6=80=EB=A1=9D]CAN=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=
+=EC=9D=B4=EC=8A=A4(DBC)=EC=99=80CANdb++Editor-8.4CANdb++Editor"><br><strong=
+>8.4 CANdb++ Editor</strong></h3>
+<ul>
+<li><strong>CAN =EB=84=A4=ED=8A=B8=EC=9B=8C=ED=81=AC =EC=84=9C=EC=88=A0=EC=
+=97=90 =EC=82=AC=EC=9A=A9=EB=90=98=EB=8A=94 dbc =ED=8C=8C=EC=9D=BC=EC=9D=84=
+ =EB=8B=A4=EB=A3=A8=EB=8A=94 Vector =EC=A0=84=EC=9A=A9 =ED=8E=B8=EC=A7=91=
+=EA=B8=B0</strong></li>
+<li><strong>=EC=A3=BC=EC=9A=94 =EA=B8=B0=EB=8A=A5: =EC=83=88 =EB=8D=B0=EC=
+=9D=B4=ED=84=B0=EB=B2=A0=EC=9D=B4=EC=8A=A4 =EC=83=9D=EC=84=B1, =EA=B8=B0=EC=
+=A1=B4 DB =EC=97=B4=EB=9E=8C/=ED=8E=B8=EC=A7=91, Value Table=EC=9D=84 =EC=
+=9D=B4=EC=9A=A9=ED=95=9C =EC=8B=A0=ED=98=B8 =EC=83=81=EC=84=B8 =EC=84=A4=EB=
+=AA=85, Attribute=EB=A5=BC =EC=9D=B4=EC=9A=A9=ED=95=9C =EA=B3=A0=EA=B8=89 =
+=EC=84=A4=EC=A0=95</strong></li>
+<li><strong>CANalyzer/CANoe/CANape=EC=97=90 =EA=B8=B0=EB=B3=B8 =ED=8F=AC=ED=
+=95=A8=EB=90=98=EC=96=B4 =EC=9E=88=EC=9C=BC=EB=A9=B0 =ED=95=B4=EB=8B=B9 =ED=
+=88=B4 =EB=82=B4=EC=97=90=EC=84=9C =EB=B0=94=EB=A1=9C =EC=8B=A4=ED=96=89 =
+=EA=B0=80=EB=8A=A5</strong></li>
+</ul>
+<p><strong>=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=EC=9D=B4=EC=8A=A4 =EC=83=9D=
+=EC=84=B1 =EC=88=9C=EC=84=9C</strong></p>
+<ol>
+<li><strong>=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=EC=9D=B4=EC=8A=A4 =EC=83=
+=9D=EC=84=B1 (=ED=85=9C=ED=94=8C=EB=A6=BF =EC=84=A0=ED=83=9D)</strong></li>
+<li><strong>=EC=8B=A0=ED=98=B8(Signal) =EC=A0=95=EC=9D=98 (=EC=9D=B4=EB=A6=
+=84, bit =EC=88=98, Intel/Motorola, factor &amp; offset, =EB=8B=A8=EC=9C=84=
+)</strong></li>
+<li><strong>=EB=84=A4=ED=8A=B8=EC=9B=8C=ED=81=AC =EB=85=B8=EB=93=9C(Node) =
+=EC=A0=95=EC=9D=98 (=EC=9D=B4=EB=A6=84)</strong></li>
+<li><strong>=EB=A9=94=EC=8B=9C=EC=A7=80(Message) =EC=A0=95=EC=9D=98 (=EC=9D=
+=B4=EB=A6=84, DLC, Standard/Extended, ID, =EC=86=A1=EC=8B=A0 =EB=85=B8=EB=
+=93=9C)</strong></li>
+<li><strong>=EB=A9=94=EC=8B=9C=EC=A7=80=EC=97=90 =EC=8B=A0=ED=98=B8 =ED=95=
+=A0=EB=8B=B9</strong></li>
+<li><strong>=EC=8B=A0=ED=98=B8 =EC=9C=84=EC=B9=98(Start bit, Layout) =ED=99=
+=95=EC=9D=B8/=EC=88=98=EC=A0=95</strong></li>
+<li><strong>=EC=88=98=EC=8B=A0 =EC=8B=A0=ED=98=B8 =EB=A7=A4=ED=95=91(Mapped=
+ Rx Signals)</strong></li>
+<li><strong>=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B2=A0=EC=9D=B4=EC=8A=A4 =EC=A0=
+=80=EC=9E=A5</strong></li>
+</ol>
+<p><strong>Value Table: =ED=8A=B9=EC=A0=95 =EC=8B=A0=ED=98=B8 =EA=B0=92=EC=
+=97=90 =EC=8B=AC=EB=B3=BC=EB=A6=AD(=EB=AC=B8=EC=9E=90) =EC=84=A4=EB=AA=85=
+=EC=9D=84 =EB=B6=80=EC=97=AC (=EC=98=88: =EA=B8=B0=EC=96=B4 =ED=91=9C=EC=8B=
+=9C 0x0=3DIdle, 0x1=3DGear_1, ...)</strong></p>
+<p><strong>Attribute: =EB=A9=94=EC=8B=9C=EC=A7=80/=EC=8B=A0=ED=98=B8/=EB=85=
+=B8=EB=93=9C=EC=9D=98 =EC=83=81=EC=84=B8 =EC=A0=95=EB=B3=B4(=EC=98=88: =EC=
+=86=A1=EC=8B=A0 =EC=A3=BC=EA=B8=B0 GenMsgCycleTime, =EC=86=A1=EC=8B=A0 =EB=
+=B0=A9=EC=8B=9D GenSigSendType =EB=93=B1)=EB=A5=BC =EC=A0=95=EC=9D=98. CANo=
+e=EC=97=90=EC=84=9C Interaction Layer DLL=EB=A1=9C =EB=85=B8=EB=93=9C=EB=A5=
+=BC =EC=8B=9C=EB=AE=AC=EB=A0=88=EC=9D=B4=EC=85=98=ED=95=A0 =EB=95=8C =EC=9D=
+=B4 =EC=86=8D=EC=84=B1=EA=B0=92=EC=9D=84 =EC=B0=B8=EC=A1=B0=ED=95=9C=EB=8B=
+=A4.</strong></p>
+    </div>
+</body>
+</html>
+------=_Part_25507_778788809.1787632721273--

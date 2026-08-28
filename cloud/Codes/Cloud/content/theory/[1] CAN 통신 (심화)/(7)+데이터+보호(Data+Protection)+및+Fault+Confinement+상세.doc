@@ -1,0 +1,408 @@
+Date: Tue, 25 Aug 2026 13:38:38 +0900 (KST)
+Message-ID: <1338828972.25506.1787632718388@MGPPGIMAPP03>
+Subject: Exported From Confluence
+MIME-Version: 1.0
+Content-Type: multipart/related; 
+	boundary="----=_Part_25505_1014239272.1787632718387"
+
+------=_Part_25505_1014239272.1787632718387
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///C:/exported.html
+
+<html xmlns:o=3D'urn:schemas-microsoft-com:office:office'
+      xmlns:w=3D'urn:schemas-microsoft-com:office:word'
+      xmlns:v=3D'urn:schemas-microsoft-com:vml'
+      xmlns=3D'urn:w3-org-ns:HTML'>
+<head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <title>(7) =EB=8D=B0=EC=9D=B4=ED=84=B0 =EB=B3=B4=ED=98=B8(Data Protecti=
+on) =EB=B0=8F Fault Confinement =EC=83=81=EC=84=B8</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:TargetScreenSize>1024x640</o:TargetScreenSize>
+            <o:PixelsPerInch>72</o:PixelsPerInch>
+            <o:AllowPNG/>
+        </o:OfficeDocumentSettings>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>90</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+                <!--
+        @page Section1 {
+            size: 8.5in 11.0in;
+            margin: 1.0in;
+            mso-header-margin: .5in;
+            mso-footer-margin: .5in;
+            mso-paper-source: 0;
+        }
+
+        table {
+            border: solid 1px;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            border: solid 1px;
+            padding: 5px;
+        }
+
+        td {
+            page-break-inside: avoid;
+        }
+
+        tr {
+            page-break-after: avoid;
+        }
+
+        div.Section1 {
+            page: Section1;
+        }
+
+        /* Confluence print stylesheet. Common to all themes for print medi=
+a */
+/* Full of !important until we improve batching for print CSS */
+
+@media print {
+    #main {
+        padding-bottom: 1em !important; /* The default padding of 6em is to=
+o much for printouts */
+    }
+
+    body {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2;
+    }
+
+    body, #full-height-container, #main, #page, #content, .has-personal-sid=
+ebar #content {
+        background: #fff !important;
+        color: #000 !important;
+        border: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    a, a:link, a:visited, a:focus, a:hover, a:active {
+        color: #000;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+        font-family: Arial, Helvetica, FreeSans, sans-serif;
+        page-break-after: avoid;
+    }
+
+    pre {
+        font-family: Monaco, "Courier New", monospace;
+    }
+
+    #header,
+    .aui-header-inner,
+    #navigation,
+    #sidebar,
+    .sidebar,
+    #personal-info-sidebar,
+    .ia-fixed-sidebar,
+    .page-actions,
+    .navmenu,
+    .ajs-menu-bar,
+    .noprint,
+    .inline-control-link,
+    .inline-control-link a,
+    a.show-labels-editor,
+    .global-comment-actions,
+    .comment-actions,
+    .quick-comment-container,
+    #addcomment {
+        display: none !important;
+    }
+
+    /* CONF-28544 cannot print multiple pages in IE */
+    #splitter-content {
+        position: relative !important;
+    }
+
+    .comment .date::before {
+        content: none !important; /* remove middot for print view */
+    }
+
+    h1.pagetitle img {
+        height: auto;
+        width: auto;
+    }
+
+    .print-only {
+        display: block;
+    }
+
+    #footer {
+        position: relative !important; /* CONF-17506 Place the footer at en=
+d of the content */
+        margin: 0;
+        padding: 0;
+        background: none;
+        clear: both;
+    }
+
+    #poweredby {
+        border-top: none;
+        background: none;
+    }
+
+    #poweredby li.print-only {
+        display: list-item;
+        font-style: italic;
+    }
+
+    #poweredby li.noprint {
+        display: none;
+    }
+
+    /* no width controls in print */
+    .wiki-content .table-wrap,
+    .wiki-content p,
+    .panel .codeContent,
+    .panel .codeContent pre,
+    .image-wrap {
+        overflow: visible !important;
+    }
+
+    /* TODO - should this work? */
+    #children-section,
+    #comments-section .comment,
+    #comments-section .comment .comment-body,
+    #comments-section .comment .comment-content,
+    #comments-section .comment p {
+        page-break-inside: avoid;
+    }
+
+    #page-children a {
+        text-decoration: none;
+    }
+
+    /**
+     hide twixies
+
+     the specificity here is a hack because print styles
+     are getting loaded before the base styles. */
+    #comments-section.pageSection .section-header,
+    #comments-section.pageSection .section-title,
+    #children-section.pageSection .section-header,
+    #children-section.pageSection .section-title,
+    .children-show-hide {
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    .children-show-hide.icon {
+        display: none;
+    }
+
+    /* personal sidebar */
+    .has-personal-sidebar #content {
+        margin-right: 0px;
+    }
+
+    .has-personal-sidebar #content .pageSection {
+        margin-right: 0px;
+    }
+
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+-->
+    </style>
+</head>
+<body>
+    <h1>(7) =EB=8D=B0=EC=9D=B4=ED=84=B0 =EB=B3=B4=ED=98=B8(Data Protection)=
+ =EB=B0=8F Fault Confinement =EC=83=81=EC=84=B8</h1>
+    <div class=3D"Section1">
+        <h2 id=3D"id-(7)=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B3=B4=ED=98=B8(DataP=
+rotection)=EB=B0=8FFaultConfinement=EC=83=81=EC=84=B8-7.=EB=8D=B0=EC=9D=B4=
+=ED=84=B0=EB=B3=B4=ED=98=B8(DataProtection)=EB=B0=8FFaultConfinement=EC=83=
+=81=EC=84=B8"><strong>7. =EB=8D=B0=EC=9D=B4=ED=84=B0 =EB=B3=B4=ED=98=B8(Dat=
+a Protection) =EB=B0=8F Fault Confinement =EC=83=81=EC=84=B8</strong></h2>
+<h3 id=3D"id-(7)=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B3=B4=ED=98=B8(DataProtectio=
+n)=EB=B0=8FFaultConfinement=EC=83=81=EC=84=B8-7.1=EB=8D=B0=EC=9D=B4=ED=84=
+=B0=EB=B3=B4=ED=98=B8=EC=9D=983=EB=8B=A8=EA=B3=84"><br><strong>7.1 =EB=8D=
+=B0=EC=9D=B4=ED=84=B0 =EB=B3=B4=ED=98=B8=EC=9D=98 3=EB=8B=A8=EA=B3=84</stro=
+ng></h3>
+<ol>
+<li><strong>Bit Error =EC=98=88=EB=B0=A9: =EB=AC=BC=EB=A6=AC=EC=A0=81 =EC=
+=88=98=EB=8B=A8 (5=EC=9E=A5 =EC=B0=B8=EA=B3=A0 - =EA=BC=AC=EC=9E=84=EC=84=
+=A0, =EC=A2=85=EB=8B=A8=EC=A0=80=ED=95=AD =EB=93=B1)</strong></li>
+<li><strong>=EB=82=A8=EC=9D=80 Bit Error =EC=B2=98=EB=A6=AC: =ED=94=84=EB=
+=A1=9C=ED=86=A0=EC=BD=9C =EB=82=B4 =EB=85=BC=EB=A6=AC=EC=A0=81 =EC=88=98=EB=
+=8B=A8 (=EC=97=90=EB=9F=AC =EA=B2=80=EC=B6=9C/=EC=8B=A0=ED=98=B8=ED=99=94/=
+=EC=9E=AC=EC=A0=84=EC=86=A1)</strong></li>
+<li><strong>Fault Confinement: Tx/Rx =EC=97=90=EB=9F=AC =EC=B9=B4=EC=9A=B4=
+=ED=84=B0=EB=A5=BC =EC=9D=B4=EC=9A=A9=ED=95=9C =EA=B2=B0=ED=95=A8 =EB=85=B8=
+=EB=93=9C =EA=B2=A9=EB=A6=AC</strong></li>
+</ol>
+<h3 id=3D"id-(7)=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B3=B4=ED=98=B8(DataProtectio=
+n)=EB=B0=8FFaultConfinement=EC=83=81=EC=84=B8-7.2=EC=97=90=EB=9F=AC=EA=B2=
+=80=EC=B6=9C=EB=A9=94=EC=BB=A4=EB=8B=88=EC=A6=98(5=EA=B0=80=EC=A7=80)"><br>=
+<strong>7.2 =EC=97=90=EB=9F=AC =EA=B2=80=EC=B6=9C =EB=A9=94=EC=BB=A4=EB=8B=
+=88=EC=A6=98 (5=EA=B0=80=EC=A7=80)</strong></h3>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh"><strong>=EB=A9=94=EC=BB=A4=EB=8B=88=EC=A6=98</st=
+rong></th>
+<th class=3D"confluenceTh"><strong>=EC=84=A4=EB=AA=85</strong></th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Bit Monitoring</strong></td>
+<td class=3D"confluenceTd"><strong>=EC=86=A1=EC=8B=A0=EC=9E=90=EA=B0=80 =EB=
+=B3=B4=EB=82=B8 =EA=B0=92=EA=B3=BC =EB=B2=84=EC=8A=A4=EC=97=90=EC=84=9C =EC=
+=9D=BD=EC=9D=80 =EA=B0=92 =EB=B9=84=EA=B5=90 (=EC=A4=91=EC=9E=AC/ACK =EA=B5=
+=AC=EA=B0=84=EC=9D=80 =EC=98=88=EC=99=B8)</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Acknowledgement Check</strong></td>
+<td class=3D"confluenceTd"><strong>ACK =EB=B9=84=ED=8A=B8 =EC=8A=AC=EB=A1=
+=AF=EC=97=90=EC=84=9C dominant =EA=B0=92=EC=9D=84 =EA=B8=B0=EB=8C=80</stron=
+g></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Stuff Check</strong></td>
+<td class=3D"confluenceTd"><strong>5=EA=B0=9C =EB=8F=99=EC=9D=BC =EB=B9=84=
+=ED=8A=B8 =EC=9D=B4=ED=9B=84 =EB=B0=98=EC=A0=84 =EB=B9=84=ED=8A=B8=EA=B0=80=
+ =EC=9E=88=EC=96=B4=EC=95=BC =ED=95=A8</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>CRC Check</strong></td>
+<td class=3D"confluenceTd"><strong>=EC=88=98=EC=8B=A0 CRC=EC=99=80 =EC=86=
+=A1=EC=8B=A0 CRC =EA=B0=92 =EB=B9=84=EA=B5=90</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Form Check</strong></td>
+<td class=3D"confluenceTd"><strong>=ED=8A=B9=EC=A0=95 =ED=95=84=EB=93=9C(=
+=EC=98=88: EOF =EB=93=B1)=EB=8A=94 =EB=AA=A8=EB=91=90 recessive(1)=EC=9D=B4=
+=EC=96=B4=EC=95=BC =ED=95=A8</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id=3D"id-(7)=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B3=B4=ED=98=B8(DataProtectio=
+n)=EB=B0=8FFaultConfinement=EC=83=81=EC=84=B8-7.3=EC=97=90=EB=9F=AC=EC=8B=
+=A0=ED=98=B8=ED=99=94(ErrorSignaling)"><br><strong>7.3 =EC=97=90=EB=9F=AC =
+=EC=8B=A0=ED=98=B8=ED=99=94(Error Signaling)</strong></h3>
+<ul>
+<li><strong>=EC=97=90=EB=9F=AC =EA=B2=80=EC=B6=9C =EC=8B=9C Error Frame(6bi=
+t Error Flag + 8bit Error Delimiter)=EC=9D=84 =EC=A0=84=EC=86=A1=ED=95=98=
+=EC=97=AC =ED=95=B4=EB=8B=B9 =ED=94=84=EB=A0=88=EC=9E=84=EC=9D=84 =EB=AC=B4=
+=ED=9A=A8=ED=99=94</strong></li>
+<li><strong>Error Flag=EB=8A=94 6=EA=B0=9C=EC=9D=98 dominant =EB=B9=84=ED=
+=8A=B8=EB=A1=9C, =EC=8A=A4=ED=84=B0=ED=95=91 =EA=B7=9C=EC=B9=99 =EB=93=B1 =
+=ED=94=84=EB=A1=9C=ED=86=A0=EC=BD=9C =EA=B7=9C=EC=B9=99=EC=9D=84 =EA=B3=A0=
+=EC=9D=98=EB=A1=9C =EC=9C=84=EB=B0=98=ED=95=98=EC=97=AC =EB=AA=A8=EB=93=A0 =
+=EB=85=B8=EB=93=9C=EA=B0=80 =ED=94=84=EB=A0=88=EC=9E=84 =EB=AC=B4=ED=9A=A8=
+=EB=A5=BC =EC=9D=B8=EC=A7=80=ED=95=98=EA=B2=8C =ED=95=A8</strong></li>
+<li><strong>CRC =EC=97=90=EB=9F=AC=EC=9D=98 =EA=B2=BD=EC=9A=B0 Error Flag =
+=EB=8C=80=EC=8B=A0 Negative Acknowledgement=EB=A1=9C =EC=8B=9C=EC=9E=91=EB=
+=90=A8</strong></li>
+</ul>
+<h3 id=3D"id-(7)=EB=8D=B0=EC=9D=B4=ED=84=B0=EB=B3=B4=ED=98=B8(DataProtectio=
+n)=EB=B0=8FFaultConfinement=EC=83=81=EC=84=B8-7.4FaultConfinement(=EA=B2=B0=
+=ED=95=A8=EA=B2=A9=EB=A6=AC)"><br><strong>7.4 Fault Confinement (=EA=B2=B0=
+=ED=95=A8 =EA=B2=A9=EB=A6=AC)</strong></h3>
+<p><strong>=EA=B0=81 =EB=85=B8=EB=93=9C=EB=8A=94 TEC(Transmission Error Cou=
+nter)=EC=99=80 REC(Receive Error Counter) =EB=91=90 =EA=B0=9C=EC=9D=98 8bit=
+ =EB=A0=88=EC=A7=80=EC=8A=A4=ED=84=B0=EB=A5=BC =EA=B4=80=EB=A6=AC=ED=95=9C=
+=EB=8B=A4.</strong></p>
+<div class=3D"table-wrap">
+<table class=3D"wrapped confluenceTable">
+<thead class=3D"">
+<tr class=3D"">
+<th class=3D"confluenceTh"><strong>=EC=9D=B4=EB=B2=A4=ED=8A=B8</strong></th=
+>
+<th class=3D"confluenceTh"><strong>TEC</strong></th>
+<th class=3D"confluenceTh"><strong>REC</strong></th>
+</tr>
+</thead>
+<tbody class=3D"">
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Error Flag =EC=A0=84=EC=86=A1(=EC=86=A1=
+=EC=8B=A0=EC=9E=90)</strong></td>
+<td class=3D"confluenceTd"><strong>+8</strong></td>
+<td class=3D"confluenceTd"><strong>-</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>Error Flag =EC=A0=84=EC=86=A1(=EC=88=98=
+=EC=8B=A0=EC=9E=90)</strong></td>
+<td class=3D"confluenceTd"><strong>-</strong></td>
+<td class=3D"confluenceTd"><strong>+1 (=EB=98=90=EB=8A=94 primary =EC=97=90=
+=EB=9F=AC =EC=8B=9C +8)</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>=EC=84=B1=EA=B3=B5=EC=A0=81 =EC=86=A1=EC=
+=8B=A0</strong></td>
+<td class=3D"confluenceTd"><strong>-1</strong></td>
+<td class=3D"confluenceTd"><strong>-</strong></td>
+</tr>
+<tr class=3D"">
+<td class=3D"confluenceTd"><strong>=EC=84=B1=EA=B3=B5=EC=A0=81 =EC=88=98=EC=
+=8B=A0</strong></td>
+<td class=3D"confluenceTd"><strong>-</strong></td>
+<td class=3D"confluenceTd"><strong>-1</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>=EB=85=B8=EB=93=9C =EC=83=81=ED=83=9C =EC=A0=84=EC=9D=B4</strong=
+></p>
+<div class=3D"confluence-information-macro confluence-information-macro-inf=
+ormation">
+<span class=3D"aui-icon aui-icon-small aui-iconfont-info confluence-informa=
+tion-macro-icon"></span>
+<div class=3D"confluence-information-macro-body">
+<p><strong>Error Active (TEC=E2=89=A4127, REC=E2=89=A4127)</strong><br><str=
+ong>=E2=86=93 REC&gt;127 =EB=98=90=EB=8A=94 TEC&gt;127 =E2=86=91 REC&lt;128=
+ &amp; TEC&lt;128</strong><br><strong>Error Passive (Error Flag=EB=8A=94 =
+=ED=95=AD=EC=83=81 recessive 6bit)</strong><br><strong>=E2=86=93 TEC&gt;255=
+</strong><br><strong>Bus Off (=EB=B2=84=EC=8A=A4 =EC=A0=91=EA=B7=BC =EC=99=
+=84=EC=A0=84 =EC=B0=A8=EB=8B=A8, Software-Reset =EB=B0=8F 128=C3=9711 reces=
+sive bit =ED=95=84=EC=9A=94)</strong></p>
+</div>
+</div>
+<ul>
+<li><strong>Error Active: =EC=A0=95=EC=83=81 =EB=85=B8=EB=93=9C. Error Flag=
+=EB=8A=94 6=EA=B0=9C=EC=9D=98 dominant bit</strong></li>
+<li><strong>Error Passive: Error Flag=EA=B0=80 6=EA=B0=9C=EC=9D=98 recessiv=
+e bit=EB=A1=9C =EC=A0=84=EC=86=A1=EB=90=A8(=EB=8B=A4=EB=A5=B8 =EB=85=B8=EB=
+=93=9C=EC=97=90 =EC=98=81=ED=96=A5 =EC=B5=9C=EC=86=8C=ED=99=94). =EB=98=90=
+=ED=95=9C SOF =EC=A0=84=EC=86=A1 =EA=B6=8C=ED=95=9C=EC=9D=B4 Intermission =
+=EC=A7=81=ED=9B=84=EA=B0=80 =EC=95=84=EB=8B=88=EB=9D=BC 8bit =EC=A7=80=EC=
+=97=B0(Suspend Transmission)=EB=90=9C =ED=9B=84=EC=97=90=EB=A7=8C =ED=97=88=
+=EC=9A=A9=EB=90=A8</strong></li>
+<li><strong>Bus Off: =EB=B2=84=EC=8A=A4 =EC=A0=91=EA=B7=BC =EA=B6=8C=ED=95=
+=9C =EC=99=84=EC=A0=84 =EC=83=81=EC=8B=A4. =EC=86=8C=ED=94=84=ED=8A=B8=EC=
+=9B=A8=EC=96=B4 =EB=A6=AC=EC=85=8B =EB=B0=8F 128=C3=9711 recessive bit =EA=
+=B4=80=EC=B8=A1 =ED=9B=84 Error Active=EB=A1=9C =EB=B3=B5=EA=B7=80 =EA=B0=
+=80=EB=8A=A5</strong></li>
+</ul>
+    </div>
+</body>
+</html>
+------=_Part_25505_1014239272.1787632718387--

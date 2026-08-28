@@ -109,54 +109,125 @@ def _restore_mermaid(html_text, blocks):
     return html_text
 
 
-def _rewrite_assets(html_text):
-    """md 의 상대 자산 참조(src/href="assets/…" · "./assets/…")를 마운트 절대경로로 바꾼다."""
+def _rewrite_assets(html_text, base_url=ASSET_URL_BASE):
+    """md 의 상대 자산 참조(src/href="assets/…" · "./assets/…")를 마운트 절대경로로 바꾼다.
+
+    base_url 은 그 md 가 놓인 폴더의 마운트 URL — 하위 폴더(그룹)에 있는 자료는
+    자산도 그 폴더 아래(assets/…)에 있으므로, 폴더 경로를 접두로 붙여야 한다.
+    """
     return re.sub(
         r'(src|href)="\.?/?assets/',
-        rf'\1="{ASSET_URL_BASE}assets/',
+        rf'\1="{base_url}assets/',
         html_text,
     )
 
 
-def render_markdown(md_text):
+def render_markdown(md_text, base_url=ASSET_URL_BASE):
     """본문 md → 뷰어에 넣을 안전한 HTML. mermaid 추출·복원과 자산 경로 재작성을 포함."""
     stripped, blocks = _extract_mermaid(md_text)
     _MD.reset()
     body = _MD.convert(stripped)
     body = _restore_mermaid(body, blocks)
-    return _rewrite_assets(body)
+    return _rewrite_assets(body, base_url)
+
+
+def _iter_material_files():
+    """content/theory 아래 모든 .md 를 훑는다(assets 폴더는 제외). 하위 폴더까지 재귀.
+
+    각 항목은 (path, rel_dir): rel_dir 은 CONTENT_DIR 기준 부모 폴더의 posix 경로
+    (루트 직속이면 ""). id·자산 URL 산출에 쓴다.
+    """
+    if not CONTENT_DIR.is_dir():
+        return
+    for path in sorted(CONTENT_DIR.rglob("*.md")):
+        rel = path.relative_to(CONTENT_DIR)
+        if "assets" in rel.parts:                 # 자산 폴더 안 md 는 자료가 아니다
+            continue
+        rel_dir = rel.parent.as_posix()
+        rel_dir = "" if rel_dir == "." else rel_dir
+        yield path, rel_dir
+
+
+def _material_id(path):
+    """자료 id = CONTENT_DIR 기준 상대경로(확장자 제외, posix). URL ?doc= 값이 된다."""
+    return path.relative_to(CONTENT_DIR).with_suffix("").as_posix()
 
 
 def load_materials():
-    """content/theory/*.md 를 스캔해 좌측 목록 메타를 만든다(본문 HTML 은 제외).
+    """content/theory 를 재귀 스캔해 '큰 주제(그룹) ▸ 소제목' 트리를 만든다(본문 제외).
 
-    정렬: 난이도(기초→기본→심화, 미지정은 맨 뒤) → order → 제목. 폴더가 없으면 빈 목록.
+    그룹 = 하위 폴더(frontmatter group). 루트 직속 md 는 그룹 없이 '기타'로 묶는다.
+    정렬: 그룹(group_order → 난이도 → 제목), 그룹 안(order → 제목).
+    반환: [{"id","title","difficulty","order","items":[{"id","title","difficulty","order"}]}]
     """
+    groups = {}
+    for path, rel_dir in _iter_material_files():
+        meta, _ = parse_frontmatter(path.read_text(encoding="utf-8"))
+        doc_id = _material_id(path)
+        item = {
+            "id": doc_id,
+            "title": meta.get("title") or path.stem,
+            "difficulty": meta.get("difficulty", ""),
+            "order": meta.get("order", 10_000),
+        }
+        gtitle = meta.get("group", "")
+        if gtitle:
+            # 같은 [n]·같은 제목이라도 난이도(기초/심화)가 다르면 별개 그룹이다
+            # (예: 'CAN 통신 (기초)' vs 'CAN 통신 (심화)' — group·group_order 가 같다).
+            gorder = _as_int(meta.get("group_order"), 9_998)
+            gdiff = item["difficulty"]
+            gkey = f"{gorder:04d}|{gdiff}|{gtitle}"
+        else:
+            # 루트 직속 md(구 자료)는 그룹 없이 '기타'로 묶는다.
+            gkey, gtitle, gorder, gdiff = "__misc__", "기타", 9_999, ""
+        g = groups.get(gkey)
+        if g is None:
+            g = groups[gkey] = {
+                "id": gkey, "title": gtitle, "difficulty": gdiff,
+                "order": gorder, "docs": [],
+            }
+        g["docs"].append(item)
+
     out = []
-    if CONTENT_DIR.is_dir():
-        for path in CONTENT_DIR.glob("*.md"):
-            meta, _ = parse_frontmatter(path.read_text(encoding="utf-8"))
-            out.append({
-                "id": _slug(path),
-                "title": meta.get("title") or _slug(path),
-                "difficulty": meta.get("difficulty", ""),
-                "order": meta.get("order", 10_000),
-            })
-    out.sort(key=lambda m: (DIFFICULTY_RANK.get(m["difficulty"], 99), m["order"], m["title"]))
+    for g in groups.values():
+        g["docs"].sort(key=lambda m: (m["order"], m["title"]))
+        out.append(g)
+    out.sort(key=lambda g: (g["order"], DIFFICULTY_RANK.get(g["difficulty"], 99), g["title"]))
     return out
 
 
+def first_material_id(groups):
+    """그룹 트리에서 가장 먼저 오는 자료 id (없으면 None). 선택 폴백용."""
+    for g in groups:
+        if g["docs"]:
+            return g["docs"][0]["id"]
+    return None
+
+
+def _as_int(value, default):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def load_material(doc_id):
-    """단일 자료: 목록 메타 + 본문 HTML. doc_id 에 해당하는 .md 가 없으면 None."""
+    """단일 자료: 메타 + 본문 HTML. doc_id 에 해당하는 .md 가 없으면 None.
+
+    doc_id 는 CONTENT_DIR 기준 상대경로(하위 폴더 포함). 경로 이탈(..)은 막는다.
+    """
     if not doc_id:
         return None
-    path = CONTENT_DIR / f"{doc_id}.md"
-    if not path.is_file():
+    path = (CONTENT_DIR / f"{doc_id}.md").resolve()
+    root = CONTENT_DIR.resolve()
+    if root not in path.parents or not path.is_file():
         return None
     meta, body = parse_frontmatter(path.read_text(encoding="utf-8"))
+    rel_dir = path.parent.relative_to(root).as_posix()
+    base_url = ASSET_URL_BASE + ("" if rel_dir == "." else rel_dir + "/")
     return {
         "id": doc_id,
-        "title": meta.get("title") or doc_id,
+        "title": meta.get("title") or path.stem,
         "difficulty": meta.get("difficulty", ""),
-        "html": render_markdown(body),
+        "html": render_markdown(body, base_url),
     }
