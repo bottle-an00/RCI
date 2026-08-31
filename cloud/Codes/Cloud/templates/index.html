@@ -18,11 +18,6 @@
     <div class="hero__logo">
       <img src="{{ asset('img/git-logo.png') }}" alt="G1T">
     </div>
-    <form class="searchbar" action="/search" method="get">
-      <input type="text" name="q"
-             placeholder="대상 ID / 검사 항목 · 고장코드 및 현상을 입력하세요">
-      <button type="submit" aria-label="검색">{{ icon("magnifier") }}</button>
-    </form>
     <div class="tiles">
       {% for t in targets %}
       <a class="tile" href="/{{ t.id }}">
@@ -35,5 +30,4 @@
   </div>
 </main>
 
-{% include "partials/_bottomnav.html" %}
 {% endblock %}
