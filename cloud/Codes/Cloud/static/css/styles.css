@@ -190,7 +190,7 @@ body {
 .tile {
   position: relative;
   flex: 1;
-  min-height: 250px;
+  min-height: 350px;
   background: var(--brand-blue);
   border-radius: var(--radius-tile);
   color: #fff;
