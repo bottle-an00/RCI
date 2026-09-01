@@ -88,6 +88,8 @@
 {% if is_composer %}
 {# 배경·이론 ↔ 메시지 작성 화면 전환. 통신과 무관하므로 live 여부와 상관없이 싣는다. #}
 <script src="{{ asset('js/stage-switch.js') }}"></script>
+{# 배경·이론 탭 안의 만화 이전/다음 페이징. #}
+<script src="{{ asset('js/comic-pager.js') }}"></script>
 {% endif %}
 {% if target.model %}
 <script type="module" src="{{ asset('js/vendor/model-viewer.min.js') }}"></script>

@@ -2,7 +2,9 @@
  *
  * 서버(main.py)는 선택 주제의 문항 배열을 templates/quiz.html 의
  * data-questions 에 통째로 실어 보낸다. 문항 이동·선택·채점은 전부 여기서
- * 처리해 서버 왕복이 없다(주제 전환만 링크로 리로드).
+ * 처리해 서버 왕복이 없다(주제 전환만 링크로 리로드). 채점 결과만 제출 시점에
+ * POST /api/quiz-result 로 한 번 흘려보내 TEST_RESULT/*.json 에 기록한다
+ * (학습자 정보는 static/js/learner-gate.js 가 채운 window.RCI_LEARNER).
  *
  * 문항 스키마 (data/quiz.json): {id, text, code?, choices[4], answer(정답 인덱스), explain?}
  *
@@ -27,6 +29,36 @@
   if (!questions.length) return;
 
   var homeUrl = root.getAttribute("data-home");
+  var quizTitle = root.getAttribute("data-quiz-title") || "";
+
+  /* 응시 시작 시각 — 결과 로그의 '소요시간_초' 기준점.
+   * 학습자 정보(소속·이름·직급)가 이미 있으면 지금 바로 시작, 아직 게이트
+   * 모달을 채우는 중이면 그 입력 시간은 빼고 제출을 마친 뒤부터 잰다
+   * (static/js/learner-gate.js 의 "rci:learner-ready" 이벤트). */
+  var startedAt = window.RCI_LEARNER ? Date.now() : null;
+  document.addEventListener("rci:learner-ready", function () {
+    if (startedAt === null) startedAt = Date.now();
+  });
+
+  /* 채점 결과를 결과 로그(TEST_RESULT/*.json)에 보낸다. 실패해도 학습자
+   * 화면에는 영향을 주지 않는다 — 응시 결과 확인이 기록보다 우선이다. */
+  function postResult(r) {
+    var learner = window.RCI_LEARNER;
+    if (!learner) return;
+    var durationSec = startedAt ? Math.max(0, Math.round((Date.now() - startedAt) / 1000)) : 0;
+    fetch("/api/quiz-result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        quiz_title: quizTitle,
+        org: learner.org,
+        name: learner.name,
+        position: learner.position,
+        duration_sec: durationSec,
+        score: r.score
+      })
+    }).catch(function () { /* 네트워크 문제 — 기록만 못 남길 뿐 응시는 끝났다 */ });
+  }
 
   var el = {
     tag: root.querySelector("[data-quiz-tag]"),
@@ -123,6 +155,7 @@
   /* 결과 화면 그리기 */
   function renderResult() {
     var r = gradeQuiz(questions, picks);
+    postResult(r);
 
     el.score.textContent = r.score + "점";
     el.sub.textContent = questions.length + "문항 중 " + r.correctCount + "문항 정답";
@@ -157,6 +190,7 @@
     orders = questions.map(shuffledOrder);
     at = 0;
     done = false;
+    startedAt = Date.now();               // 재응시는 새 응시 — 소요시간도 새로 잰다
     if (el.tag) el.tag.textContent = "퀴즈";
     render();
   }

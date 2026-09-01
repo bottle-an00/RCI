@@ -22,6 +22,7 @@ import logging
 import os
 import re
 from contextlib import asynccontextmanager
+from datetime import datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -1247,10 +1248,29 @@ def topic_briefing(topic):
     return dict(brief, topic=topic, cuts=cuts)
 
 
+def _comic_cuts(topic):
+    """주제 → 만화 컷 목록(글 없이 그림만). static/img/comic/{topic}-1.png, -2.png ...
+    를 순서대로 찾아 실제 있는 개수만큼 컷을 만든다 — 몇 장을 준비해 두었는지가
+    곧 컷 수다. 하나도 없으면 '준비중' 한 장으로 대체한다."""
+    cuts = []
+    n = 1
+    while True:
+        src, pending = _comic_src(topic, n)
+        if pending:
+            break
+        cuts.append({"no": n, "src": src})
+        n += 1
+    if not cuts:
+        return [{"no": 1, "src": asset(COMIC_PENDING), "pending": True}]
+    return cuts
+
+
 def step_briefing(step):
-    """메시지 작성 단계 → 배경·이론 브리핑(만화 컷 + 글). 주제가 없으면 None."""
+    """메시지 작성 단계 → 배경·이론 만화(그림만, 이전/다음으로 넘긴다). 주제가 없으면 None."""
     topic = STEP_BRIEF.get(step["id"]) or _SID_BRIEF.get(step["spec"]["sid"])
-    return topic_briefing(topic)
+    if not topic:
+        return None
+    return {"topic": topic, "cuts": _comic_cuts(topic)}
 
 
 # 시퀀스 단계 → 브리핑 주제. 요청 SID 로 되짚는다 (단계 id 가 따로 없기 때문).
@@ -1496,6 +1516,50 @@ async def api_diag_request(device: str, body: DiagRequest):
         raise HTTPException(504, str(exc)) from None
     except BridgeError as exc:                      # 미연결·알 수 없는 device·발행 실패
         raise HTTPException(503, str(exc)) from None
+
+
+class QuizResultSubmit(BaseModel):
+    """`POST /api/quiz-result` 본문 — 학습자가 제출한 퀴즈 결과 한 건."""
+
+    quiz_title: str = Field(..., min_length=1)
+    org: str = Field(..., min_length=1, description="소속")
+    name: str = Field(..., min_length=1, description="이름")
+    position: str = Field(..., min_length=1, description="직급")
+    duration_sec: int = Field(..., ge=0, description="응시 시작~제출까지 걸린 시간(초)")
+    score: int = Field(..., ge=0, le=100)
+
+
+RESULT_DIR = BASE_DIR / "TEST_RESULT"
+
+
+@app.post("/api/quiz-result")
+def api_quiz_result(body: QuizResultSubmit):
+    """퀴즈 결과를 날짜별 로그(TEST_RESULT/YYYY-MM-DD.json)에 한 건 추가한다.
+
+    같은 날 여러 건이면 그 날짜 파일의 배열에 계속 이어 붙인다. 응시자가 직접
+    제출 시각을 조작할 수 없도록, '제출시각'은 클라이언트 값이 아니라 이 요청을
+    받은 서버 시각으로 찍는다.
+    """
+    now = datetime.now()
+    RESULT_DIR.mkdir(exist_ok=True)
+    path = RESULT_DIR / f"{now:%Y-%m-%d}.json"
+
+    records = []
+    if path.exists():
+        with path.open(encoding="utf-8") as fp:
+            records = json.load(fp)
+    records.append({
+        "퀴즈": body.quiz_title,
+        "소속": body.org,
+        "이름": body.name,
+        "직급": body.position,
+        "제출시각": now.isoformat(timespec="seconds"),
+        "소요시간_초": body.duration_sec,
+        "점수": body.score,
+    })
+    with path.open("w", encoding="utf-8") as fp:
+        json.dump(records, fp, ensure_ascii=False, indent=2)
+    return {"ok": True}
 
 
 @app.get("/api/events")

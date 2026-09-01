@@ -5,6 +5,7 @@
 {# Step3 · 퀴즈 — 좌 주제 목록 / 우 문항 (이론 교육·실습 준비와 동일한 .md 규약).
    문항 진행·채점은 static/js/quiz.js 가 담당하고, 서버는 선택 주제의 문항 배열을
    data-questions 로 한 번에 내려보낸다. 주제 전환만 서버 왕복(?item=). #}
+{% include "partials/_learner_gate.html" %}
 <div class="md">
   <div class="md__list">
     <div class="md__list-head">퀴즈 주제</div>
@@ -20,6 +21,7 @@
   {% if selected %}
   <div class="md__detail"
        data-quiz
+       data-quiz-title="{{ selected.title }}"
        data-questions='{{ questions | tojson }}'
        data-home="/{{ target.id }}/{{ content.id }}?item={{ topics[0].id }}">
     <div class="detail__head">
@@ -60,5 +62,8 @@
 
 {% block scripts %}
 {{ super() }}   {# 상단바 연결 표시 (link-status.js) #}
+{# 학습자 게이트가 quiz.js 보다 먼저 실행돼야 한다 — quiz.js 가 시작 시점에
+   window.RCI_LEARNER 를 곧바로 읽기 때문. #}
+<script src="{{ asset('js/learner-gate.js') }}"></script>
 <script src="{{ asset('js/quiz.js') }}"></script>
 {% endblock %}

@@ -1,9 +1,12 @@
 {% from "partials/_macros.html" import icon %}
-{# 흰색 RCI 상단바 (GDS-SMART 재현) — 전 화면 공통 크롬 #}
+{# 흰색 RCI 상단바 (GDS-SMART 재현) — 전 화면 공통 크롬.
+   topbar__learner 는 퀴즈 게이트(learner-gate.js)가 sessionStorage 에 남긴
+   소속·이름·직급을 보여준다 — 없으면 learner-badge.js 가 숨겨 둔다. #}
 <header class="topbar">
   <div class="topbar__left">
     {{ icon("person") }}
     {{ icon("scan") }}
+    <span class="topbar__learner" data-topbar-learner hidden></span>
   </div>
   <div class="topbar__brand">진단 통신 교육 플랫폼</div>
   <div class="topbar__right">
@@ -12,3 +15,4 @@
     {{ icon("bell") }}
   </div>
 </header>
+<script src="{{ asset('js/learner-badge.js') }}"></script>

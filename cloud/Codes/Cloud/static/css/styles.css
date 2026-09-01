@@ -77,6 +77,8 @@ body {
 }
 .topbar__left, .topbar__right { display: flex; align-items: center; gap: 16px; }
 .topbar__right { margin-left: auto; }
+/* 학습자 배지 — 값이 있을 때만 learner-badge.js 가 hidden 을 뗀다. */
+.topbar__learner { font-size: 13px; font-weight: 600; color: var(--muted); }
 .topbar__brand {
   position: absolute;
   left: 50%;
@@ -991,6 +993,18 @@ button.stepper__row:hover { background: #eef2f7; }
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 12px 18px; border-top: 1px solid var(--border); background: #fafbfc;
 }
+.modal__foot--end { justify-content: flex-end; }
+
+/* 퀴즈 진입 게이트 — 소속·이름·직급 (partials/_learner_gate.html). */
+.gate__field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.gate__field:last-child { margin-bottom: 0; }
+.gate__field label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.gate__field input {
+  font: inherit; font-size: 14px; padding: 8px 10px;
+  border: 1px solid var(--border); border-radius: 4px; color: var(--ink);
+}
+.gate__field input:focus { outline: none; border-color: var(--brand-blue); }
+.gate__start:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .guide__lede { margin: 0 0 14px; font-size: 14px; line-height: 1.8; color: var(--ink); }
 .guide__lede b { color: var(--brand-blue); }
@@ -1044,7 +1058,6 @@ body.is-modal { overflow: hidden; }
 /* ── 배경·이론 본문 ── */
 .brief__body { padding: 14px 18px 18px; gap: 14px; overflow-y: auto; min-height: 0; }
 .brief__title { font-size: 17px; font-weight: 700; margin: 0 0 4px; color: var(--ink); }
-.brief__lede p { margin: 0; font-size: 13px; line-height: 1.7; color: #3d4a57; }
 
 /* 만화 — 컷 수에 따라 열 수가 달라진다. 그림 비율은 파일이 정하고(높이 자동),
    컷 크기가 제각각이어도 칸 안에서 가운데로 맞춘다. */
@@ -1071,6 +1084,19 @@ body.is-modal { overflow: hidden; }
   border-radius: 99px; padding: 0 4px;
 }
 .comic__note { display: block; font-size: 11px; color: var(--muted); margin-left: 22px; }
+
+/* 배경·이론 탭 — 만화(그림만) 이전/다음 페이저. 컷을 모두 미리 그려두고
+   .is-active 만 보인다(comic-pager.js). */
+.comic-pager__frame { position: relative; }
+.comic-pager .comic__img { width: 80%; margin: 0 auto; }
+.comic-pager__slide { display: none; }
+.comic-pager__slide.is-active { display: block; }
+.comic-pager__nav {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin-top: 10px;
+}
+.comic-pager__nav .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.comic-pager__count { font-size: 13px; font-weight: 600; color: var(--muted); }
 
 /* ── 글 ── */
 .brief__text { display: flex; flex-direction: column; gap: 10px; }
