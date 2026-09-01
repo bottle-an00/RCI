@@ -8,9 +8,9 @@ order: 2
 
 # (2) UDS 메커니즘
 
-## **4. UDS****타이밍 파라미터**
+**4. UDS****타이밍 파라미터**
 
-### **4.1****타이밍 파라미터 개요**
+**4.1****타이밍 파라미터 개요**
 
 타이밍 파라미터의 역할
 
@@ -34,7 +34,7 @@ Client(진단기) vs Server(ECU) 파라미터
 - Client는 약간 더 긴 시간을 적용 (네트워크 지연 고려)
 - 예: P2\_Server = 50ms, P2\_Client = 50ms + α (네트워크 지연)
 
-### **4.2 P2\_Client, P2\_Server**
+## **4.2 P2\_Client, P2\_Server**
 
 P2\_Server (ECU 응답 제한 시간)
 
@@ -73,7 +73,7 @@ P2\_Client (진단기 대기 시간)
 | P2\_Client 초과, 0x78 수신 | P2\*\_Client로 타이머 전환하여 대기 |
 | P2\_Client 초과, 응답 없음 | 타임아웃 오류, 통신 실패 처리 |
 
-### **4.3 P2\_Server, P2\_Client (Response Pending****연장 시간)**
+## **4.3 P2\_Server, P2\_Client (Response Pending****연장 시간)**
 
 P2\*\_Server (ECU 연장 응답 시간)
 
@@ -128,7 +128,7 @@ ECU가 50ms 이내에 처리할 수 없는 작업:
 - 0x78이 올 때마다 P2\*\_Client 타이머가 리셋됨
 - 이론적으로 무한 반복 가능하지만, 실제로는 진단기가 일정 횟수 초과 시 오류 처리
 
-### **4.4 0x78 (Response Pending)****동작 상세**
+## **4.4 0x78 (Response Pending)****동작 상세**
 
 0x78 NRC의 의미
 
@@ -165,7 +165,7 @@ ECU가 50ms 이내에 처리할 수 없는 작업:
 | 0x34 RequestDownload | 다운로드 영역 준비 |
 | 0x36 TransferData | 플래시 쓰기 작업 |
 
-### **4.5 S3 (Session Timeout)**
+## **4.5 S3 (Session Timeout)**
 
 S3\_Server (ECU 세션 유지 시간)
 
@@ -213,7 +213,7 @@ TesterPresent 전송 패턴
 
       ... 세션 유지 ...
 
-### **4.6****타이밍 파라미터 조회 및 변경**
+## **4.6****타이밍 파라미터 조회 및 변경**
 
 조회 방법
 
@@ -246,7 +246,7 @@ P2 값의 단위 차이 주의
 - ISO 14230 (KWP2000)에서는 0x83 서비스 사용
 - UDS에서는 표준 서비스가 없으나, 제조사별로 별도 구현 가능
 
-### **4.7****타이밍 관련 문제**
+## **4.7****타이밍 관련 문제**
 
 진단 통신 타임아웃 발생 원인
 
@@ -260,7 +260,7 @@ P2 값의 단위 차이 주의
 
 ## **5. 진단 세션 (Diagnostic Session)**
 
-### **5.1****세션의 개념과 필요성**
+**5.1****세션의 개념과 필요성**
 
 세션 정의
 
@@ -280,7 +280,7 @@ P2 값의 단위 차이 주의
 - 새로운 세션 진입 시 이전 세션 자동 종료
 - Default Session으로 돌아가면 보안 인증, 진단 상태 등이 초기화
 
-### **5.2****세션 종류**
+## **5.2****세션 종류**
 
 ISO 14229 표준 세션
 
@@ -321,7 +321,7 @@ Safety System Diagnostic Session (0x04)
 - 특수한 안전 절차 후 진입 가능
 - 제한된 차종에서만 지원
 
-### **5.3****세션별 가능한 서비스**
+## **5.3****세션별 가능한 서비스**
 
 서비스별 세션 요구사항 (대표 예)
 
@@ -351,7 +351,7 @@ Safety System Diagnostic Session (0x04)
 - NRC 0x7F: serviceNotSupportedInActiveSession
 - 예: Default Session에서 0x2E 요청 → 0x7F 2E 7F
 
-### **5.4****세션 전환 시 ECU 동작**
+## **5.4****세션 전환 시 ECU 동작**
 
 Default → Extended Session
 
@@ -398,7 +398,7 @@ ECU 내부 동작:
 - ECU 식별 정보
 - 영구 저장된 캘리브레이션 데이터
 
-### **5.5****세션 유지 (TesterPresent 0x3E)**
+## **5.5****세션 유지 (TesterPresent 0x3E)**
 
 TesterPresent의 역할
 
@@ -442,7 +442,7 @@ TesterPresent를 안 보내면
 
 ## **6. 보안 접근 (Security Access)**
 
-### **6.1 Security Access****의 필요성**
+**6.1 Security Access****의 필요성**
 
 보안 접근이 필요한 이유
 
@@ -465,7 +465,7 @@ TesterPresent를 안 보내면
 | 0x36 TransferData | 0x34 통과 후 자동 인증 |
 | 0x37 RequestTransferExit | 0x34 통과 후 자동 인증 |
 
-### **6.2 Seed & Key****메커니즘**
+## **6.2 Seed & Key****메커니즘**
 
 기본 동작 원리
 
@@ -516,7 +516,7 @@ TesterPresent를 안 보내면
 
       [ECU → Tester]  7F 27 35  ; invalidKey
 
-### **6.3 Security Level****개념**
+## **6.3 Security Level****개념**
 
 보안 레벨 분류
 
@@ -545,7 +545,7 @@ TesterPresent를 안 보내면
 - ECU가 모든 0(0x0000...)을 Seed로 반환
 - 이는 "이미 인증됨"을 의미
 
-### **6.4****인증 실패 시 ECU 동작**
+## **6.4****인증 실패 시 ECU 동작**
 
 실패 시 발생하는 NRC
 
@@ -606,7 +606,7 @@ Delay Timer 동작
 | Delay 중 시도 | NRC 0x37 |
 | Delay 종료 후 | Counter 리셋, 다시 인증 가능 |
 
-### **6.5 SecurityAccess****흐름**
+## **6.5 SecurityAccess****흐름**
 
 전체 인증 시나리오
 
@@ -657,7 +657,7 @@ SecurityAccess 사용 시 주의사항
 
 ## **7. NRC (Negative Response Code)**
 
-### **7.1 NRC****응답 형식**
+**7.1 NRC****응답 형식**
 
 기본 구조
 
@@ -677,7 +677,7 @@ SecurityAccess 사용 시 주의사항
 
       7F 10 7F  → 현재 세션에서 요청한 세션 전환 불가
 
-### **7.2****주요 NRC 코드 정리**
+## **7.2****주요 NRC 코드 정리**
 
 기본 거부 코드
 
@@ -766,7 +766,7 @@ SecurityAccess 사용 시 주의사항
 | 0x92 | voltageTooHigh | 전원 전압 너무 높음 |
 | 0x93 | voltageTooLow | 전원 전압 너무 낮음 |
 
-### **7.3 NRC****별 발생 원인 및 실무 대응**
+## **7.3 NRC****별 발생 원인 및 실무 대응**
 
 자주 마주치는 NRC 분석
 
@@ -819,7 +819,7 @@ NRC 0x78 requestCorrectlyReceivedResponsePending
 | Key 검증 알고리즘 연산 | 정상 동작, 대기 |
 | 0x78 반복 후 응답 없음 | ECU 오류 의심, 리셋 후 재시도 |
 
-### **7.4 NRC****분석 체크리스트**
+## **7.4 NRC****분석 체크리스트**
 
 진단 통신 실패 시 점검 순서
 

@@ -8,9 +8,9 @@ order: 7
 
 # (7) TSN
 
-## **7. TSN**
+**7. TSN**
 
-## **7.1 TSN (Time Sensitive Networking) 개요**
+**7.1 TSN (Time Sensitive Networking) 개요**
 
 - **IEEE 802 표준 기반의 시간 민감형 데이터 전송을 위한 이더넷 확장 기술**
 - **기존 Ethernet AVB의 실시간 데이터 지연 문제를 개선**

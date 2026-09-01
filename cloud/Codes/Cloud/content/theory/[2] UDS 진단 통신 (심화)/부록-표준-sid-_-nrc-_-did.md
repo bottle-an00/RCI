@@ -8,9 +8,9 @@ order: 6
 
 # (6) [부록] 표준 SID / NRC / DID
 
-## **25. 부록**
+**25. 부록**
 
-### **25.1 UDS****서비스 SID 전체 목록표**
+**25.1 UDS****서비스 SID 전체 목록표**
 
 ISO 14229-1 표준 정의 SID 전체
 
@@ -46,7 +46,7 @@ ISO 14229-1 표준 정의 SID 전체
 | 0x87 | LinkControl | Diagnostic and Communication Management |
 | 0x7F | NegativeResponse | (응답 전용) |
 
-### **25.2 NRC****전체 목록표**
+## **25.2 NRC****전체 목록표**
 
 ISO 14229-1 표준 정의 NRC 전체
 
@@ -136,7 +136,7 @@ ISO 14229-1 표준 정의 NRC 전체
 | 0x92 | voltageTooHigh | 전원 전압 너무 높음 |
 | 0x93 | voltageTooLow | 전원 전압 너무 낮음 |
 
-### **25.3****표준 DID 전체 목록표**
+## **25.3****표준 DID 전체 목록표**
 
 ECU 식별 정보 DID (0xF180 ~ 0xF1FF)
 
@@ -198,7 +198,7 @@ DID 범위별 전체 분류
 | 0xFD00 ~ 0xFEFF | 제조사 정의 |
 | 0xFF00 ~ 0xFFFF | 예약 |
 
-### **25.4****표준 RID 전체 목록표**
+## **25.4****표준 RID 전체 목록표**
 
 ISO 표준 정의 RID (0xFF00 ~ 0xFFFF)
 
@@ -221,7 +221,7 @@ RID 범위별 전체 분류
 | 0xF000 ~ 0xFEFF | 제조사 정의 |
 | 0xFF00 ~ 0xFFFF | ISO 표준 정의 |
 
-### **25.5****자주 사용하는 UDS 메시지 패턴**
+## **25.5****자주 사용하는 UDS 메시지 패턴**
 
 세션 진입 패턴
 

@@ -8,15 +8,15 @@ order: 7
 
 # (7) 데이터 보호(Data Protection) 및 Fault Confinement 상세
 
-## **7. 데이터 보호(Data Protection) 및 Fault Confinement 상세**
+**7. 데이터 보호(Data Protection) 및 Fault Confinement 상세**
 
-### **7.1 데이터 보호의 3단계**
+**7.1 데이터 보호의 3단계**
 
 1. **Bit Error 예방: 물리적 수단 (5장 참고 - 꼬임선, 종단저항 등)**
 2. **남은 Bit Error 처리: 프로토콜 내 논리적 수단 (에러 검출/신호화/재전송)**
 3. **Fault Confinement: Tx/Rx 에러 카운터를 이용한 결함 노드 격리**
 
-### **7.2 에러 검출 메커니즘 (5가지)**
+## **7.2 에러 검출 메커니즘 (5가지)**
 
 | **메커니즘** | **설명** |
 | --- | --- |
@@ -26,13 +26,13 @@ order: 7
 | **CRC Check** | **수신 CRC와 송신 CRC 값 비교** |
 | **Form Check** | **특정 필드(예: EOF 등)는 모두 recessive(1)이어야 함** |
 
-### **7.3 에러 신호화(Error Signaling)**
+## **7.3 에러 신호화(Error Signaling)**
 
 - **에러 검출 시 Error Frame(6bit Error Flag + 8bit Error Delimiter)을 전송하여 해당 프레임을 무효화**
 - **Error Flag는 6개의 dominant 비트로, 스터핑 규칙 등 프로토콜 규칙을 고의로 위반하여 모든 노드가 프레임 무효를 인지하게 함**
 - **CRC 에러의 경우 Error Flag 대신 Negative Acknowledgement로 시작됨**
 
-### **7.4 Fault Confinement (결함 격리)**
+## **7.4 Fault Confinement (결함 격리)**
 
 **각 노드는 TEC(Transmission Error Counter)와 REC(Receive Error Counter) 두 개의 8bit 레지스터를 관리한다.**
 

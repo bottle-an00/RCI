@@ -4,45 +4,37 @@
 {% block app_class %}app--fixed{% endblock %}
 
 {% block content %}
-{# Step3 · ECU 업그레이드 — 중앙 리프로그래밍 자동 시퀀스 / 우 통신 로그.
-   진단·강제구동과 같은 라이브 화면이다: 계약(minigit)대로 실제 왕복하고,
-   전송 방식(목업 / MQTT 목업 / RCI(MQTT))은 상단 토글로 갈린다. #}
+{# Step3 · ECU 업그레이드 — 진단·강제구동과 같은 구성이되 좌 세부 항목 트리가 없다
+   (리프로그래밍은 고를 잎이 없는 단일 코스라서다).
+     중앙 [기능 설명(그림) | 시퀀스 설명(글)] + 통신 로그 / 우 시퀀스 진행
+   계약(minigit)대로 실제 왕복하고, 전송 방식(목업 / MQTT 목업 / RCI(MQTT))은
+   상단 토글로 갈린다. #}
 <div class="run" data-target="{{ target.id }}" data-device="{{ target.device }}"
      data-transport="{{ target.transport }}" data-ws-url="{{ ws_url or '' }}"
      data-live="1">
-  <div class="run__center">
+  <div class="run__center run__center--seq">
     <div class="fw-info">
       <span class="fw-info__cur">현재 v1.02</span><span class="fw-info__arrow">→</span>
       <span class="fw-info__new">신규 v1.05</span>
       <span class="fw-info__file">파일 rc_engine_v105.bin (더미 · 블록 3개)</span>
     </div>
-    {% if sequence %}{% include "partials/_sequence.html" %}{% endif %}
+    {% if sequence %}{% include "partials/_seq_brief.html" %}{% endif %}
+    {% include "partials/_log.html" %}
   </div>
   <span class="run__grip"></span>
 
   <div class="run__right">
-    <div class="panel run__log">
-      <div class="panel__head">
-        <span class="panel__title">통신 로그</span>
-        {# 세션 유지 발행은 리셋 직전까지 계속되므로 여기서 멈출 수 있어야 한다. #}
-        <span class="ka-badge" id="ka-badge" hidden>
-          <span class="ka-badge__text"></span>
-          <button class="mini-btn js-ka-stop" type="button">■ 중지</button>
-        </span>
-        <span class="tag tag--uds">{{ target.transport }}</span>
-      </div>
-      <div class="log-body" id="log-body">
-        <span class="log-line muted">브로커 연결 대기 중…</span>
-      </div>
-    </div>
+    {% if sequence %}{% include "partials/_sequence.html" %}{% endif %}
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+<script src="{{ asset('js/run-resize.js') }}"></script>
 <script src="{{ asset('js/mock-rci.js') }}"></script>
 <script src="{{ asset('js/rci-live.js') }}"></script>
 <script src="{{ asset('js/transport-switch.js') }}"></script>
 <script src="{{ asset('js/auto-sequence.js') }}"></script>
+<script src="{{ asset('js/seq-brief.js') }}"></script>
 {% endblock %}

@@ -8,16 +8,16 @@ order: 6
 
 # (6) CAN FD
 
-## **6. CAN with Flexible Datarate (CAN FD)**
+**6. CAN with Flexible Datarate (CAN FD)**
 
-### **6.1 등장 배경**
+**6.1 등장 배경**
 
 ![](assets/can-fd/img01.png)
 
 1. **차량 ECU 증가로 인한 통신량 증가**
 2. **한정된 시간에 전송해야 할 데이터 증가**
 
-### **6.2 데이터 구간 속도 증가 (BRS)**
+## **6.2 데이터 구간 속도 증가 (BRS)**
 
 ![](assets/can-fd/img02.png)
 
@@ -25,7 +25,7 @@ order: 6
   - **BRS = 0 (dominant): 속도 유지**
   - **BRS = 1 (recessive): 데이터 구간 속도로 전환**
 
-### **6.3 CAN vs CAN FD 전송 시간 비교**
+## **6.3 CAN vs CAN FD 전송 시간 비교**
 
 - **64바이트 전송 시:**
   - **CAN: 1Mbps 기준, 8바이트씩 8개 프레임 필요 → 총 약 0.000848초**
@@ -39,7 +39,7 @@ order: 6
 > - **새로운 CAN 컨트롤러 필요 (가격은 기존 CAN과 유사한 수준), 기존 하이스피드 트랜시버도 사용 가능하나 더 높은 성능을 위해선 신형 트랜시버 권장**
 > - **CAN 및 상위 프로토콜(AUTOSAR, CANopen, J1939 등)에도 확장된 Data Field에 맞춘 소규모 프로토콜 변경 필요**
 
-### **6.4 6가지 프레임 유형 (Classic CAN + CAN FD)**
+## **6.4 6가지 프레임 유형 (Classic CAN + CAN FD)**
 
 | **구분** | **Standard(11bit)** | **Extended(29bit)** |
 | --- | --- | --- |
@@ -50,7 +50,7 @@ order: 6
 - **구분 기준 3가지: (1) ID 길이(11/29bit) (2) Data Field 유무(Data/Remote) (3) Data Field 길이(0~8B / 0~64B)**
 - **CAN FD에는 Remote Frame이 존재하지 않는다 (Data Field가 없으면 bit rate switch도 필요 없기 때문)**
 
-### **6.5 CAN FD Data Frame 구조 (Standard Format)**
+## **6.5 CAN FD Data Frame 구조 (Standard Format)**
 
 **![](assets/can-fd/img03.png)**
 
@@ -61,7 +61,7 @@ order: 6
 | **BRS(Bit Rate Switch)** | **Data 구간 전송속도 전환 여부** |
 | **ESI(Error State Indicator)** | **송신 노드의 에러 상태를 알림** |
 
-### **6.6 Bit Rate Switch (BRS) 상세**
+## **6.6 Bit Rate Switch (BRS) 상세**
 
 - **Dominant: 단일 bit-rate 유지**
 - **Recessive: 설정된 2번째(더 높은) bit-rate로 임시 전환**
@@ -71,14 +71,14 @@ order: 6
 - **모든 CAN FD 노드는 두 개의 baud rate를 설정해 둔다.**
 - **트랜시버 성능이 상위 baud rate의 제한 요인이 되며, 기존 CAN High Speed 트랜시버도 사용 가능하지만 최신 트랜시버일수록 더 높은 속도 달성 가능**
 
-### **6.7 Error State Indicator (ESI)**
+## **6.7 Error State Indicator (ESI)**
 
 - **Classic CAN에는 송신 노드가 자신의 에러 상태를 알릴 방법이 없었음**
 - **CAN FD의 ESI 비트로 모든 노드가 현재 송신자의 에러 상태를 인지 가능**
   - **Recessive: 송신 노드가 Error Passive 상태**
   - **Dominant: 송신 노드가 Error Active 상태**
 
-### **6.8 DLC와 Data Field 크기 (CAN FD)**
+## **6.8 DLC와 Data Field 크기 (CAN FD)**
 
 | **DLC** | **CAN(Byte)** | **CAN FD(Byte)** |
 | --- | --- | --- |
@@ -91,7 +91,7 @@ order: 6
 | **14** | **8** | **48** |
 | **15** | **8** | **64** |
 
-### **6.9 CAN FD의 2단계 Bit Stuffing과 CRC**
+## **6.9 CAN FD의 2단계 Bit Stuffing과 CRC**
 
 - **CAN FD도 Data Field 끝까지는 Classic CAN과 동일한 방식으로 비트 스터핑 적용**
 - **CAN FD에서는 CRC Field 자체에도 별도의 스터핑 규칙이 적용됨(CRC Bit Stuffing)**

@@ -8,9 +8,9 @@ order: 8
 
 # (8) [부록] CAN 데이터베이스(DBC)와 CANdb++ Editor
 
-## **8. CAN 데이터베이스(DBC)와 CANdb++ Editor**
+**8. CAN 데이터베이스(DBC)와 CANdb++ Editor**
 
-### **8.1 메시지와 신호(Signal)**
+**8.1 메시지와 신호(Signal)**
 
 - **CAN 프로토콜 자체는 데이터의 의미를 정의하지 않는다.**
 - **메시지(Message): Identifier + DLC + Data Field(최대 8byte, CAN FD는 최대 64byte)로 구성되는 통신 객체**
@@ -18,7 +18,7 @@ order: 8
   - **신호 설명 요소: 이름(symbolic name), 단위(unit), 변환식(conversion formula), 심볼릭 값(symbolic value)**
   - **물리값 변환식: `물리값 = Raw값 × Factor + Offset`**
 
-### **8.2 Intel vs Motorola 포맷 (Byte Order)**
+## **8.2 Intel vs Motorola 포맷 (Byte Order)**
 
 | **포맷** | **방향** |
 | --- | --- |
@@ -28,13 +28,13 @@ order: 8
 - **바이트 내부의 비트 유의성(significance)은 두 포맷에서 동일함 (bit7=msb, bit0=lsb)**
 - **신호 길이가 8bit 이하인 경우 포맷 차이는 의미 없음**
 
-### **8.3 CAN Database(DBC)의 역할**
+## **8.3 CAN Database(DBC)의 역할**
 
 - **모든 통신 정의(메시지, 신호, 노드, 관계)를 담는 데이터베이스로, Vector 도구 전반(CANoe, CANalyzer, CANape 등)에서 공통으로 사용**
 - **트레이스 창(Trace Window)에서 원시 hex 값을 → 메시지명/신호명/물리값/심볼릭값으로 해석해서 보여주는 역할**
 - **활용 분야: 분석(Analysis), 시뮬레이션(Simulation), 테스트(Test), 임베디드 SW(코드 생성)**
 
-### **8.4 CANdb++ Editor**
+## **8.4 CANdb++ Editor**
 
 - **CAN 네트워크 서술에 사용되는 dbc 파일을 다루는 Vector 전용 편집기**
 - **주요 기능: 새 데이터베이스 생성, 기존 DB 열람/편집, Value Table을 이용한 신호 상세 설명, Attribute를 이용한 고급 설정**

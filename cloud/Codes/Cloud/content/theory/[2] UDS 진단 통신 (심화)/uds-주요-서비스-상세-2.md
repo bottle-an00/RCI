@@ -10,9 +10,9 @@ order: 4
 
 **다룬 서비스 : 0x27 / 0x28 / 0x2E / 0x2F / 0x31 / 0x34 / 0x36 / 0x37 / 0x3E**
 
-## **13. SID 0x27 - SecurityAccess**
+**13. SID 0x27 - SecurityAccess**
 
-### **13.1****서비스 개요 및 용도**
+**13.1****서비스 개요 및 용도**
 
 - ECU의 보안 기능 접근 권한 획득
 - Seed & Key 기반 챌린지-리스폰스 인증 방식
@@ -29,7 +29,7 @@ order: 4
 - 세션 변경 시 인증 상태 자동 해제
 - ECU 리셋 시 인증 상태 해제
 
-### **13.2 Seed & Key****메커니즘**
+## **13.2 Seed & Key****메커니즘**
 
 기본 4단계 동작
 
@@ -40,7 +40,7 @@ order: 4
 
 이미 인증된 상태에서 Seed 요청 시: ECU가 모든 0(0x00000000)을 Seed로 반환
 
-### **13.3 Sub-function****구조 (홀수/짝수 페어)**
+## **13.3 Sub-function****구조 (홀수/짝수 페어)**
 
 |  |  |
 | --- | --- |
@@ -55,7 +55,7 @@ order: 4
 
 규칙: 홀수 = Seed 요청, 짝수 = Key 전송 (짝수 = 홀수 + 1)
 
-### **13.4 Security Level****개념**
+## **13.4 Security Level****개념**
 
 |  |  |  |
 | --- | --- | --- |
@@ -66,7 +66,7 @@ order: 4
 
 레벨별로 독립적 인증 필요
 
-### **13.5****인증 실패 시 ECU 동작**
+## **13.5****인증 실패 시 ECU 동작**
 
 |  |  |  |
 | --- | --- | --- |
@@ -82,7 +82,7 @@ order: 4
 - Delay 중 시도: NRC 0x37
 - Delay 종료 후: Counter 리셋, 재시도 가능
 
-### **13.6****실무 로그 예시**
+## **13.6****실무 로그 예시**
 
 [요청]  27 01                          ; Seed 요청
 
@@ -94,7 +94,7 @@ order: 4
 
 ## **14. SID 0x28 - CommunicationControl**
 
-### **14.1****서비스 개요 및 용도**
+**14.1****서비스 개요 및 용도**
 
 - ECU의 일반 통신(CAN 메시지 송수신) 제어
 - 진단 통신은 영향받지 않음
@@ -109,7 +109,7 @@ order: 4
 - Extended Session 이상에서 사용
 - 진단 세션 종료 또는 ECU 리셋 시 자동 복원
 
-### **14.2 Sub-function****종류**
+## **14.2 Sub-function****종류**
 
 |  |  |  |
 | --- | --- | --- |
@@ -119,7 +119,7 @@ order: 4
 | 0x02 | disableRxAndEnableTx | 수신 비활성, 송신 활성 |
 | 0x03 | disableRxAndTx | 수신/송신 모두 비활성 (리프로그래밍 시 자주 사용) |
 
-### **14.3 communicationType****비트 정의**
+## **14.3 communicationType****비트 정의**
 
 |  |  |
 | --- | --- |
@@ -128,13 +128,13 @@ order: 4
 | 0x02 | 네트워크 관리 메시지만 |
 | 0x03 | 일반 + 네트워크 관리 메시지 (리프로그래밍 시 자주 사용) |
 
-### **14.4****리프로그래밍 시 활용**
+## **14.4****리프로그래밍 시 활용**
 
 - Programming Session 진입 전 모든 ECU에게 일반 통신 차단 요청 (Functional Addressing)
 - 플래시 작업 시 CAN 버스 부하 감소 및 ECU 간 간섭 방지
 - 작업 완료 후 통신 복원 (0x28 00)
 
-### **14.5****발생 가능한 NRC**
+## **14.5****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -144,7 +144,7 @@ order: 4
 | 0x31 | requestOutOfRange | communicationType 값 범위 초과 |
 | 0x33 | securityAccessDenied | SecurityAccess 필요 |
 
-### **14.6****실무 로그 예시**
+## **14.6****실무 로그 예시**
 
 [요청]  28 03 03                       ; 일반 + 네트워크 관리 모두 차단
 
@@ -152,7 +152,7 @@ order: 4
 
 ## **15. SID 0x2E - WriteDataByIdentifier**
 
-### **15.1****서비스 개요 및 용도**
+**15.1****서비스 개요 및 용도**
 
 - DID를 통해 ECU에 데이터를 쓰는 서비스
 - 0x22 (ReadDataByIdentifier)의 쓰기 버전
@@ -169,7 +169,7 @@ order: 4
 - Extended Session 또는 Programming Session 필요
 - 영구 저장(비휘발성 메모리)되는 경우가 많음
 
-### **15.2****쓰기 가능한 DID 범위**
+## **15.2****쓰기 가능한 DID 범위**
 
 쓰기 가능 DID
 
@@ -188,7 +188,7 @@ order: 4
 - 0xF18C ECUSerialNumber
 - 대부분 H/W 정보 관련 DID
 
-### **15.3 SecurityAccess****요구 조건**
+## **15.3 SecurityAccess****요구 조건**
 
 쓰기 작업 일반 흐름
 
@@ -197,13 +197,13 @@ order: 4
 3. WriteDataByIdentifier 실행 (2E XX XX [data])
 4. 필요시 ECU 리셋 (11 01)
 
-### **15.4****데이터 무결성 검증 (ECU 측)**
+## **15.4****데이터 무결성 검증 (ECU 측)**
 
 - DID에 정의된 데이터 길이 일치 확인
 - 데이터 형식 검증 (예: VIN은 17자리 ASCII)
 - 데이터 범위 검증
 
-### **15.5****발생 가능한 NRC**
+## **15.5****발생 가능한 NRC**
 
 | **NRC** | **이름** | **발생 조건** |
 | --- | --- | --- |
@@ -213,7 +213,7 @@ order: 4
 | 0x33 | securityAccessDenied | SecurityAccess 필요 |
 | 0x72 | generalProgrammingFailure | ECU 쓰기 실패 |
 
-### **15.6****실무 로그 예시**
+## **15.6****실무 로그 예시**
 
 [요청]  2E F1 90 [VIN 17바이트]        ; VIN 쓰기
 
@@ -221,7 +221,7 @@ order: 4
 
 ## **16. SID 0x2F - InputOutputControlByIdentifier**
 
-### **16.1****서비스 개요 및 용도**
+**16.1****서비스 개요 및 용도**
 
 - ECU의 입력/출력을 진단기가 제어하는 서비스
 - 액추에이터 강제 동작, 센서 값 강제 설정 가능
@@ -238,7 +238,7 @@ order: 4
 - SecurityAccess 필요한 경우 많음
 - 일정 시간 후 ECU가 자동 제어권 회수 (안전)
 
-### **16.2 IOControlParameter****종류**
+## **16.2 IOControlParameter****종류**
 
 |  |  |  |
 | --- | --- | --- |
@@ -248,7 +248,7 @@ order: 4
 | 0x02 | freezeCurrentState | 현재 상태 고정 |
 | 0x03 | shortTermAdjustment | 단기 조정 (진단기 직접 제어, 가장 많이 사용) |
 
-### **16.3 ECU****제어권 자동 반환 조건**
+## **16.3 ECU****제어권 자동 반환 조건**
 
 - 진단기가 0x00 returnControlToECU 명시적 요청
 - TesterPresent 누락으로 세션 종료
@@ -256,7 +256,7 @@ order: 4
 - 일정 시간 경과 (제조사별, 보통 10~30초)
 - 차량 운행 조건 변화 (속도 증가, 시동 OFF 등)
 
-### **16.4****안전 관련 주의사항**
+## **16.4****안전 관련 주의사항**
 
 위험한 액추에이터 제어
 
@@ -264,7 +264,7 @@ order: 4
 - 브레이크 시스템 → 차량 정지 시만 가능
 - 에어백 관련 → 별도 보안 절차 필요
 
-### **16.5****발생 가능한 NRC**
+## **16.5****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -274,7 +274,7 @@ order: 4
 | 0x31 | requestOutOfRange | 지원하지 않는 DID 또는 ControlState |
 | 0x33 | securityAccessDenied | SecurityAccess 필요 |
 
-### **16.6****실무 로그 예시**
+## **16.6****실무 로그 예시**
 
 [요청]  2F 12 34 03 01                 ; 헤드라이트 강제 점등 (shortTermAdjustment)
 
@@ -286,7 +286,7 @@ order: 4
 
 ## **17. SID 0x31 - RoutineControl**
 
-### **17.1****서비스 개요 및 용도**
+**17.1****서비스 개요 및 용도**
 
 - ECU 내부의 진단 루틴을 실행하는 서비스
 - 시작/정지/결과 조회 기능 제공
@@ -304,7 +304,7 @@ order: 4
 - SecurityAccess 필요한 경우 많음
 - 시간이 오래 걸리는 작업 → 0x78 Response Pending 자주 발생
 
-### **17.2 Sub-function****종류**
+## **17.2 Sub-function****종류**
 
 |  |  |  |
 | --- | --- | --- |
@@ -313,7 +313,7 @@ order: 4
 | 0x02 | stopRoutine | 루틴 실행 중지 |
 | 0x03 | requestRoutineResults | 루틴 결과 조회 |
 
-### **17.3****주요 표준 RID**
+## **17.3****주요 표준 RID**
 
 |  |  |  |
 | --- | --- | --- |
@@ -322,7 +322,7 @@ order: 4
 | 0xFF01 | checkProgrammingDependencies | 프로그래밍 의존성 검증 |
 | 0xFF02 | eraseMirrorMemoryDTCs | Mirror Memory DTC 삭제 |
 
-### **17.4 RID****범위별 용도**
+## **17.4 RID****범위별 용도**
 
 |  |  |
 | --- | --- |
@@ -332,7 +332,7 @@ order: 4
 | 0xF000 ~ 0xFEFF | 제조사 정의 |
 | 0xFF00 ~ 0xFFFF | ISO 표준 정의 |
 
-### **17.5****발생 가능한 NRC**
+## **17.5****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -344,7 +344,7 @@ order: 4
 | 0x72 | generalProgrammingFailure | 루틴 실행 실패 |
 | 0x78 | requestCorrectlyReceivedResponsePending | 처리 중 |
 
-### **17.6****실무 로그 예시**
+## **17.6****실무 로그 예시**
 
 [요청]  31 01 FF 00                    ; 메모리 소거 시작
 
@@ -354,7 +354,7 @@ order: 4
 
 ## **18. SID 0x34 - RequestDownload**
 
-### **18.1****서비스 개요 및 용도**
+**18.1****서비스 개요 및 용도**
 
 - ECU에 데이터를 다운로드(쓰기)하기 위한 요청 시작 서비스
 - 리프로그래밍의 핵심 첫 단계
@@ -371,7 +371,7 @@ order: 4
 - 응답에 maxNumberOfBlockLength 포함 (블록 크기 협상)
 - 이후 0x36 → 0x37로 이어짐
 
-### **18.2 Request****메시지 주요 파라미터**
+## **18.2 Request****메시지 주요 파라미터**
 
 |  |  |
 | --- | --- |
@@ -381,26 +381,26 @@ order: 4
 | memoryAddress | 다운로드할 메모리 시작 주소 |
 | memorySize | 다운로드 전체 크기 |
 
-### **18.3 Response****의 maxNumberOfBlockLength**
+## **18.3 Response****의 maxNumberOfBlockLength**
 
 - ECU가 한 번에 받을 수 있는 최대 블록 크기
 - 진단기는 이 값 이하 크기로 0x36 TransferData 전송
 - 일반적으로 0x102(258바이트), 0x402(1026바이트) 등
 
-### **18.4 RequestUpload (0x35)****와의 차이**
+## **18.4 RequestUpload (0x35)****와의 차이**
 
 | **항목** | **0x34 RequestDownload** | **0x35 RequestUpload** |
 | --- | --- | --- |
 | 방향 | 진단기 → ECU | ECU → 진단기 |
 | 용도 | 데이터 쓰기 | 데이터 읽기 |
 
-### **18.5****사전 조건**
+## **18.5****사전 조건**
 
 1. Programming Session 진입 (10 02)
 2. SecurityAccess 인증 (27 05, 27 06 등)
 3. 메모리 소거 (31 01 FF 00)
 
-### **18.6****발생 가능한 NRC**
+## **18.6****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -410,7 +410,7 @@ order: 4
 | 0x33 | securityAccessDenied | SecurityAccess 필요 |
 | 0x70 | uploadDownloadNotAccepted | 다운로드 거부 |
 
-### **18.7****실무 로그 예시**
+## **18.7****실무 로그 예시**
 
 [요청]  34 00 44 00 04 00 00 00 02 00 00   ; 시작 주소 0x00040000, 크기 128KB
 
@@ -418,7 +418,7 @@ order: 4
 
 ## **19. SID 0x36 - TransferData**
 
-### **19.1****서비스 개요 및 용도**
+**19.1****서비스 개요 및 용도**
 
 - 실제 데이터를 ECU에 전송하는 서비스
 - 0x34 이후 반복 호출하여 블록 단위 전송
@@ -429,20 +429,20 @@ order: 4
 - blockSequenceCounter로 순서 관리
 - 0x78 Response Pending 자주 발생 (플래시 쓰기 시간)
 
-### **19.2 blockSequenceCounter**
+## **19.2 blockSequenceCounter**
 
 - 0x01부터 시작
 - 매 블록마다 +1 증가
 - 0xFF 다음은 0x00 (순환)
 - 순서 오류 시 NRC 0x73 발생 (wrongBlockSequenceCounter)
 
-### **19.3****블록 크기 계산**
+## **19.3****블록 크기 계산**
 
 maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 
 블록당 전송 가능 데이터 = 1026 - 1(SID) - 1(Counter) = 1024바이트
 
-### **19.4****발생 가능한 NRC**
+## **19.4****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -454,7 +454,7 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 | 0x73 | wrongBlockSequenceCounter | 블록 순서 번호 오류 |
 | 0x78 | requestCorrectlyReceivedResponsePending | 처리 중 |
 
-### **19.5****실무 로그 예시**
+## **19.5****실무 로그 예시**
 
 [요청]  36 01 [1024바이트 데이터]      ; 1번 블록 전송
 
@@ -462,7 +462,7 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 
 ## **20. SID 0x37 - RequestTransferExit**
 
-### **20.1****서비스 개요 및 용도**
+**20.1****서비스 개요 및 용도**
 
 - 0x34/0x35 시작된 데이터 전송을 종료하는 서비스
 - 리프로그래밍 다운로드 흐름의 마지막 단계
@@ -473,7 +473,7 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 - 응답에 ECU의 최종 처리 결과 포함 가능 (CRC 등)
 - 0x37 이후 0x36 호출 불가 (다시 0x34부터 시작 필요)
 
-### **20.2****전체 다운로드 흐름**
+## **20.2****전체 다운로드 흐름**
 
 [1] RequestDownload (0x34) - 다운로드 시작, 블록 크기 협상
 
@@ -485,7 +485,7 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 
 [5] ECUReset (0x11 01) - 새 펌웨어 적용
 
-### **20.3****발생 가능한 NRC**
+## **20.3****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -494,15 +494,15 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 | 0x31 | requestOutOfRange | 모든 데이터 전송 완료되지 않음 |
 | 0x72 | generalProgrammingFailure | 종료 처리 실패 |
 
-### **20.4****실무 로그 예시**
+## **20.4****실무 로그 예시**
 
 [요청]  37                             ; 전송 종료
 
 [응답]  77                             ; 종료 완료
 
-# **21. SID 0x3E - TesterPresent**
+## **21. SID 0x3E - TesterPresent**
 
-### **21.1****서비스 개요 및 용도**
+**21.1****서비스 개요 및 용도**
 
 - 진단기가 ECU에게 자신의 존재를 알리는 Keep-alive 메시지
 - 비기본 세션과 SecurityAccess 상태 유지
@@ -519,7 +519,7 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 - Suppress Positive Response 적극 활용
 - 가장 빈번하게 전송되는 진단 메시지
 
-### **21.2 Sub-function**
+## **21.2 Sub-function**
 
 |  |  |  |
 | --- | --- | --- |
@@ -527,7 +527,7 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 | 0x00 | zeroSubFunction | Keep-alive 신호 |
 | 0x80 | zeroSubFunction + Suppress | Keep-alive + 응답 억제 (실무에서 가장 많이 사용) |
 
-### **21.3****전송 주기**
+## **21.3****전송 주기**
 
 - S3\_Server 기본값: 5000ms
 - 권장 전송 주기: S3\_Server의 절반 이하 (보통 2000ms ~ 3000ms)
@@ -539,14 +539,14 @@ maxNumberOfBlockLength = 0x402 (1026바이트) 예시
 | 5000ms (기본) | 2000ms ~ 3000ms |
 | 10000ms | 4000ms ~ 5000ms |
 
-### **21.4****세션 끊김 시 영향**
+## **21.4****세션 끊김 시 영향**
 
 - SecurityAccess 인증 해제
 - IOControl 제어권 자동 반환
 - CommunicationControl 설정 원복
 - 진행 중인 작업 중단
 
-### **21.5****실무 로그 예시**
+## **21.5****실무 로그 예시**
 
 [요청]  3E 80                          ; TesterPresent (Suppress)
 

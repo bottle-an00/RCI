@@ -38,5 +38,11 @@
       <span class="crumbbar__sep2">·</span>
       <span class="crumbbar__link">확인 중…</span>
     </div>
+    {% if page_guide %}
+    {# 진입 팝업을 '더 이상 보지 않기'로 껐어도 여기로 다시 부를 수 있다 —
+       끄는 선택이 되돌릴 수 없으면 아무도 누르지 않는다 (guide-modal.js). #}
+    <button class="crumbbar__help" type="button" data-guide-open
+            title="이 화면 사용 안내">? 도움말</button>
+    {% endif %}
   </div>
 </div>

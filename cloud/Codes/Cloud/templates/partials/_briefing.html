@@ -1,0 +1,55 @@
+{# 배경 · 이론 — 만화(4컷/8컷) + 글. 메시지 작성과 같은 윈도우에서 버튼으로 갈아 낀다.
+   컨텍스트: briefing(main.step_briefing), scenario, step, step_no, step_total
+   그림이 아직 없는 컷은 '준비중' 더미 이미지 위에 안내 딱지를 얹는다 —
+   static/img/comic/{topic}-{n}.png 를 넣으면 자동으로 바뀐다. #}
+{% from "partials/_macros.html" import stage_switch %}
+<div class="panel panel--emph panel--grow brief" data-stage-panel="brief">
+
+  <div class="panel__head panel__head--brand panel__head--stage">
+    <span class="panel__title">배경 · 이론</span>
+    <span class="panel__meta panel__meta--light">{{ scenario.title }} · {{ step.title }} ({{ step_no }}/{{ step_total }})</span>
+    {{ stage_switch("brief") }}
+  </div>
+
+  <div class="panel__body brief__body">
+    {% if briefing %}
+    <div class="brief__lede">
+      <h2 class="brief__title">{{ briefing.title }}</h2>
+      <p>{{ briefing.lede }}</p>
+    </div>
+
+    {# 컷 수에 따라 4컷은 2열, 8컷은 4열. 이미지 비율은 그림이 정한다(높이 자동). #}
+    <div class="comic comic--{{ briefing.cuts|length }}">
+      {% for c in briefing.cuts %}
+      <figure class="comic__cut">
+        <div class="comic__frame">
+          <img class="comic__img" src="{{ c.src }}" alt="{{ briefing.title }} {{ c.no }}컷 — {{ c.caption }}" loading="lazy">
+          {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+        </div>
+        <figcaption class="comic__cap">
+          <span class="comic__no">{{ c.no }}</span>{{ c.caption }}
+          {% if c.note %}<span class="comic__note">{{ c.note }}</span>{% endif %}
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+
+    <div class="brief__text">
+      {% for s in briefing.sections %}
+      <section class="brief__sec">
+        <h3>{{ s.h }}</h3>
+        <p>{{ s.p }}</p>
+      </section>
+      {% endfor %}
+    </div>
+
+    <div class="brief__takeaway">{{ briefing.takeaway }}</div>
+
+    <div class="brief__go">
+      <button class="btn btn--primary" type="button" data-stage-view="compose">메시지 작성으로 →</button>
+    </div>
+    {% else %}
+    <div class="run-hint">이 단계의 배경 설명은 준비 중입니다.</div>
+    {% endif %}
+  </div>
+</div>

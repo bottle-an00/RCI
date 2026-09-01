@@ -8,9 +8,9 @@ order: 8
 
 # (8) SOME/IP
 
-## **8. SOME/IP**
+**8. SOME/IP**
 
-## **8.1 Middleware**
+**8.1 Middleware**
 
 - **Middleware: 운영체제와 애플리케이션 사이에서 서로 다른 시스템·서비스·애플리케이션 간의 통신, 데이터 교환, 자원 공유를 중개하는 계층**
 

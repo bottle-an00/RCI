@@ -8,9 +8,9 @@ order: 4
 
 # (4) Data Link Layer
 
-# **4. Data Link Layer**
+**4. Data Link Layer**
 
-## **4.1 Error 검출**
+**4.1 Error 검출**
 
 - **CRC 체크섬(Cyclic Redundancy Check): 데이터 전송이나 저장 중 발생 가능한 오류를 검출하기 위해 사용되는 코드**
 - **송신측과 수신측이 동일한 CRC 코드 값을 계산·비교하며, 결과가 0이면 정상, 0이 아니면 해당 프레임을 폐기한다.**

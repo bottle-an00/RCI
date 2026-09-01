@@ -8,9 +8,9 @@ order: 6
 
 # (6) DoIP 메시지 구조
 
-## **6. DoIP 메시지 구조**
+**6. DoIP 메시지 구조**
 
-#### 6.1 Generic Header 구조
+**6.1 Generic Header 구조**
 
 **모든 DoIP 메시지의 공통 형식**
 
@@ -78,7 +78,7 @@ order: 6
 
 ---
 
-#### 6.2 Payload Type 분류
+## 6.2 Payload Type 분류
 
 **전체 분류표**
 
@@ -116,7 +116,7 @@ order: 6
 
 ---
 
-#### 6.3 주요 메시지 페이로드 구조
+## 6.3 주요 메시지 페이로드 구조
 
 **Vehicle Identification Response (0x0004)** — 33 byte
 
@@ -169,7 +169,7 @@ order: 6
 
 ---
 
-#### 6.4 메시지 구성 예시
+## 6.4 메시지 구성 예시
 
 **예시 : VIN 읽기 요청 (`22 F1 90`)**
 
@@ -210,7 +210,7 @@ order: 6
 
 ---
 
-#### 6.5 Generic Header NACK (0x0000)
+## 6.5 Generic Header NACK (0x0000)
 
 **목적**
 
@@ -272,7 +272,7 @@ order: 6
 
 ---
 
-#### 6.6 메시지 처리 요약
+## 6.6 메시지 처리 요약
 
 **수신측 처리 흐름**
 

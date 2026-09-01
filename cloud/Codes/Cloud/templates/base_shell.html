@@ -7,6 +7,8 @@
   {% include "partials/_subhead.html" %}
   {% block content %}{% endblock %}
   {% include "partials/_bottomnav.html" %}
+  {# 진입 안내 팝업. 화면 위를 덮으므로 마지막에 둔다 (실습 준비는 page_guide 가 없다). #}
+  {% if page_guide %}{% include "partials/_guide_modal.html" %}{% endif %}
 {% endblock %}
 {# 상단바의 연결 표시는 브라우저만 알 수 있으므로 모든 서브 화면에서 같은 규칙으로
    그린다. 실습 화면은 rci-live.js 가 쥔 접속 상태를 받아 쓰고, 그 밖의 화면은

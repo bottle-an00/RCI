@@ -8,9 +8,9 @@ order: 1
 
 # (1) UDS 개요
 
-## **1. 진단 통신 개요**
+**1. 진단 통신 개요**
 
-### **1.1 UDS****정의 및 등장 배경**
+**1.1 UDS****정의 및 등장 배경**
 
 UDS 정의
 
@@ -33,7 +33,7 @@ UDS의 핵심 가치
 - 보안성: SecurityAccess를 통한 권한 관리
 - 독립성: 물리 계층과 무관하게 동일한 서비스 사용 가능
 
-### **1.2 KWP2000****과의 차이 및 발전 과정**
+## **1.2 KWP2000****과의 차이 및 발전 과정**
 
 진단 프로토콜 발전 흐름
 
@@ -70,7 +70,7 @@ UDS에서 새롭게 강화된 점
 - 데이터 식별자(DID)와 루틴 식별자(RID) 표준 정의
 - 리프로그래밍 프로세스 표준화 (0x34, 0x36, 0x37)
 
-### **1.3****표준화 (ISO 14229 시리즈)**
+## **1.3****표준화 (ISO 14229 시리즈)**
 
 ISO 14229는 여러 파트로 구성된 시리즈 표준이다. 각 파트는 UDS의 서로 다른 측면을 규정한다.
 
@@ -111,7 +111,7 @@ ISO 14229는 여러 파트로 구성된 시리즈 표준이다. 각 파트는 
 
    TCP/IP + IEEE 802.3 (Ethernet)
 
-### **1.4 UDS****의 적용 범위**
+## **1.4 UDS****의 적용 범위**
 
 진단기(Tester)와 ECU 간 통신
 
@@ -151,7 +151,7 @@ UDS가 적용되지 않는 영역
 
 ## **2. UDS****통신 모델**
 
-### **2.1 Client-Server****구조**
+**2.1 Client-Server****구조**
 
 기본 개념
 
@@ -184,7 +184,7 @@ UDS가 적용되지 않는 영역
 
 진단기(Client) ←──Response── ECU(Server)    (완료)
 
-### **2.2 Request/Response****메커니즘**
+## **2.2 Request/Response****메커니즘**
 
 Request 메시지 구조
 
@@ -219,7 +219,7 @@ Response 메시지 구조 (Negative)
 | 정상 응답 | ECU → 진단기: 50 03 00 32 01 F4 |
 | 조건 불만족 거부 | ECU → 진단기: 7F 10 22 |
 
-### **2.3 Positive Response vs Negative Response**
+## **2.3 Positive Response vs Negative Response**
 
 Positive Response (성공)
 
@@ -263,7 +263,7 @@ NRC 종류
 - 0x33: securityAccessDenied (보안 접근 거부)
 - 0x78: requestCorrectlyReceivedResponsePending (응답 보류)
 
-### **2.4 Suppress Positive Response****기능**
+## **2.4 Suppress Positive Response****기능**
 
 개념
 
@@ -310,7 +310,7 @@ Suppress 적용 가능 여부
 - 모든 Sub-function 기반 서비스가 Suppress를 지원하지는 않음
 - 표준에서 명시한 서비스만 지원 (DiagnosticSessionControl, ECUReset, SecurityAccess, CommunicationControl, TesterPresent 등)
 
-### **2.5 Functional vs Physical Addressing**
+## **2.5 Functional vs Physical Addressing**
 
 두 가지 주소 지정 방식
 
@@ -375,7 +375,7 @@ DoIP에서의 어드레싱
 
 ## **3. UDS****프로토콜 스택**
 
-### **3.1 OSI****계층에서의 UDS 위치**
+**3.1 OSI****계층에서의 UDS 위치**
 
 UDS의 OSI 매핑
 
@@ -398,7 +398,7 @@ UDS는 응용 계층(Layer 7) 프로토콜로, 하위 계층은 사용 환경(
 - 하위 계층만 환경에 맞게 교체
 - 진단기 입장에서 UDS 메시지(예: 22 F1 90)는 환경과 무관하게 동일
 
-### **3.2 UDS on CAN (ISO 15765-2 TP)**
+## **3.2 UDS on CAN (ISO 15765-2 TP)**
 
 ISO 15765-2의 역할
 
@@ -473,7 +473,7 @@ UDS와 CAN TP의 관계
 - 8바이트 이하 메시지: SF 한 개로 전송
 - 8바이트 초과 메시지: FF + CF로 분할 전송
 
-### **3.3 UDS on DoIP (ISO 13400)**
+## **3.3 UDS on DoIP (ISO 13400)**
 
 DoIP의 역할
 
@@ -519,7 +519,7 @@ UDS 메시지 자체는 동일
 - UDS 메시지 내용(예: 22 F1 90)은 CAN과 DoIP에서 완전히 동일
 - 하위 전송 수단만 다름
 
-### **3.4 UDS on LIN, FlexRay**
+## **3.4 UDS on LIN, FlexRay**
 
 UDS on LIN
 

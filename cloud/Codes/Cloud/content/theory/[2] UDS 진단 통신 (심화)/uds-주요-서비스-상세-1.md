@@ -10,9 +10,9 @@ order: 3
 
 **다룬 서비스 : 0x10 / 0x11 / 0x14 / 0x19 / 0x22**
 
-## **8. SID 0x10 - DiagnosticSessionControl**
+**8. SID 0x10 - DiagnosticSessionControl**
 
-## **8.1****서비스 개요 및 용도**
+**8.1****서비스 개요 및 용도**
 
 서비스 정의
 
@@ -33,7 +33,7 @@ order: 3
 - SecurityAccess 인증 불필요
 - 응답에 ECU의 타이밍 파라미터 정보 포함
 
-**8.2 Sub-function****종류**
+## **8.2 Sub-function****종류**
 
 표준 정의 Sub-function
 
@@ -52,7 +52,7 @@ Suppress Positive Response 지원
 - Sub-function의 bit 7을 1로 설정 시 Positive Response 억제
 - 예: 0x83 → Extended Session 요청, 응답 억제
 
-### **8.3 Request/Response****메시지 구조**
+## **8.3 Request/Response****메시지 구조**
 
 Request 메시지
 
@@ -92,7 +92,7 @@ Negative Response 메시지
 | Extended Session 진입 | 10 03 | 50 03 00 32 01 F4 |
 | Extended Session 진입 (응답 억제) | 10 83 | (응답 없음) |
 
-### **8.4****응답 데이터 분석 (P2 / P2\* 값)**
+## **8.4****응답 데이터 분석 (P2 / P2\* 값)**
 
 응답 데이터 해석
 
@@ -123,7 +123,7 @@ P2/P2\* 단위 차이 주의
 | Extended | 50ms | 5000ms | 일반 응답 시간 |
 | Programming | 50ms | 50000ms | 플래시 작업 시간 고려 |
 
-### **8.5****세션 전환 시 ECU 내부 동작**
+## **8.5****세션 전환 시 ECU 내부 동작**
 
 Default → Extended Session 진입
 
@@ -158,7 +158,7 @@ ECU 내부 동작:
 - ECU 식별 정보 (VIN, S/W 버전 등)
 - 영구 저장된 캘리브레이션 데이터
 
-### **8.6****발생 가능한 NRC**
+## **8.6****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -175,7 +175,7 @@ NRC 0x22 흔한 원인
 - 배터리 전압 부족
 - 기어가 P가 아닌 상태
 
-### **8.7****실무 로그 예시**
+## **8.7****실무 로그 예시**
 
 기본 시나리오: Extended Session 진입
 
@@ -237,7 +237,7 @@ Programming Session 진입 (시간 소요)
 
 ## **9. SID 0x11 - ECUReset**
 
-### **9.1****서비스 개요 및 용도**
+**9.1****서비스 개요 및 용도**
 
 서비스 정의
 
@@ -257,7 +257,7 @@ Programming Session 진입 (시간 소요)
 - SecurityAccess가 필요한 경우 있음 (제조사별)
 - 리셋 후 ECU는 자동으로 Default Session으로 복귀
 
-### **9.2 Sub-function****종류**
+## **9.2 Sub-function****종류**
 
 표준 정의 Sub-function
 
@@ -272,7 +272,7 @@ Programming Session 진입 (시간 소요)
 | 0x40~0x5F | vehicleManufacturerSpecific | 제조사 정의 |
 | 0x60~0x7E | systemSupplierSpecific | 공급사 정의 |
 
-### **9.3 Reset****종류별 차이**
+## **9.3 Reset****종류별 차이**
 
 hardReset (0x01)
 
@@ -309,7 +309,7 @@ disableRapidPowerShutDown (0x05)
 - enableRapidPowerShutDown 해제
 - 일반 After-run 동작으로 복귀
 
-### **9.4 Reset****후 세션 복귀 동작**
+## **9.4 Reset****후 세션 복귀 동작**
 
 Reset 직후 ECU 상태
 
@@ -325,7 +325,7 @@ Reset 직후 ECU 상태
 - 필요시 다시 세션 진입 및 보안 인증 수행
 - DoIP 환경에서는 TCP 연결도 재수립 필요할 수 있음
 
-### **9.5****발생 가능한 NRC**
+## **9.5****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -336,7 +336,7 @@ Reset 직후 ECU 상태
 | 0x33 | securityAccessDenied | SecurityAccess 필요 |
 | 0x7F | serviceNotSupportedInActiveSession | 현재 세션에서 사용 불가 |
 
-### **9.6****실무 로그 예시**
+## **9.6****실무 로그 예시**
 
 기본 시나리오: Hard Reset
 
@@ -378,7 +378,7 @@ Reset 직후 ECU 상태
 
 ## **10. SID 0x14 - ClearDiagnosticInformation**
 
-### **10.1****서비스 개요 및 용도**
+**10.1****서비스 개요 및 용도**
 
 서비스 정의
 
@@ -398,7 +398,7 @@ Reset 직후 ECU 상태
 - 일반적으로 Extended Session 이상에서 사용
 - 일부 DTC는 삭제 불가 (영구 DTC 등)
 
-### **10.2 Request****메시지 구조 (Group of DTC)**
+## **10.2 Request****메시지 구조 (Group of DTC)**
 
 Request 메시지
 
@@ -416,7 +416,7 @@ Positive Response 메시지
 
       응답이 매우 단순함 (Sub-function echo 없음, 데이터 없음)
 
-### **10.3 DTC****그룹 코드**
+## **10.3 DTC****그룹 코드**
 
 표준 정의 그룹 코드
 
@@ -441,7 +441,7 @@ ISO 15031-6 표준 그룹
 
 - 0xFFFFFF: 전체 DTC 삭제, 가장 일반적
 
-### **10.4 OBD****관련 DTC vs 제조사 DTC 삭제 범위**
+## **10.4 OBD****관련 DTC vs 제조사 DTC 삭제 범위**
 
 OBD-II 관련 DTC
 
@@ -459,7 +459,7 @@ OBD-II 관련 DTC
 - Permanent DTC (영구 DTC): OBD-II 법규상 ECU가 자체 판단으로만 삭제
 - 일부 안전 관련 DTC: 별도 조건 만족 시에만 삭제 가능
 
-### **10.5****발생 가능한 NRC**
+## **10.5****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -471,7 +471,7 @@ OBD-II 관련 DTC
 | 0x72 | generalProgrammingFailure | DTC 삭제 실패 |
 | 0x7F | serviceNotSupportedInActiveSession | 현재 세션에서 불가 |
 
-### **10.6****실무 로그 예시**
+## **10.6****실무 로그 예시**
 
 기본 시나리오: 전체 DTC 삭제
 
@@ -503,7 +503,7 @@ OBD-II 관련 DTC
 
 ## **11. SID 0x19 - ReadDTCInformation**
 
-### **11.1****서비스 개요 및 용도**
+**11.1****서비스 개요 및 용도**
 
 서비스 정의
 
@@ -523,7 +523,7 @@ OBD-II 관련 DTC
 - SecurityAccess 불필요 (대부분)
 - 멀티프레임 응답 빈번 (DTC 개수 많을 때)
 
-### **11.2****주요 Sub-function 상세**
+## **11.2****주요 Sub-function 상세**
 
 자주 사용되는 Sub-function
 
@@ -555,7 +555,7 @@ Response:
 
           59                 02                          YY                                AA BB CC          ZZ
 
-### **11.3 DTC Status Mask****비트 해석**
+## **11.3 DTC Status Mask****비트 해석**
 
 DTC Status (1바이트) 비트 정의
 
@@ -599,7 +599,7 @@ Status 해석 예시
 
       → 활성화된 Confirmed DTC로 현재도 발생 중
 
-### **11.4 DTC****코드 구조 (3바이트)**
+## **11.4 DTC****코드 구조 (3바이트)**
 
 DTC 코드 형식
 
@@ -645,7 +645,7 @@ DTC 코드 변환 예시
 
       - 마지막 바이트 00은 추가 정보 (제조사 정의)
 
-### **11.5 Snapshot/Extended Data****개념**
+## **11.5 Snapshot/Extended Data****개념**
 
 Snapshot Data
 
@@ -662,7 +662,7 @@ Extended Data
 - 발생 사이클 정보
 - Sub-function 0x06으로 조회
 
-**11.6****실무 로그 예시**
+## **11.6****실무 로그 예시**
 
 기본 시나리오: Confirmed DTC 조회
 
@@ -730,7 +730,7 @@ DTC 없음
 
 ## **12. SID 0x22 - ReadDataByIdentifier**
 
-### **12.1****서비스 개요 및 용도**
+**12.1****서비스 개요 및 용도**
 
 서비스 정의
 
@@ -751,7 +751,7 @@ DTC 없음
 - 멀티 DID 동시 요청 가능
 - 응답 데이터 길이는 DID에 따라 가변
 
-### **12.2 DID (Data Identifier)****개념**
+## **12.2 DID (Data Identifier)****개념**
 
 DID 정의
 
@@ -781,7 +781,7 @@ DID 범위별 용도
 | 0xFD00 ~ 0xFEFF | 제조사 정의 |
 | 0xFF00 ~ 0xFFFF | 예약 |
 
-### **12.3****주요 표준 DID 정리**
+## **12.3****주요 표준 DID 정리**
 
 ECU 식별 정보 DID (0xF180 ~ 0xF1FF)
 
@@ -820,7 +820,7 @@ ECU 식별 정보 DID (0xF180 ~ 0xF1FF)
 - 0xF188 / 0xF189: 펌웨어 버전 확인
 - 0xF186: 현재 세션 확인 (1바이트 응답)
 
-### **12.4****동시 다중 DID 요청**
+## **12.4****동시 다중 DID 요청**
 
 여러 DID를 한 번에 요청 가능
 
@@ -856,7 +856,7 @@ Response:
 - 멀티프레임 응답 필요 (데이터 양 증가)
 - 일부 ECU에서 지원하지 않음
 
-### **12.5 DID****데이터 길이 가변성**
+## **12.5 DID****데이터 길이 가변성**
 
 DID마다 응답 데이터 길이가 다름
 
@@ -873,7 +873,7 @@ DID 데이터 길이는 ODX 파일에 정의
 - 진단기는 ODX 파일에서 각 DID의 정확한 길이와 형식 파악
 - 응답 데이터 파싱 시 ODX 정보 필수
 
-### **12.6****발생 가능한 NRC**
+## **12.6****발생 가능한 NRC**
 
 |  |  |  |
 | --- | --- | --- |
@@ -885,7 +885,7 @@ DID 데이터 길이는 ODX 파일에 정의
 | 0x33 | securityAccessDenied | 보안 인증 필요 |
 | 0x7F | serviceNotSupportedInActiveSession | 현재 세션에서 불가 |
 
-### **12.7****실무 로그 예시**
+## **12.7****실무 로그 예시**
 
 VIN 조회
 

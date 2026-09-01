@@ -5,7 +5,9 @@
    컨텍스트: scenario, step, step_no, step_total, addr, examples, layers, nrc, negative
    addr.req 가 없으면(DoIP) CAN 층이 없어 UDS 페이로드만 다룬다. #}
 {% set spec = step.spec %}
+{% from "partials/_macros.html" import stage_switch %}
 <div class="panel panel--emph panel--grow composer" data-composer
+     data-stage-panel="compose"
      data-can-req="{{ addr.req or '' }}" data-can-resp="{{ addr.resp or '' }}"
      data-fill-req="{{ addr.fill_req or '' }}" data-fill-resp="{{ addr.fill_resp or '' }}"
      data-transport="{{ target.transport }}"
@@ -15,9 +17,10 @@
         토글로 바뀐다 (can-composer.js → window.RCI.keepalive). #}
      {% if spec.keepalive %}data-keepalive="2000"{% endif %}>
 
-  <div class="panel__head panel__head--brand">
+  <div class="panel__head panel__head--brand panel__head--stage">
     <span class="panel__title">{{ target.transport }} 메시지 작성</span>
     <span class="panel__meta panel__meta--light">{{ scenario.title }} · {{ step.title }} ({{ step_no }}/{{ step_total }})</span>
+    {{ stage_switch("compose") }}
   </div>
 
   <div class="panel__body composer__body">

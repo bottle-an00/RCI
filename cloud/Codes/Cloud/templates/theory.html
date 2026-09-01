@@ -1,6 +1,9 @@
 {% extends "base_shell.html" %}
 {% from "partials/_macros.html" import icon %}
 {% block title %}RCI · 이론 교육{% endblock %}
+{# 자료를 소제목 단위 페이지로 끊었으므로 화면도 뷰포트에 고정한다 — 페이지가 화면을
+   넘칠 때만 본문(.viewer__md) 안에서 스크롤되고, 이전·다음 버튼은 늘 같은 자리에 있다. #}
+{% block app_class %}app--fixed{% endblock %}
 
 {% block content %}
 {# Step3 · 이론 교육 — 좌 자료목록 / 우 md 뷰어(이미지·SVG·mermaid).
@@ -31,10 +34,33 @@
 
   <div class="md__detail viewer">
     {% if selected %}
+    {# 페이지 이동 링크의 뿌리. 자료(doc)는 그대로 두고 page 만 갈아 끼운다. #}
+    {% set doc_url = "/" ~ target.id ~ "/" ~ content.id ~ "?doc=" ~ (selected.id | urlencode) %}
     <div class="viewer__head">
       <span class="viewer__title">{{ selected.title }}</span>
       {% if selected.difficulty %}<span class="tag tag--uds">{{ selected.difficulty }}</span>{% endif %}
+
+      {# 소제목 단위로 끊은 페이지 이동. 서버가 그 페이지만 변환해 내려주므로
+         이동은 주소 이동이다 (theory_content.split_pages). #}
+      <div class="pager" data-pager
+           data-prev="{% if selected.prev_page %}{{ doc_url }}&page={{ selected.prev_page }}{% endif %}"
+           data-next="{% if selected.next_page %}{{ doc_url }}&page={{ selected.next_page }}{% endif %}">
+        <span class="pager__count">
+          <b>{{ selected.page }}</b>PAGE / {{ selected.page_total }}PAGE
+        </span>
+        {% if selected.prev_page %}
+        <a class="pager__btn" href="{{ doc_url }}&page={{ selected.prev_page }}">이전</a>
+        {% else %}
+        <span class="pager__btn is-off" aria-disabled="true">이전</span>
+        {% endif %}
+        {% if selected.next_page %}
+        <a class="pager__btn" href="{{ doc_url }}&page={{ selected.next_page }}">다음</a>
+        {% else %}
+        <span class="pager__btn is-off" aria-disabled="true">다음</span>
+        {% endif %}
+      </div>
     </div>
+    {# 페이지 안 내용이 화면을 넘으면 이 영역만 스크롤된다. #}
     <article class="viewer__md">{{ selected.html | safe }}</article>
     {% else %}
     <div class="viewer__empty">
@@ -52,4 +78,6 @@
 {# mermaid 는 브라우저에서만 그릴 수 있다(base_shell 의 link-status 와 별개 라인). #}
 <script src="{{ asset('js/vendor/mermaid.min.js') }}"></script>
 <script src="{{ asset('js/theory-mermaid.js') }}"></script>
+{# 페이지 이동 — 버튼은 링크라 JS 없이도 되고, 이 스크립트는 ←/→ 키를 얹기만 한다. #}
+<script src="{{ asset('js/theory-pager.js') }}"></script>
 {% endblock %}

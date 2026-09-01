@@ -1,0 +1,42 @@
+{# 화면 진입 안내 팝업 — "여기가 무엇을 하는 화면인가".
+
+   컨텐츠 그리드에서 타일을 누르면 곧장 3~4분할 실습 화면에 떨어진다. 어디를 먼저
+   봐야 할지부터 막히므로, 진입하면 한 번 가려서 설명하고 확인을 받은 뒤 화면을
+   내준다. 뒤로는 브레드크럼 바의 '도움말' 버튼으로 언제든 다시 부른다.
+
+   문구는 서버가 준다 (main.PAGE_GUIDES → page_guide). 여기는 뼈대만 그린다.
+   여는·닫는·기억하는 일은 static/js/guide-modal.js.
+
+   컨텍스트: page_guide = {key, name, lede, points[], note} #}
+<div class="modal" data-guide-modal data-guide-key="{{ page_guide.key }}" hidden>
+  {# 나머지 영역 음영. 여기를 눌러도 닫힌다 — 읽었으면 아무 데나 눌러 치우게. #}
+  <div class="modal__scrim" data-guide-close></div>
+
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+    <div class="modal__head">
+      <span class="modal__title" id="guide-title">안내</span>
+      <span class="modal__sub">{{ page_guide.name }}</span>
+      <button class="modal__x" type="button" data-guide-close aria-label="닫기">×</button>
+    </div>
+
+    <div class="modal__body">
+      {# lede·points 의 <b> 는 서버가 쓴 강조다 (사용자 입력이 아니다). #}
+      <p class="guide__lede">{{ page_guide.lede|safe }}</p>
+      <ul class="guide__points">
+        {% for p in page_guide.points %}<li>{{ p|safe }}</li>{% endfor %}
+      </ul>
+      {% if page_guide.note %}
+      {# 실물이 움직이는 화면에만 붙는다 — 매번 붙이면 경고가 배경이 된다. #}
+      <div class="guide__note">{{ page_guide.note|safe }}</div>
+      {% endif %}
+    </div>
+
+    <div class="modal__foot">
+      <label class="guide__mute">
+        <input type="checkbox" data-guide-mute> 더 이상 보지 않기
+      </label>
+      <button class="btn btn--primary guide__ok" type="button" data-guide-ok>확인</button>
+    </div>
+  </div>
+</div>
+<script src="{{ asset('js/guide-modal.js') }}"></script>

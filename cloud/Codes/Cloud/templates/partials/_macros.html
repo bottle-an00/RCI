@@ -5,3 +5,15 @@
 {% macro icon(name, cls="") -%}
 <span class="icon {{ cls }}">{% include "icons/" ~ name ~ ".svg" %}</span>
 {%- endmacro %}
+
+{# 화면 전환 버튼 (배경·이론 ↔ 메시지 작성).
+   두 패널의 머리에 같은 모양으로 들어가고, 실제 전환은 static/js/stage-switch.js 가
+   .stage[data-stage] 안에서 처리한다. active = 이 머리가 속한 화면. #}
+{% macro stage_switch(active) -%}
+<span class="stagesw" data-stage-switch>
+  <button class="stagesw__btn{% if active == 'brief' %} is-on{% endif %}"
+          type="button" data-stage-view="brief">배경 · 이론</button>
+  <button class="stagesw__btn{% if active == 'compose' %} is-on{% endif %}"
+          type="button" data-stage-view="compose">메시지 작성</button>
+</span>
+{%- endmacro %}

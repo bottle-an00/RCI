@@ -1,21 +1,22 @@
-/* 자동 진단 시퀀스 — 카테고리 하나(진단 · 강제구동 · ECU 업그레이드)를 순서대로 수행한다.
+/* 진단 시퀀스 러너 — 카테고리 하나(진단 · 강제구동 · ECU 업그레이드)를 한 단계씩 밟는다.
  *
  * 왜 있는가: 진단 요청 한 줄을 띡 보내고 끝나면, 실제로 그 동작이 성립하기까지 무엇이
  * 오가는지 배울 수 없다. 세션을 열어야 하고, 여는 동안 세션 유지 메시지를 계속 보내야
  * 하고, 강제구동·리프로그래밍이면 보안 접근으로 잠금을 풀어야 한다. '메시지 작성'
- * 코스에서 사람이 한 단계씩 밟는 그 순서를, 여기서는 자동으로 밟으며 보여준다.
+ * 코스에서 사람이 한 단계씩 밟는 그 순서를, 여기서도 한 단계씩 밟으며 보여준다.
  *
  * 순서(단계 목록)는 서버가 정한다 — main.py `auto_sequence()` → 템플릿의
- * <script id="seq-plan"> JSON. 여기는 **실행·페이싱·실패 정책**만 맡는다.
+ * <script id="seq-plan"> JSON. 여기는 **실행·실패 정책**만 맡는다.
  *
- * 1초 간격인 이유: 왕복은 목업이면 0.1초, 브로커 경유라도 수십 ms 안에 끝난다.
- * 그대로 흘리면 로그에 12줄이 한꺼번에 쏟아져 '순서'가 보이지 않는다. 실제 진단기가
- * 단계를 밟는 리듬으로 늦춰야 무엇 다음에 무엇이 오는지 눈으로 따라갈 수 있다.
+ * 한 번 누르면 한 단계인 이유: 자동으로 12단계가 흘러가면 로그만 쌓이고 '지금 무엇을
+ * 왜 하는지'는 지나가 버린다. 가운데 '기능 설명' 패널을 읽고 납득한 뒤 다음을 누르는
+ * 리듬이라야 순서가 몸에 남는다. 그래서 단계가 끝나면 **멈춰서 기다린다**.
  *
  * 전송 방식(목업 / MQTT 목업 / RCI(MQTT))은 window.RCI.send() 가 이미 갈라 준다.
  * 이 파일이 모드를 보는 곳은 **정책** 뿐이다 — 아래 POLICY 표 참조.
  *
  * 의존: rci-live.js (window.RCI, "rci:answer" 이벤트) 뒤에 로드할 것.
+ * 방송: "seq:step" — 지금 밟는 단계를 알린다 (seq-brief.js 가 설명 패널을 갈아 낀다).
  */
 (function () {
   "use strict";
@@ -35,17 +36,16 @@
   var barEl = document.querySelector("[data-seq-progress] > span");
   var rows = Array.prototype.slice.call(document.querySelectorAll("[data-seq-row]"));
 
-  var PACE = 1000;          // 단계 간격 (요청 → 응답 → 1초 → 다음 요청)
   var KA_PERIOD = 2000;     // 세션 유지 발행 주기 (계약 §표기·처리 규칙: 2초 이내)
 
   /* 전송 방식별 정책.
    *
-   * 갈리는 것은 두 가지다 — **얼마나 기다리는가**와 **실패했을 때 계속 가는가**.
-   *   목업 / MQTT 목업  교육용이다. 한 단계가 어긋나도 뒤 단계를 마저 보여 준다
+   * 갈리는 것은 두 가지다 — **얼마나 기다리는가**와 **실패했을 때 이어갈 수 있는가**.
+   *   목업 / MQTT 목업  교육용이다. 한 단계가 어긋나도 다음 단계를 밟아 볼 수 있다
    *                     (거부당하는 모습 자체가 학습 자료다). 다만 critical 단계는
-   *                     뒤가 성립하지 않으므로 어느 모드에서든 멈춘다.
+   *                     뒤가 성립하지 않으므로 어느 모드에서든 거기서 끝난다.
    *   RCI(MQTT)         실물이다. 앞 단계가 확인되지 않았는데 다음 요청을 던지는 것은
-   *                     장비에 대고 조건 없이 명령하는 짓이라 무조건 멈춘다. 시작
+   *                     장비에 대고 조건 없이 명령하는 짓이라 무조건 멈춘다. 첫 단계
    *                     전에도 사람에게 한 번 묻는다(강제구동·리프로그래밍만).
    */
   var POLICY = {
@@ -112,28 +112,37 @@
 
   function paintProgress(done, label) {
     if (barEl) barEl.style.width = Math.round(done / steps.length * 100) + "%";
-    if (statusEl) {
-      statusEl.textContent = (label || (running ? "진행 중" : "대기 중"))
-        + " · " + done + " / " + steps.length;
-    }
+    if (statusEl) statusEl.textContent = label + " · " + done + " / " + steps.length;
   }
 
+  /* 버튼 하나가 세 가지 일을 한다 — 다음 단계 실행 / 실행 중(잠금) / 처음부터 다시.
+     단계마다 사람이 눌러야 나아가므로, 지금 누르면 무엇이 일어나는지가 버튼에
+     그대로 적혀 있어야 한다. */
   function paintBtn() {
     if (!runBtn) return;
-    runBtn.textContent = running ? "■ 시퀀스 중지" : "자동 시퀀스 시작 →";
-    runBtn.classList.toggle("btn--stop", running);
+    runBtn.textContent = busy ? "실행 중…"
+      : ended ? "↻ 처음부터 다시" : "다음 시퀀스 실행 →";
+    runBtn.disabled = busy;
+    runBtn.classList.toggle("btn--stop", ended);
   }
 
   function paintMode() {
     if (modeEl) modeEl.textContent = policy().label;
   }
 
+  // 가운데 '기능 설명' 패널에게 지금 단계를 알린다 (seq-brief.js).
+  function announce(i) {
+    document.dispatchEvent(new CustomEvent("seq:step", {
+      detail: { index: i, step: steps[i], total: steps.length },
+    }));
+  }
+
   /* ---- 러너 -------------------------------------------------------------- */
 
-  var idx = -1;        // 지금 밟고 있는 단계
-  var running = false;
+  var idx = -1;        // 마지막으로 밟은 단계 (-1 = 아직 시작 전)
+  var busy = false;    // 한 단계가 왕복 중 — 중복 클릭을 막는다
+  var ended = false;   // 더 밟을 단계가 없다 (완주했거나 치명적 실패로 끊겼다)
   var pending = null;  // 응답을 기다리는 중 {reqId, step, timer}
-  var waitTimer = null;
   var seed = null;     // 보안 Seed 단계에서 받아 Key 단계로 넘긴다
   var link = { broker: false, rci: null };   // rci-live 가 방송하는 접속 상태
 
@@ -147,32 +156,53 @@
   function reset() {
     idx = -1;
     seed = null;
-    if (waitTimer) { clearTimeout(waitTimer); waitTimer = null; }
+    busy = false;
+    ended = false;
     if (pending) { clearTimeout(pending.timer); pending = null; }
     rows.forEach(function (r) { r.classList.remove("is-now", "is-done", "is-fail"); });
     paintProgress(0, "대기 중");
+    paintBtn();
+    log("muted", "○ 시퀀스를 처음으로 되돌렸습니다 · " + plan.title);
+    if (window.RCI.keepalive.on()) window.RCI.keepalive.stop("시퀀스 초기화");
+    announce(0);
   }
 
-  function advance(extraMs) {
-    waitTimer = setTimeout(next, PACE + (extraMs || 0));
-  }
+  /* 한 단계를 수행한다. 성공이든 실패든 끝나면 멈춰서 다음 클릭을 기다린다. */
+  function runNext() {
+    var p = policy();
+    // 브로커에 붙기 전에 발행하면 그 메시지는 그냥 사라진다 — 화면상으로는 그 단계가
+    // '무응답' 으로 죽어 원인을 브로커·RCI 쪽에서 찾게 된다. 여기서 미리 막는다.
+    if (window.RCI.mode() !== "mock" && !link.broker) {
+      log("err", "✗ 아직 브로커에 붙지 않았습니다 — 로그에 '● 브로커 연결됨' 이 뜬 뒤에 "
+        + "실행하세요. 브로커 없이 순서만 볼 거라면 상단에서 '목업' 으로 전환하세요.");
+      return;
+    }
+    // 첫 단계 전에 한 번만 묻는다. 단계마다 물으면 확인 대화상자가 12번 뜬다.
+    if (idx < 0) {
+      if (plan.danger && p.confirm && !window.confirm(
+          plan.title + "\n\nRCI(MQTT) 실물 모드입니다. 장비가 실제로 움직입니다."
+          + "\n주변 안전을 확인했습니까?")) {
+        return;
+      }
+      log("muted", "▶ 시퀀스 시작 · " + plan.title + " · 전송 " + p.label
+        + " · 단계 " + steps.length + "개 (한 번에 한 단계)");
+      log("muted", "   " + p.intro);
+    }
 
-  function next() {
-    waitTimer = null;
     idx++;
-    if (idx >= steps.length) return finish(true, "");
     var st = steps[idx];
+    busy = true;
     paintRow(idx, "now");
     paintProgress(idx, "진행 중");
+    paintBtn();
+    announce(idx);
 
     // 보낼 것이 없는 단계 — 세션 유지 발행 중지가 여기 해당한다.
     if (st.kind === "ka_stop") {
       if (window.RCI.keepalive.on()) window.RCI.keepalive.stop("시퀀스 진행");
       else log("muted", "○ 세션 유지 발행은 이미 멈춰 있습니다");
       if (st.note) log("note", "   ↳ " + st.note);
-      paintRow(idx, "done");
-      paintProgress(idx + 1, "진행 중");
-      return advance(0);
+      return pass();
     }
 
     var raw = st.raw;
@@ -190,11 +220,11 @@
         return fail(st, "세션 유지 발행을 시작하지 못했습니다");
       }
     } else {
-      reqId = window.RCI.send(raw, policy().timeout);
+      reqId = window.RCI.send(raw, p.timeout);
       if (!reqId) return fail(st, "전송하지 못했습니다 (전송 경로가 없습니다)");
     }
     pending = { reqId: reqId, step: st };
-    pending.timer = setTimeout(onTimeout, policy().timeout);
+    pending.timer = setTimeout(onTimeout, p.timeout);
   }
 
   function onTimeout() {
@@ -205,67 +235,44 @@
        + "확인하거나 상단에서 '목업' 으로 전환해 보세요");
   }
 
+  /* 단계 통과. 마지막이었다면 완주로 마무리한다. */
+  function pass() {
+    paintRow(idx, "done");
+    busy = false;
+    if (idx >= steps.length - 1) {
+      ended = true;
+      paintProgress(steps.length, "완료");
+      log("muted", "■ 시퀀스 완료 · " + plan.title);
+    } else {
+      paintProgress(idx + 1, "대기 중");
+    }
+    paintBtn();
+  }
+
+  /* 단계 실패. 뒤가 성립하지 않는 단계(critical)나 실물 모드면 거기서 끝낸다. */
   function fail(st, why) {
     paintRow(idx, "fail");
+    busy = false;
     log("err", "✗ 단계 " + (idx + 1) + " 실패 · " + st.title + " — " + why);
-    if (st.critical || policy().stopOnFail) {
-      finish(false, "단계 " + (idx + 1) + " 에서 중단");
+
+    if (st.critical || policy().stopOnFail || idx >= steps.length - 1) {
+      ended = true;
+      paintProgress(Math.max(0, idx), "중단");
+      log("muted", "■ 시퀀스 중단 — 단계 " + (idx + 1) + " 에서 끊겼습니다");
       // 뒤 단계(세션 정리)를 밟지 못했으므로 발행만이라도 손수 거둔다.
       if (window.RCI.keepalive.on()) window.RCI.keepalive.stop("시퀀스 중단");
-      return;
-    }
-    log("muted", "   ↳ " + policy().label + " 모드라 다음 단계로 계속합니다 "
-      + "(RCI(MQTT) 모드였다면 여기서 멈춥니다)");
-    advance(0);
-  }
-
-  function finish(ok, why) {
-    running = false;
-    if (pending) { clearTimeout(pending.timer); pending = null; }
-    if (waitTimer) { clearTimeout(waitTimer); waitTimer = null; }
-    paintBtn();
-    if (ok) {
-      paintProgress(steps.length, "완료");
-      log("muted", "■ 자동 시퀀스 완료 · " + plan.title);
     } else {
-      paintProgress(Math.max(0, idx), "중단");
-      log("muted", "■ 자동 시퀀스 중단 — " + why);
+      paintProgress(idx, "대기 중");
+      log("muted", "   ↳ " + policy().label + " 모드라 다음 단계를 이어서 밟아 볼 수 있습니다 "
+        + "(RCI(MQTT) 모드였다면 여기서 끊깁니다)");
     }
-  }
-
-  function start() {
-    var p = policy();
-    // 브로커에 붙기 전에 발행하면 그 메시지는 그냥 사라진다 — 화면상으로는 첫 단계가
-    // '무응답' 으로 죽어 원인을 브로커·RCI 쪽에서 찾게 된다. 여기서 미리 막는다.
-    if (window.RCI.mode() !== "mock" && !link.broker) {
-      log("err", "✗ 아직 브로커에 붙지 않았습니다 — 로그에 '● 브로커 연결됨' 이 뜬 뒤에 "
-        + "시작하세요. 브로커 없이 순서만 볼 거라면 상단에서 '목업' 으로 전환하세요.");
-      return;
-    }
-    if (plan.danger && p.confirm && !window.confirm(
-        plan.title + "\n\nRCI(MQTT) 실물 모드입니다. 장비가 실제로 움직입니다."
-        + "\n주변 안전을 확인했습니까?")) {
-      return;
-    }
-    reset();
-    running = true;
     paintBtn();
-    log("muted", "▶ 자동 시퀀스 시작 · " + plan.title + " · 전송 " + p.label
-      + " · 단계 " + steps.length + "개 · " + (PACE / 1000) + "초 간격");
-    log("muted", "   " + p.intro);
-    next();
-  }
-
-  function stop() {
-    if (!running) return;
-    finish(false, "사용자 중지");
-    if (window.RCI.keepalive.on()) window.RCI.keepalive.stop("시퀀스 중지");
   }
 
   /* ---- 응답 수신 ---------------------------------------------------------- */
 
   document.addEventListener("rci:answer", function (e) {
-    if (!running || !pending) return;
+    if (!busy || !pending) return;
     var m = e.detail || {};
 
     // 짝 맞추기. 우리가 보낸 요청은 id 로, 세션 유지 발행은 응답 SID 로 (id 를 모른다).
@@ -297,15 +304,17 @@
         + " (각 바이트 + 0x" + hex(KEY_OFFSET) + ")");
     }
     if (st.note) log("note", "   ↳ " + st.note);
-    paintRow(idx, "done");
-    paintProgress(idx + 1, "진행 중");
-    advance(st.hold_ms || 0);
+    pass();
   });
 
   /* ---- 조작 --------------------------------------------------------------- */
 
   if (runBtn) {
-    runBtn.addEventListener("click", function () { running ? stop() : start(); });
+    runBtn.addEventListener("click", function () {
+      if (busy) return;
+      if (ended) reset();
+      else runNext();
+    });
   }
 
   // 접속 상태는 rci-live 가 방송한다 (상단바 연결 표시와 같은 소스).
@@ -313,11 +322,12 @@
     if (e.detail) link = e.detail;
   });
 
-  // 전송 방식이 바뀌면 응답의 주인이 바뀐다 — 진행 중이던 시퀀스는 성립하지 않는다.
+  // 전송 방식이 바뀌면 응답의 주인이 바뀐다 — 밟던 자리를 그대로 이어갈 수 없다.
   document.addEventListener("rci:mode", function () {
-    if (running) {
-      log("muted", "○ 전송 방식이 바뀌어 자동 시퀀스를 중단합니다");
-      stop();
+    if (idx >= 0 && !ended) {
+      log("muted", "○ 전송 방식이 바뀌어 시퀀스를 처음으로 되돌립니다");
+      if (pending) { clearTimeout(pending.timer); pending = null; }
+      reset();
     }
     paintMode();
   });

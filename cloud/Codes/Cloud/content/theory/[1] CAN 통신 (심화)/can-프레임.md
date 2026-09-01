@@ -8,9 +8,9 @@ order: 4
 
 # (4) CAN 프레임
 
-## **4. CAN 프레임**
+**4. CAN 프레임**
 
-### **4.1 프레임 구조 (ID / DLC / Data)**
+**4.1 프레임 구조 (ID / DLC / Data)**
 
 | **필드** | **설명** |
 | --- | --- |
@@ -21,7 +21,7 @@ order: 4
 - **송신: 우선순위가 가장 낮은 데이터부터가 아니라, 우선순위와 무관하게 버스에 연결된 모든 제어기에 브로드캐스트된다.**
 - **수신: CAN 컨트롤러가 특정 ID를 가진 메시지만 수신하도록 ID 필터링 수행**
 
-### **4.2 CAN Data Frame 구조 (Standard Format, 11bit)**
+## **4.2 CAN Data Frame 구조 (Standard Format, 11bit)**
 
 **![](assets/can-프레임/img01.png)**
 
@@ -38,7 +38,7 @@ order: 4
 | **EOF** | **End Of Frame** |
 | **ITM** | **Intermission** |
 
-### **4.3 Start of Frame (SOF)**
+## **4.3 Start of Frame (SOF)**
 
 - **Bus idle(1) → 0으로 상태가 바뀌는 것에 해당**
 - **메시지의 시작을 알림**
@@ -47,14 +47,14 @@ order: 4
 - **모든 ECU는 baud rate 설정에 따라 비트 지속시간을 미리 알고 있음 (예: 500kBaud → 1bit = 2µs)**
 - **1(recessive)→0(dominant) 에지가 감지되는 순간, 모든 노드는 비트 타이밍 타이머를 시작한다.**
 
-### **4.4 Identifier**
+## **4.4 Identifier**
 
 - **송신 시: 중재를 위한 메시지 우선순위 역할**
 - **수신 시: 메시지의 Data Field 내용을 나타냄(어떤 신호인지 식별)**
 - **11bit → 0x0 ~ 0x7FF (0~2047, decimal)**
 - **msb(최상위 비트)부터 lsb(최하위 비트) 순서로 전송**
 
-### **4.5 Remote Transmission Request (RTR)**
+## **4.5 Remote Transmission Request (RTR)**
 
 - **RTR = Dominant(0) → Data Frame**
 - **RTR = Recessive(1) → Remote Frame**
@@ -63,7 +63,7 @@ order: 4
 >
 > - **주로 건물 자동화(Building Services), 자동화 엔지니어링(Automation Engineering) 등 버스 길이가 매우 길어 주기적 전송 방식이 어려운 영역에서 사용된다.**
 
-### **4.6 Identifier Extension (IDE) - 확장 포맷**
+## **4.6 Identifier Extension (IDE) - 확장 포맷**
 
 - **IDE = Dominant(0) → Standard Format(11bit)**
 - **IDE = Recessive(1) → Extended Format(29bit)**
@@ -76,12 +76,12 @@ order: 4
 - **J1939 ID 구조: `Priority(3bit) + EDP(1bit) + DP(1bit) + PDU Format(8bit) + PDU Specific(8bit) + Source Address(8bit)`**
 - **표준 포맷과 확장 포맷은 같은 버스에 공존 가능하며, 중재는 비트 단위로 이루어진다(동일한 앞부분 ID를 가질 경우 Extended Format이 우선순위에서 밀림 - SRR 비트가 recessive이므로).**
 
-### **4.7 Data Length Code(DLC)와 Data Field**
+## **4.7 Data Length Code(DLC)와 Data Field**
 
 - **DLC 값 0~8: Data Field의 바이트 수**
 - **DLC 값 9~15: 모두 8바이트로 처리됨 (Classic CAN 기준)**
 
-### **4.8 Cyclic Redundancy Check (CRC)**
+## **4.8 Cyclic Redundancy Check (CRC)**
 
 - **수신자를 위한 에러 검출 기능 제공**
 - **송신자는 생성 다항식(Generator-polynomial)을 이용해 CRC 계산 → 메시지에 포함(CRC\_Tx)**
@@ -90,20 +90,20 @@ order: 4
 - **Classical CAN: 15bit CRC, 생성 다항식 0xC599(1100 0101 1001 1001)**
 - **CAN-CRC로 프레임 내 최대 5비트 에러까지 검출 가능**
 
-### **4.9 Acknowledgement (ACK)**
+## **4.9 Acknowledgement (ACK)**
 
 - **송신자는 ACK 슬롯에 recessive(1) 비트를 보내며, 모든 수신자로부터 dominant 응답을 기대한다.**
 - **CRC 검사를 통과한 수신자는 dominant ACK(0) 전송 → 최소 1개 이상의 수신자가 정상 수신했음을 의미**
 - **모든 수신자가 에러를 검출했거나 수신자가 없으면 ACK 비트는 recessive로 유지 → 송신 실패로 간주, 이후 비트에서 에러 플래그 발생**
 
-### **4.10 End of Frame (EOF) & Intermission (ITM)**
+## **4.10 End of Frame (EOF) & Intermission (ITM)**
 
 - **EOF(7bit): 프레임의 끝을 나타냄**
 - **Intermission(3bit) 이후 → 버스 idle**
 - **11개의 연속된 1(recessive)이 관측되면 버스가 idle로 간주되며 자유롭게 접근 가능**
 - **ITM은 IFS(Inter Frame Space)라고도 불림**
 
-### **4.11 Bit Stuffing (비트 스터핑)**
+## **4.11 Bit Stuffing (비트 스터핑)**
 
 - **동일한 값의 비트가 5개 연속되면 송신자는 반전된 비트(stuff bit)를 삽입**
 - **수신자는 5개 연속 비트 이후 나오는 반전 비트를 제거(discard)**

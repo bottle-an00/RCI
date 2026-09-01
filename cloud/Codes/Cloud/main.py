@@ -271,6 +271,125 @@ def prep_guide(node_id, target):
 
 
 # --------------------------------------------------------------------------- #
+# 화면 진입 안내 팝업 — "여기가 무엇을 하는 화면인가"
+#
+# 교육생은 컨텐츠 그리드에서 타일 하나를 눌러 곧장 실습 화면에 떨어진다. 화면은
+# 3~4분할에 패널마다 역할이 달라서, 아무 설명 없이 들어오면 어디를 먼저 봐야 할지
+# 부터 막힌다. 그래서 **진입 즉시 한 번** 무슨 화면인지 알려주고, 그 뒤로는 도움말
+# 버튼으로 언제든 다시 부를 수 있게 한다 (static/js/guide-modal.js).
+#
+# '실습 준비'는 제외한다 — 그 화면 자체가 안내문을 읽는 곳이라 팝업이 겹친다.
+#
+#   lede    "본 실습은 ~ 입니다" 한 문장. 무엇을 하는 화면인지만 말한다
+#   points  화면 구성·진행 방법. 팝업에서 다 읽을 분량이어야 하므로 3~4줄로 끊는다
+#   note    없어도 되지만, 실물이 움직이는 화면에서는 반드시 경고를 남긴다
+#
+# `{label}`(RC카/UR로봇) · `{transport}`(CAN/DoIP) 는 대상마다 다르므로 page_guide()
+# 가 채운다. 문구를 고치려면 여기 dict 만 손대면 된다 — 템플릿에는 없다.
+# --------------------------------------------------------------------------- #
+PAGE_GUIDES = {
+    "theory": {
+        "lede": "본 화면은 진단 통신의 배경 지식을 읽는 <b>이론 교육</b>입니다. "
+                "실습에서 주고받는 바이트가 왜 그렇게 생겼는지를 여기서 먼저 익힙니다.",
+        "points": [
+            "왼쪽 목록에서 과목과 자료를 고르면 오른쪽에 본문이 나옵니다. "
+            "과목은 디지털 통신 → CAN → UDS → 이더넷 → DoIP 순으로 쌓아 읽도록 배열돼 있습니다.",
+            "자료는 소제목 단위로 페이지가 나뉩니다. 제목 오른쪽의 "
+            "<b>1 PAGE / 15 PAGE</b> 와 이전·다음 버튼으로 넘기고, 내용이 길면 본문 안에서 스크롤됩니다.",
+            "읽기 <b>전</b>에 퀴즈의 사전 문제를, 읽은 <b>뒤</b>에 사후 문제를 풀면 "
+            "무엇이 늘었는지 점수로 확인할 수 있습니다.",
+        ],
+    },
+    "quiz": {
+        "lede": "본 화면은 학습 전후의 이해도를 스스로 확인하는 <b>퀴즈</b>입니다.",
+        "points": [
+            "과목마다 '사전'과 '사후'가 한 쌍입니다. 사전은 뭘 모르는지 드러내는 것이 목적이니 "
+            "이론 교육을 보기 전에 푸는 편이 좋습니다.",
+            "보기 순서는 응시할 때마다 새로 섞입니다. 고르지 않고 넘어간 문항은 오답 처리되고, "
+            "마지막 문항의 '제출하기'로 채점합니다.",
+            "점수는 저장되지 않습니다 — 화면을 벗어나면 사라지니 사전·사후 점수는 "
+            "따로 적어 두고 비교하세요.",
+        ],
+    },
+    "diag": {
+        "lede": "본 실습은 진단기로 {label}의 센서 값을 실제로 읽어 보는 <b>진단</b> 실습입니다. "
+                "값 하나를 읽기까지 어떤 순서를 밟아야 하는지가 핵심입니다.",
+        "points": [
+            "왼쪽에서 읽을 센서를 고르면, 오른쪽 시퀀스에 세션 오픈부터 정리까지의 순서가 잡힙니다.",
+            "<b>다음 시퀀스 실행</b> 버튼은 누를 때마다 <b>한 단계씩</b>만 진행됩니다. "
+            "가운데 그림과 설명을 읽고 납득한 뒤 다음을 누르세요.",
+            "오간 메시지는 가운데 아래 통신 로그에 그대로 남습니다. "
+            "요청(→)과 응답(←)을 짝지어 보면 순서가 눈에 들어옵니다.",
+            "시퀀스 목록의 각 줄을 눌러 그 단계의 설명을 미리 읽어 볼 수도 있습니다 (전송되지 않습니다).",
+        ],
+    },
+    "force": {
+        "lede": "본 실습은 진단기로 {label}의 구동부를 직접 움직여 보는 <b>강제구동</b> 실습입니다. "
+                "읽기만 하던 진단과 달리, 여기서는 ECU 에게 제어권을 넘겨받습니다.",
+        "points": [
+            "진단과 달리 <b>보안 접근(Seed·Key)</b>으로 잠금을 먼저 풀어야 구동 요청이 통과합니다. "
+            "건너뛰면 부정 응답 NRC 0x33 이 돌아옵니다.",
+            "<b>다음 시퀀스 실행</b> 버튼은 누를 때마다 한 단계씩만 진행됩니다. "
+            "구동 단계에서는 장비가 실제로 움직이는지 눈으로 확인하고 다음을 누르세요.",
+            "마지막에 제어권을 ECU 에게 돌려주는 단계까지 밟아야 실습이 끝납니다 — "
+            "여기서 멈추면 장비가 강제 상태로 남습니다.",
+        ],
+        "note": "상단 전송 방식이 <b>RCI(MQTT)</b> 이면 실물 장비가 실제로 움직입니다. "
+                "실행 전 주변 안전을 확인하세요.",
+    },
+    "ecu": {
+        "lede": "본 실습은 ECU 의 펌웨어를 새 버전으로 바꿔 쓰는 "
+                "<b>ECU 업그레이드(리프로그래밍)</b> 실습입니다.",
+        "points": [
+            "프로그래밍 세션 → 보안 접근 → 다운로드 요청(0x34) → 블록 전송(0x36) → "
+            "전송 종료(0x37) → 검증(0x31) → 리셋(0x11) 순서로 진행됩니다.",
+            "전송하는 것은 더미 블록 3개입니다. 실제 펌웨어가 아니라 "
+            "<b>블록 카운터가 어떻게 흘러가는지</b>를 보는 것이 목적입니다.",
+            "<b>다음 시퀀스 실행</b> 버튼은 누를 때마다 한 단계씩만 진행됩니다. "
+            "이 화면은 고를 세부 항목이 없는 단일 코스라 왼쪽 목록이 없습니다.",
+            "블록 카운터가 어긋나거나 검증에 실패하면 그 자리에서 멈춥니다 — "
+            "뒤 단계가 성립하지 않기 때문입니다.",
+        ],
+        "note": "상단 전송 방식이 <b>RCI(MQTT)</b> 이면 실물 ECU 가 재기동합니다. "
+                "리프로그래밍 도중 전원이 끊기면 ECU 가 복구 불능이 될 수 있습니다.",
+    },
+    "message": {
+        "lede": "본 실습은 {transport} 진단 메시지를 <b>직접 한 바이트씩 조립해서 보내는</b> "
+                "{transport} 메시지 작성 실습입니다. 시퀀스가 대신 밟아 주던 요청을 여기서는 손으로 씁니다.",
+        "points": [
+            "왼쪽 세부 항목은 <b>순차 진행</b>입니다 — 앞 단계의 응답을 제대로 받아야 다음 단계가 열립니다.",
+            "가운데 위의 <b>배경·이론</b> 버튼으로 그 단계의 만화·설명을, "
+            "<b>메시지 작성</b> 버튼으로 입력창을 오갈 수 있습니다.",
+            "보낸 요청과 받은 응답은 오른쪽 통신 로그에 남습니다. "
+            "부정 응답(0x7F)이 오면 뒤에 붙은 NRC 를 보고 무엇이 빠졌는지 찾으세요.",
+            "처음부터 다시 하려면 왼쪽 위 '진행 초기화'를 누르면 됩니다.",
+        ],
+    },
+}
+
+
+def page_guide(content, target):
+    """콘텐츠 화면 진입 안내 (없으면 None — 실습 준비·그 밖의 화면).
+
+    문구의 `{label}`·`{transport}` 를 대상에 맞게 채우고, 제목과 저장 키를 붙여
+    돌려준다. 저장 키가 콘텐츠 id 인 이유: '더 이상 보지 않기'는 화면마다 따로
+    기억해야 한다 — 진단을 익혔다고 퀴즈 규칙까지 아는 것은 아니다.
+    """
+    guide = PAGE_GUIDES.get(content["id"])
+    if guide is None:
+        return None
+
+    fmt = {"label": target["label"], "transport": target["transport"]}
+    return {
+        "key": content["id"],
+        "name": content_title(content, target),
+        "lede": guide["lede"].format(**fmt),
+        "points": [p.format(**fmt) for p in guide["points"]],
+        "note": guide["note"].format(**fmt) if guide.get("note") else None,
+    }
+
+
+# --------------------------------------------------------------------------- #
 # 메시지 작성 실습 — CAN/DoIP 프레임 조립 (주제별 코스)
 #
 # 좌측 트리는 UDS 서비스 분류표가 아니라 **실제 진단 순서**를 담는다. 주제마다
@@ -528,7 +647,7 @@ def message_scenarios(target):
 #            seed     보안 Seed 요청 (응답에서 Seed 를 꺼내 다음 단계에 넘긴다)
 #            key      앞 단계 Seed 로 계산한 Key 전송 (raw 를 브라우저가 만든다)
 #   critical True 면 실패 시 어느 모드에서든 중단한다 (뒤 단계가 성립하지 않으므로)
-#   hold_ms  이 단계 뒤에 더 쉬는 시간 (구동 상태를 눈으로 확인하라고)
+#   topic    단계 배경을 설명하는 브리핑 주제. with_briefs 가 붙인다
 # --------------------------------------------------------------------------- #
 
 # 진단 카테고리 — 트리 잎(센서) → 읽을 DID. mock_rci.DIDS 에 실제로 있는 값만.
@@ -627,8 +746,8 @@ def _seq_force(target, leaf):
             # 제어 옵션까지 맞춰 본다 — 0x03 을 요청했는데 0x00 이 돌아오면
             # 구동된 것이 아니라 제어권이 반환된 것이다.
             _sq(f"강제 구동 (2F {did} 03)", f"2F {did} 03 {val}", f"6F {did} 03",
-                f"{label} · 제어 옵션 0x03 단기 조정. 긍정 응답은 요청을 그대로 되돌려준다.",
-                hold_ms=2000),
+                f"{label} · 제어 옵션 0x03 단기 조정. 긍정 응답은 요청을 그대로 되돌려준다. "
+                "다음 단계를 누르기 전에 장비가 실제로 움직이는지 눈으로 확인할 것."),
             _sq(f"제어권 반환 (2F {did} 00)", f"2F {did} 00", f"6F {did} 00",
                 "옵션 0x00 으로 제어권을 ECU 에 돌려준다. 이 단계를 빠뜨리면 ECU 가 "
                 "강제값을 계속 물고 있는다 — 실차 로그의 `2F F0 88 03` / `2F F0 88 00` 쌍이 그것이다."),
@@ -660,20 +779,24 @@ def _seq_ecu(target):
         _sq("세션 유지 발행 중지", None, None,
             "리셋 전에 멈춘다 — 어차피 리셋되면 세션은 사라진다.", kind="ka_stop"),
         _sq("ECU 리셋 (11 01)", "11 01", "51 01",
-            "hardReset. 재기동하면 새 펌웨어로 올라온다.", hold_ms=1500),
+            "hardReset. 재기동하면 새 펌웨어로 올라온다."),
     ]
     return {"id": "ecu", "title": "ECU 리프로그래밍 시퀀스", "danger": True, "steps": steps}
 
 
 def auto_sequence(content_id, target, selected):
-    """카테고리(+선택 잎)별 자동 시퀀스. 해당 없으면 None."""
+    """카테고리(+선택 잎)별 자동 시퀀스. 해당 없으면 None.
+
+    단계별 배경 설명(만화 + 글)은 with_briefs 가 붙인다 — 화면 가운데의 '기능 설명'
+    패널이 지금 밟는 단계에 맞춰 갈아 끼우는 재료다.
+    """
     leaf = selected["id"] if selected else None
     if content_id == "diag":
-        return _seq_diag(target, leaf)
+        return with_briefs(_seq_diag(target, leaf))
     if content_id == "force":
-        return _seq_force(target, leaf)
+        return with_briefs(_seq_force(target, leaf))
     if content_id == "ecu":
-        return _seq_ecu(target)
+        return with_briefs(_seq_ecu(target))
     return None
 
 
@@ -761,6 +884,418 @@ def find_step(scenarios, item_id):
                 return sc, st, i + 1, len(sc["steps"])
     sc = scenarios[0]
     return sc, sc["steps"][0], 1, len(sc["steps"])
+
+
+# --------------------------------------------------------------------------- #
+# 배경·이론 브리핑 (만화 + 글)
+#
+# 메시지 작성 실습의 각 단계에는 '왜 이 메시지를 보내는가' 를 먼저 보여주는 화면이
+# 붙는다. 같은 윈도우 안에서 [배경 · 이론] ↔ [메시지 작성] 버튼으로 갈아 끼운다
+# (templates/partials/_briefing.html + static/js/stage-switch.js).
+#
+# 원천은 **주제(topic)** 다. 단계는 코스마다 반복되기 때문이다 — 세션 오픈은 네 코스
+# 모두에 있고, 보안 접근은 강제구동·데이터쓰기에 함께 있다. 그래서 단계 id 를 주제로
+# 접어(STEP_BRIEF) 만화·글을 한 벌만 두고 여러 단계가 나눠 쓴다.
+#
+# 만화 이미지는 static/img/comic/{topic}-{n}.png 규칙으로 찾고, 아직 없으면
+# placeholder.png(준비중 더미)로 대체한다 — 그림이 준비되는 대로 파일만 넣으면 된다.
+# --------------------------------------------------------------------------- #
+
+COMIC_DIR = "img/comic"
+COMIC_PENDING = f"{COMIC_DIR}/placeholder.png"
+
+
+def _cut(caption, note=""):
+    """만화 한 컷. caption = 컷 아래 한 줄, note = 보조 설명(있으면 작게)."""
+    return {"caption": caption, "note": note}
+
+
+def _brief(title, lede, cuts, sections, takeaway):
+    return {"title": title, "lede": lede, "cuts": cuts,
+            "sections": sections, "takeaway": takeaway}
+
+
+def _sec(h, p):
+    return {"h": h, "p": p}
+
+
+# 주제별 브리핑. cuts 는 4컷 또는 8컷 — 길이는 주제마다 다를 수 있고, 화면은
+# 컷 수에 따라 2열(4컷)/4열(8컷)로 알아서 배치한다.
+BRIEFINGS = {
+    "session-open": _brief(
+        "진단 세션을 연다 (0x10)",
+        "ECU 는 평소 '기본 세션'에 있다. 이 상태에서는 읽기 몇 가지만 허용되고 쓰기·"
+        "강제구동은 거절된다. 그래서 모든 실습의 첫 줄은 세션을 여는 요청이다.",
+        [
+            _cut("정비사가 진단기를 차량에 연결한다", "아직 아무 말도 하지 않은 상태"),
+            _cut("진단기: “확장 세션 열어줘” — 10 03", "SID 0x10 · 서브펑션 0x03"),
+            _cut("ECU: “열었다” — 50 03 00 32 01 F4", "뒤 4바이트는 P2 50ms · P2* 5000ms"),
+            _cut("이제부터 쓰기·강제구동 요청을 받아준다", "단, 계속 말을 걸어야 유지된다"),
+        ],
+        [
+            _sec("세션이란", "ECU 가 요청을 어디까지 받아줄지 정하는 '모드'다. 01 기본 · "
+                            "02 프로그래밍 · 03 확장 진단 세션이 대표적이다."),
+            _sec("왜 확장 세션인가", "읽기(0x22)는 기본 세션에서도 되지만, 실차 절차는 진단을 "
+                                     "확장 세션에서 진행한다. 뒤따르는 보안 접근·강제구동이 "
+                                     "확장 세션을 전제로 하기 때문이다."),
+            _sec("응답 읽는 법", "요청 SID 0x10 에 0x40 을 더한 0x50 이 긍정 응답이다. "
+                                 "거절이면 7F 10 {NRC} 형태로 돌아온다."),
+        ],
+        "요청 10 03 → 긍정 응답 50 03. 이 한 줄이 통과해야 다음 단계가 열린다."),
+
+    "session-keepalive": _brief(
+        "세션을 살려 둔다 (0x3E)",
+        "세션은 가만두면 꺼진다. ECU 는 마지막 요청 뒤 약 5초(S3 타이머) 동안 아무 말이 "
+        "없으면 스스로 기본 세션으로 돌아간다.",
+        [
+            _cut("진단기가 잠시 조용해진다", "정비사가 화면을 들여다보는 사이"),
+            _cut("ECU 안에서 S3 타이머가 흐른다", "약 5초"),
+            _cut("진단기: “살아 있다” — 3E 00", "TesterPresent · 2초 주기 반복"),
+            _cut("세션이 유지된다", "발행을 멈추면 다시 기본 세션으로"),
+        ],
+        [
+            _sec("TesterPresent", "0x3E 는 아무 일도 하지 않는 요청이다. '진단기가 아직 붙어 "
+                                  "있다'는 사실만 알린다."),
+            _sec("서브펑션 0x00 과 0x80", "00 은 응답을 요구하고(7E 00 이 돌아온다), 80 은 "
+                                          "응답을 요구하지 않는다. 실습에서는 왕복이 보이도록 00 을 쓴다."),
+            _sec("주기", "S3 가 5초이므로 그 절반인 2초 주기로 보낸다. 이 화면의 전송 버튼은 "
+                         "한 번 누르면 반복 발행 토글이 되고, 다음 단계로 넘어가도 계속 발행한다."),
+        ],
+        "요청 3E 00 → 긍정 응답 7E 00. 뒤 단계가 NRC 0x7F/0x33 으로 거절된다면 세션이 꺼진 것이다."),
+
+    "read-did": _brief(
+        "센서값을 읽는다 (0x22)",
+        "ECU 안의 값은 이름이 아니라 번호(DID)로 부른다. 읽고 싶은 DID 를 지정하면 "
+        "ECU 가 그 DID 를 그대로 되돌려 주고 뒤에 데이터를 붙인다.",
+        [
+            _cut("정비사: “지금 초음파 거리 얼마야?”", "사람의 말"),
+            _cut("진단기: 22 01 01", "SID 0x22 + DID 2바이트"),
+            _cut("ECU: 62 01 01 00 2A", "0x62 + 같은 DID + 데이터"),
+            _cut("진단기가 0x002A → 42cm 로 풀어 보여준다", "물리값 해석은 DID 정의를 따른다"),
+        ],
+        [
+            _sec("DID 란", "Data Identifier — ECU 안의 값 하나하나에 매긴 2바이트 번호다. "
+                           "어떤 DID 가 무슨 값인지는 제조사 사양(또는 이 실습의 참고 자료)에 있다."),
+            _sec("응답 확인", "응답에는 **요청한 DID 가 그대로** 실려 온다. 엉뚱한 DID 가 오면 "
+                              "다른 값을 읽은 것이니 그대로 넘어가면 안 된다."),
+            _sec("자주 보는 거절", "NRC 0x31 requestOutOfRange — 없는 DID. "
+                                   "NRC 0x33 securityAccessDenied — 보호된 DID."),
+        ],
+        "요청 22 {DID} → 긍정 응답 62 {DID} {데이터}."),
+
+    "session-close": _brief(
+        "세션을 정리한다 (0x10 01)",
+        "실습을 끝낼 때는 열어 둔 것을 되돌린다. 기다리면 자동으로 돌아가지만, 명시적으로 "
+        "닫는 것이 실차 절차다.",
+        [
+            _cut("작업이 끝났다", "제어권도 이미 ECU 에 돌려준 상태"),
+            _cut("세션 유지 발행을 멈춘다", "반복 발행 중지"),
+            _cut("진단기: 10 01 — 기본 세션으로", "서브펑션 0x01"),
+            _cut("ECU: 50 01 — 평상시 상태로 복귀", "다음 사람이 안전하게 이어받는다"),
+        ],
+        [
+            _sec("왜 닫는가", "확장 세션을 열어 둔 채 자리를 뜨면, 그 사이 들어오는 요청이 "
+                              "예상치 못한 권한으로 처리될 수 있다."),
+            _sec("자동 복귀와의 차이", "발행을 멈추면 5초 뒤 알아서 기본 세션이 된다. 그래도 "
+                                       "명시적으로 닫아야 '언제 끝났는지'가 로그에 남는다."),
+        ],
+        "요청 10 01 → 긍정 응답 50 01. 코스의 마지막 줄이다."),
+
+    "dtc-read": _brief(
+        "고장코드를 조회한다 (0x19)",
+        "ECU 는 이상을 감지하면 고장코드(DTC)를 스스로 저장해 둔다. 0x19 는 그 기록을 "
+        "꺼내 보는 요청이다.",
+        [
+            _cut("경고등이 켜졌던 차가 들어온다", "지금은 증상이 없다"),
+            _cut("진단기: 19 02 0C — 확인된 고장만", "서브펑션 0x02 · 상태 마스크 0x0C"),
+            _cut("ECU: 59 02 FF 00 12 34 …", "레코드 4바이트 = DTC 3 + 상태 1"),
+            _cut("코드를 표로 풀어 원인을 좁힌다", "상태 바이트가 '지금도 고장인가'를 말해준다"),
+        ],
+        [
+            _sec("서브펑션 0x02", "reportDTCByStatusMask — 상태 마스크에 걸리는 DTC 만 보고한다. "
+                                  "0x08 은 확정 고장, 0x0C 는 확정 + 이번 주행 중 발생."),
+            _sec("레코드 읽는 법", "3바이트 DTC + 1바이트 상태. 상태 비트로 현재 활성인지, "
+                                   "과거 기록인지 구분한다."),
+            _sec("NRC 0x78", "requestCorrectlyReceived-ResponsePending — '처리 중'이라는 뜻이다. "
+                             "잠시 뒤 같은 요청에 대한 최종 응답이 따로 온다."),
+        ],
+        "요청 19 02 {마스크} → 긍정 응답 59 02 {마스크} {레코드…}."),
+
+    "dtc-clear": _brief(
+        "고장코드를 지운다 (0x14)",
+        "수리를 끝냈으면 기록을 지워 다음 주행부터 새로 판단하게 한다. 원인을 고치지 않고 "
+        "지우면 같은 코드가 다시 뜬다.",
+        [
+            _cut("원인을 고쳤다", "부품 교체 완료"),
+            _cut("진단기: 14 FF FF FF — 전체 소거", "그룹 0xFFFFFF = 모든 DTC"),
+            _cut("ECU: 54 — 지웠다", "데이터 없는 짧은 긍정 응답"),
+            _cut("다시 19 로 조회해 비었는지 확인", "지웠다는 말만 믿지 않는다"),
+        ],
+        [
+            _sec("그룹 지정", "3바이트로 지울 범위를 고른다. 0xFFFFFF 는 전체, 그 밖에는 "
+                              "파워트레인·섀시 등 그룹별 소거다."),
+            _sec("소거 검증", "소거 요청이 성공해도 실제로 비었는지는 재조회로 확인한다. "
+                              "레코드 없이 마스크만 돌아오면(예 59 02 08) 남은 고장이 없다는 뜻이다."),
+            _sec("주의", "고장 기록은 진단의 근거다. 원인 분석 전에 지우면 단서를 잃는다."),
+        ],
+        "요청 14 FF FF FF → 긍정 응답 54."),
+
+    "security-access": _brief(
+        "잠금을 푼다 (0x27)",
+        "쓰기와 강제구동은 아무나 못 한다. ECU 가 낸 문제(Seed)를 풀어 답(Key)을 맞혀야 "
+        "잠금이 열린다.",
+        [
+            _cut("진단기: 27 01 — 문제 내 줘", "홀수 서브펑션 = Seed 요청"),
+            _cut("ECU: 67 01 11 22 33 44 — Seed", "매번 달라진다"),
+            _cut("진단기가 약속된 계산으로 Key 를 만든다", "실습용 규칙: 각 바이트 + 0x44"),
+            _cut("27 02 {Key} → 67 02 — 잠금 해제", "짝수 서브펑션 = Key 전송"),
+        ],
+        [
+            _sec("Seed–Key 방식", "고정 비밀번호를 주고받지 않는다. 매번 다른 Seed 에 같은 "
+                                  "계산 규칙을 적용해, 통신을 엿들어도 다음 번에 못 쓰게 한다."),
+            _sec("두 번의 왕복", "홀수(01) 요청으로 Seed 를 받고, 짝수(02) 요청으로 Key 를 낸다. "
+                                 "**짝수 응답(67 02)이 와야** 실제로 열린 것이다."),
+            _sec("실패하면", "Key 가 틀리면 NRC 0x35 invalidKey, 여러 번 틀리면 0x36/0x37 로 "
+                             "일정 시간 잠긴다. 이 단계를 건너뛰면 뒤 동작이 0x33 으로 거절된다."),
+        ],
+        "요청 27 01 → 67 01 {Seed}, 이어서 27 02 {Key} → 67 02."),
+
+    "force-drive": _brief(
+        "액추에이터를 강제로 움직인다 (0x2F)",
+        "센서값만으로 판단이 안 될 때, 부품을 직접 켜 보면 배선·부품·제어 중 어디가 "
+        "문제인지 갈린다. 실제로 물체가 움직이므로 안전이 먼저다.",
+        [
+            _cut("주변에 사람이 없는지 확인한다", "강제구동은 진짜로 움직인다"),
+            _cut("진단기: 2F {DID} 03 {값} — 단기 조정", "제어 옵션 0x03"),
+            _cut("ECU: 6F {DID} 03 {값} — 구동 중", "눈으로 동작을 확인한다"),
+            _cut("2F {DID} 00 — 제어권 반환", "끝나면 반드시 ECU 에 돌려준다"),
+        ],
+        [
+            _sec("제어 옵션", "00 제어권 반환 · 01 기본값 리셋 · 02 현재값 고정 · 03 단기 조정. "
+                              "실습에서 쓰는 것은 03 과 00 이다."),
+            _sec("반드시 반환", "제어권을 쥔 채로 두면 ECU 가 정상 제어를 못 한다. 00 을 보내 "
+                                "돌려주는 것까지가 한 단계다."),
+            _sec("전제 조건", "확장 세션 + 보안 해제가 되어 있어야 한다. 아니면 NRC 0x33, "
+                              "지원하지 않는 옵션이면 0x12 subFunctionNotSupported."),
+        ],
+        "요청 2F {DID} 03 {값} → 6F …, 마무리로 2F {DID} 00 → 6F {DID} 00."),
+
+    "write-did": _brief(
+        "값을 써 넣는다 (0x2E)",
+        "설정값·보정값처럼 ECU 안에 남는 값을 바꾼다. 읽기와 달리 흔적이 남으므로 "
+        "보안 해제가 전제다.",
+        [
+            _cut("교체한 부품에 맞춰 보정값을 바꿔야 한다", "읽기만으로는 끝나지 않는 작업"),
+            _cut("진단기: 2E F1 A0 07 E0", "SID 0x2E + DID + 쓸 데이터"),
+            _cut("ECU: 6E F1 A0 — 받았다", "데이터 없이 SID + DID 만 돌아온다"),
+            _cut("22 F1 A0 로 다시 읽어 확인한다", "쓴 값이 실제로 들어갔는지"),
+        ],
+        [
+            _sec("길이가 맞아야 한다", "DID 마다 데이터 길이가 정해져 있다. 어긋나면 "
+                                       "NRC 0x13 incorrectMessageLength 로 거절된다."),
+            _sec("긍정 응답의 모양", "0x6E + DID 까지만 온다. 데이터가 없다고 실패한 것이 아니다."),
+            _sec("자주 보는 거절", "0x33 보안 해제 전 · 0x31 쓰기 금지 항목 · 0x22 조건 불충족"
+                                   "(예: 주행 중)."),
+        ],
+        "요청 2E {DID} {값} → 긍정 응답 6E {DID}."),
+
+    "ecu-download": _brief(
+        "펌웨어를 받을 자리를 연다 (0x34)",
+        "리프로그래밍은 파일을 통째로 던지는 것이 아니다. 먼저 '어디에 얼마짜리를 쓸 것인지' "
+        "합의하고, ECU 가 '한 번에 이만큼씩 보내라'고 답한다.",
+        [
+            _cut("새 펌웨어 파일을 준비한다", "주소 0x00001000 · 길이 0x00002000"),
+            _cut("진단기: 34 00 44 {주소} {길이}", "형식 0x00 무압축·무암호"),
+            _cut("ECU: 74 20 0F FF — 블록당 0x0FFF 까지", "받을 준비가 됐다는 뜻"),
+            _cut("이제부터 0x36 으로 나눠 보낸다", "블록 크기는 ECU 가 정한다"),
+        ],
+        [
+            _sec("주소/길이 형식 0x44", "한 자리씩 읽는다 — 상위 4비트가 길이 바이트 수, 하위 "
+                                        "4비트가 주소 바이트 수다. 0x44 는 '각각 4바이트'."),
+            _sec("응답의 maxNumberOfBlockLength", "0x74 뒤 값이 한 블록의 최대 길이다. 이보다 "
+                                                  "크게 보내면 NRC 0x13 으로 거절된다."),
+            _sec("실패하면 멈춰야 한다", "자리를 열지 못했는데 블록을 보내면 갈 곳이 없다. "
+                                         "이 단계는 어느 모드에서든 실패 시 중단한다."),
+        ],
+        "요청 34 00 44 {주소} {길이} → 긍정 응답 74 {길이형식} {최대 블록 길이}."),
+
+    "ecu-transfer": _brief(
+        "펌웨어를 블록으로 보낸다 (0x36)",
+        "합의한 크기로 잘라 순서대로 보낸다. 블록마다 번호(카운터)가 붙고, 같은 번호로 "
+        "응답이 와야 다음 블록을 보낸다.",
+        [
+            _cut("펌웨어를 블록으로 자른다", "각 블록에 01, 02, 03… 번호를 붙인다"),
+            _cut("진단기: 36 01 {데이터}", "블록 카운터 0x01"),
+            _cut("ECU: 76 01 — 1번 받았다", "번호가 맞아야 다음으로"),
+            _cut("36 02 → 76 02, 36 03 → 76 03 …", "끝까지 반복한다"),
+        ],
+        [
+            _sec("블록 카운터", "0x01 부터 1씩 오르고 0xFF 다음은 0x00 으로 되감는다. 응답 번호가 "
+                                "어긋나면 블록을 빠뜨렸거나 중복 전송한 것이다."),
+            _sec("왜 나눠 보내는가", "CAN 한 프레임은 8바이트다. 수십 KB 펌웨어는 ISO-TP 로 이어 "
+                                     "붙여도 한 번에 안 들어가고, 중간에 끊겼을 때 어디부터 다시 "
+                                     "보낼지도 알 수 없다."),
+            _sec("중간에 끊기면", "카운터가 남아 있으므로 그 번호부터 다시 보낼 수 있다. 다만 "
+                                  "실차에서는 0x34 부터 다시 하는 것이 안전하다."),
+        ],
+        "요청 36 {카운터} {데이터} → 긍정 응답 76 {같은 카운터}."),
+
+    "ecu-transfer-exit": _brief(
+        "전송을 끝냈다고 알린다 (0x37)",
+        "마지막 블록을 보냈다고 ECU 가 알 방법은 없다. 더 보낼 것이 없다는 사실을 "
+        "명시적으로 알려야 ECU 가 받은 것을 마무리한다.",
+        [
+            _cut("마지막 블록까지 보냈다", "36 03 → 76 03"),
+            _cut("진단기: 37 — 전송 종료", "데이터 없는 짧은 요청"),
+            _cut("ECU: 77 — 마무리했다", "받은 블록을 플래시에 정리한다"),
+            _cut("이제 검증 단계로 넘어간다", "쓰인 것이 맞는지 확인"),
+        ],
+        [
+            _sec("왜 필요한가", "0x36 만으로는 '아직 더 올 것인가'를 구분할 수 없다. 0x37 이 "
+                                "와야 ECU 가 전송 구간을 닫고 다음 요청을 받는다."),
+            _sec("생략하면", "0x31 검증이나 0x11 리셋이 NRC 0x22 conditionsNotCorrect 로 "
+                             "거절된다 — 전송이 끝나지 않은 상태라서다."),
+        ],
+        "요청 37 → 긍정 응답 77."),
+
+    "ecu-verify": _brief(
+        "제대로 쓰였는지 검사한다 (0x31)",
+        "보냈다고 해서 올바로 쓰인 것은 아니다. 리셋하기 전에 체크섬과 의존성을 확인한다 — "
+        "여기서 실패했는데 리셋하면 반쯤 쓰인 펌웨어로 부팅한다.",
+        [
+            _cut("전송은 끝났다", "77 을 받은 상태"),
+            _cut("진단기: 31 01 FF 01 — 검사 시작", "0x01 start · 루틴 0xFF01"),
+            _cut("ECU 가 체크섬·의존성을 확인한다", "checkProgrammingDependencies"),
+            _cut("71 01 FF 01 — 이상 없음", "실패하면 절대 리셋하지 않는다"),
+        ],
+        [
+            _sec("루틴 제어 0x31", "ECU 안에 미리 심어 둔 '작업'을 부르는 서비스다. 0x01 시작 · "
+                                   "0x02 중지 · 0x03 결과 요청 세 가지 서브펑션이 있다."),
+            _sec("무엇을 검사하는가", "쓰인 영역의 체크섬이 맞는지, 그리고 이 펌웨어가 요구하는 "
+                                      "다른 소프트웨어 버전이 갖춰졌는지를 본다."),
+            _sec("실패했다면", "리셋하지 말고 0x34 부터 다시 내려보낸다. 대부분의 ECU 는 검증 "
+                               "전까지 기존 펌웨어로 되돌아갈 수 있게 설계돼 있다."),
+        ],
+        "요청 31 01 FF 01 → 긍정 응답 71 01 FF 01 {결과}."),
+
+    "ecu-reset": _brief(
+        "새 펌웨어로 다시 켠다 (0x11)",
+        "플래시에 쓰인 코드는 다시 부팅해야 실행된다. 리셋은 리프로그래밍의 마지막 줄이자, "
+        "되돌릴 수 없는 지점이다.",
+        [
+            _cut("검증까지 통과했다", "71 01 FF 01"),
+            _cut("세션 유지 발행을 먼저 멈춘다", "어차피 리셋되면 세션은 사라진다"),
+            _cut("진단기: 11 01 — hardReset", "전원을 껐다 켜는 것과 같다"),
+            _cut("ECU 가 새 펌웨어로 올라온다", "잠시 응답이 끊긴다"),
+        ],
+        [
+            _sec("리셋 종류", "0x01 hardReset(전원 재인가) · 0x02 keyOffOnReset · 0x03 softReset. "
+                              "리프로그래밍 뒤에는 보통 hardReset 을 쓴다."),
+            _sec("응답이 늦는 이유", "긍정 응답 51 01 을 보낸 직후 ECU 가 실제로 꺼진다. 다시 "
+                                     "올라올 때까지 수백 ms ~ 수 초 동안 아무 응답이 없다."),
+            _sec("리셋 뒤 확인", "재기동한 뒤 버전 DID 를 읽어 새 버전이 맞는지 본다. "
+                                 "여기까지 해야 리프로그래밍이 끝난 것이다."),
+        ],
+        "요청 11 01 → 긍정 응답 51 01. 이후 ECU 가 재기동한다."),
+}
+
+# 단계 id → 브리핑 주제. 반복되는 단계는 같은 주제를 함께 쓴다 (만화 재사용).
+STEP_BRIEF = {
+    "read-open": "session-open", "dtc-open": "session-open",
+    "force-open": "session-open", "write-open": "session-open",
+
+    "read-tp": "session-keepalive", "dtc-tp": "session-keepalive",
+    "force-tp": "session-keepalive", "write-tp": "session-keepalive",
+
+    "read-did": "read-did", "write-verify": "read-did",
+
+    "read-close": "session-close", "dtc-close": "session-close",
+    "force-close": "session-close", "write-close": "session-close",
+
+    "dtc-read": "dtc-read", "dtc-verify": "dtc-read",
+    "dtc-clear": "dtc-clear",
+
+    "force-sec": "security-access", "write-sec": "security-access",
+    "force-drive": "force-drive",
+    "write-do": "write-did",
+}
+
+# 주제를 못 찾을 때의 폴백 — 단계의 SID 로 되짚는다 (코스가 늘어도 빈 화면이 없게).
+_SID_BRIEF = {"10": "session-open", "3E": "session-keepalive", "22": "read-did",
+              "19": "dtc-read", "14": "dtc-clear", "27": "security-access",
+              "2F": "force-drive", "2E": "write-did"}
+
+
+def _comic_src(topic, idx):
+    """만화 컷 URL. 아직 그림이 없으면 '준비중' 더미로 대체하고 그 사실을 함께 알린다."""
+    rel = f"{COMIC_DIR}/{topic}-{idx}.png"
+    if (BASE_DIR / "static" / rel).exists():
+        return asset(rel), False
+    return asset(COMIC_PENDING), True
+
+
+def topic_briefing(topic):
+    """주제 → 브리핑(만화 컷 URL 까지 채운 것). 없는 주제면 None."""
+    brief = BRIEFINGS.get(topic)
+    if not brief:
+        return None
+    cuts = []
+    for i, cut in enumerate(brief["cuts"], start=1):
+        src, pending = _comic_src(topic, i)
+        cuts.append({"no": i, "src": src, "pending": pending,
+                     "caption": cut["caption"], "note": cut["note"]})
+    return dict(brief, topic=topic, cuts=cuts)
+
+
+def step_briefing(step):
+    """메시지 작성 단계 → 배경·이론 브리핑(만화 컷 + 글). 주제가 없으면 None."""
+    topic = STEP_BRIEF.get(step["id"]) or _SID_BRIEF.get(step["spec"]["sid"])
+    return topic_briefing(topic)
+
+
+# 시퀀스 단계 → 브리핑 주제. 요청 SID 로 되짚는다 (단계 id 가 따로 없기 때문).
+_SEQ_TOPIC_SID = {
+    "22": "read-did", "19": "dtc-read", "14": "dtc-clear",
+    "2F": "force-drive", "2E": "write-did",
+    "34": "ecu-download", "36": "ecu-transfer", "37": "ecu-transfer-exit",
+    "31": "ecu-verify", "11": "ecu-reset",
+}
+
+
+def _seq_topic(step):
+    """자동 시퀀스 단계 → 브리핑 주제. 성격이 같은 단계는 만화 한 벌을 나눠 쓴다."""
+    kind = step.get("kind")
+    if kind in ("ka_start", "ka_stop"):
+        return "session-keepalive"
+    if kind in ("seed", "key"):
+        return "security-access"
+    parts = (step.get("raw") or "").upper().split()
+    if not parts:
+        return None
+    # 0x10 은 여는 쪽과 닫는 쪽이 같은 SID 다 — 서브펑션 0x01(기본 세션)이 '정리'.
+    if parts[0] == "10":
+        return "session-close" if parts[1:2] == ["01"] else "session-open"
+    return _SEQ_TOPIC_SID.get(parts[0])
+
+
+def with_briefs(sequence):
+    """시퀀스 각 단계에 브리핑 주제를 붙이고, 쓰인 주제의 만화·글을 한 벌씩 모은다.
+
+    화면은 주제별 패널을 **미리 다 그려 두고** 지금 단계의 것만 보인다
+    (partials/_seq_brief.html + static/js/seq-brief.js). 단계를 넘길 때마다 서버에
+    다시 묻지 않기 위해서다 — 시퀀스는 한 화면 안에서 끝까지 진행된다.
+    """
+    if not sequence:
+        return sequence
+    briefs = {}
+    for step in sequence["steps"]:
+        topic = _seq_topic(step)
+        if topic and topic not in briefs:
+            briefs[topic] = topic_briefing(topic)
+        # 브리핑이 없는 주제는 아예 달지 않는다 — 화면이 빈 패널로 갈아 끼우지 않도록.
+        step["topic"] = topic if briefs.get(topic) else None
+    sequence["briefs"] = [b for b in briefs.values() if b]
+    return sequence
 
 
 # --------------------------------------------------------------------------- #
@@ -1014,7 +1549,8 @@ def grid(request: Request, target_id: str):
 
 @app.get("/{target_id}/{content_id}", response_class=HTMLResponse)
 def content_view(request: Request, target_id: str, content_id: str,
-                 item: str | None = None, doc: str | None = None):
+                 item: str | None = None, doc: str | None = None,
+                 page: int | None = None):
     """Step3 · 콘텐츠별 화면. content.view 로 템플릿을 디스패치한다."""
     target = get_target(target_id)
     content = get_content(content_id) or CONTENTS[0]
@@ -1025,19 +1561,22 @@ def content_view(request: Request, target_id: str, content_id: str,
         "section": section, "bottom_nav": BOTTOM_NAV, "status": status_text(target),
         # 상단바 연결 표시는 모든 서브 화면에서 같은 규칙으로 그린다 (link-status.js).
         "ws_url": browser_ws_url(),
+        # 진입 안내 팝업 + 도움말 버튼. None 이면 둘 다 그리지 않는다 (실습 준비).
+        "page_guide": page_guide(content, target),
     }
 
     view = content["view"]
     selected = None
     if view == "theory":
-        # 좌 목록은 폴더 스캔(그룹 트리), 우 본문은 선택 자료의 md → HTML.
-        # 선택이 없거나 없는 doc 이면 목록 첫 자료로 폴백한다.
+        # 좌 목록은 폴더 스캔(그룹 트리), 우 본문은 선택 자료의 **한 페이지** md → HTML.
+        # 자료는 소제목 단위로 끊겨 있고 page 로 그중 하나를 고른다 (theory_content).
+        # 선택이 없거나 없는 doc(또는 영상 자료)이면 목록 첫 자료 1페이지로 폴백한다.
         materials = theory_content.load_materials()
-        selected = theory_content.load_material(doc)
+        selected = theory_content.load_material(doc, page or 1)
         if selected is None:
             first_id = theory_content.first_material_id(materials)
             if first_id:
-                selected = theory_content.load_material(first_id)
+                selected = theory_content.load_material(first_id, 1)
         ctx.update({"materials": materials, "selected": selected})
         tmpl = "theory.html"
     elif view == "quiz":
@@ -1084,6 +1623,8 @@ def content_view(request: Request, target_id: str, content_id: str,
                 ctx.update({"scenario": sc, "step": step, "step_no": idx, "step_total": total,
                             "addr": addr, "examples": step_examples(step["spec"], addr),
                             "layers": MSG_LAYERS, "nrc": MSG_NRC, "negative": MSG_NEGATIVE,
+                            # 같은 윈도우에서 [배경·이론] ↔ [메시지 작성] 을 갈아 끼운다.
+                            "briefing": step_briefing(step),
                             "next_url": f"/{target['id']}/{content_id}?item={nxt}" if nxt else None})
 
     ctx["crumbs"] = make_crumbs(

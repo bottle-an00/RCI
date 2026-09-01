@@ -8,9 +8,9 @@ order: 6
 
 # (6) AVB
 
-## **6. Ethernet AVB**
+**6. Ethernet AVB**
 
-## **6.1 AVB(Audio Video Bridging)란?**
+**6.1 AVB(Audio Video Bridging)란?**
 
 - **오디오, 비디오 등 멀티미디어 스트림 데이터의 품질을 보장하며 동시에 원활한 전송을 위한 기술 표준  
     

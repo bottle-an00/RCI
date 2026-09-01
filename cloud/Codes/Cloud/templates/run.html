@@ -7,7 +7,12 @@
 {% block app_class %}app--fixed{% endblock %}
 
 {% block content %}
-{# Step3 · 실습 실행 3분할 — 좌 트리 / 중앙(작성·제어·진행 + 3D) / 우 통신 로그.
+{# Step3 · 실습 실행. 화면 구성이 둘로 갈린다.
+     메시지 작성  좌 트리 / 중앙 [배경·이론 ↔ 작성기] / 우 통신 로그 + 3D
+     진단 · 강제구동  좌 트리 / 중앙 [기능 설명(그림) | 시퀀스 설명(글)] + 통신 로그
+                      / 우 시퀀스 진행 + 3D
+   진단 쪽을 이렇게 가른 이유: 배우는 사람이 먼저 봐야 하는 것은 '지금 무엇을 왜
+   하는가' 이고, 단계 목록은 그 옆에서 진행 상황만 알려주면 되기 때문이다.
    live(=MQTT 연결 대상 여부)는 라우트 컨텍스트에서 주입 — 블록 간 공유를 위해. #}
 <div class="run" data-target="{{ target.id }}" data-device="{{ target.device }}"
      data-transport="{{ target.transport }}" data-ws-url="{{ ws_url or '' }}"
@@ -24,49 +29,32 @@
   </div>
   <span class="run__grip"></span>
 
-  {# ② 중앙 — 콘텐츠별 상단 + 3D(접기) #}
-  <div class="run__center">
+  {# ② 중앙 #}
+  <div class="run__center{% if sequence %} run__center--seq{% endif %}">
     {% if is_composer %}
-    {% include "partials/_composer.html" %}
+    {# 한 윈도우 안의 두 화면 — [배경·이론](만화+글) / [메시지 작성]. 머리의 버튼으로
+       갈아 낀다 (static/js/stage-switch.js). 기본은 배경·이론부터. #}
+    <div class="stage" data-stage>
+      {% include "partials/_briefing.html" %}
+      {% include "partials/_composer.html" %}
+    </div>
     {% elif sequence %}
-    {# 진단·강제구동은 요청 한 줄이 아니라 '순서'다 — 세션 오픈부터 정리까지를
-       자동으로 밟는다 (partials/_sequence.html + static/js/auto-sequence.js). #}
-    {% include "partials/_sequence.html" %}
+    {# 위 2분할(그림 | 글) + 아래 통신 로그. 단계 목록은 우 컬럼으로 나갔다. #}
+    {% include "partials/_seq_brief.html" %}
+    {% include "partials/_log.html" %}
     {% endif %}
-
   </div>
   <span class="run__grip"></span>
 
-  {# ③ 우 컬럼 — 통신 로그(가변 높이·스크롤) + 그 아래 3D 모델 뷰(고정 높이) #}
+  {# ③ 우 컬럼 — 시퀀스 진행(또는 통신 로그) + 그 아래 3D 모델 뷰(고정 높이) #}
   <div class="run__right">
-    <div class="panel run__log">
-      <div class="panel__head">
-        <span class="panel__title">통신 로그</span>
-        {# 세션 유지 반복 발행은 단계를 넘어 계속되므로 어느 화면에서도 상태가
-           보이고 멈출 수 있어야 한다 (rci-live.js kaPaint). #}
-        <span class="ka-badge" id="ka-badge" hidden>
-          <span class="ka-badge__text"></span>
-          <button class="mini-btn js-ka-stop" type="button">■ 중지</button>
-        </span>
-        <span class="tag tag--uds">{{ target.transport }}</span>
-      </div>
-      {# 로그가 길어지면 이 영역만 휠로 스크롤된다 (패널 밖으로 밀지 않는다). #}
-      <div class="log-body" id="log-body">
-        {% set p = "[DoIP] " if target.transport == "DoIP" else "" %}
-        {% if live %}
-        <span class="log-line muted">브로커 연결 대기 중…</span>
-        {% else %}
-        <span class="log-line send">→ {{ p }}10 03</span>
-        <span class="log-line recv">← {{ p }}50 03 00 32 01 F4</span>
-        <span class="log-line send">→ {{ p }}3E 00</span>
-        <span class="log-line recv">← {{ p }}7E 00</span>
-        <span class="log-line send">→ {{ p }}22 F1 90</span>
-        <span class="log-line recv">← {{ p }}62 F1 90 00 12 34</span>
-        <span class="log-line send">→ {{ p }}19 02 0C</span>
-        <span class="log-line recv">← {{ p }}59 02 FF 00 12 34</span>
-        {% endif %}
-      </div>
-    </div>
+    {% if sequence %}
+    {# 진단·강제구동은 요청 한 줄이 아니라 '순서'다 — 세션 오픈부터 정리까지를
+       한 단계씩 밟는다 (partials/_sequence.html + static/js/auto-sequence.js). #}
+    {% include "partials/_sequence.html" %}
+    {% else %}
+    {% include "partials/_log.html" %}
+    {% endif %}
 
     <div class="panel panel--3d">
       <div class="panel__head">
@@ -97,6 +85,10 @@
 {{ super() }}
 <script src="{{ asset('js/run-resize.js') }}"></script>
 <script src="{{ asset('js/tree-toggle.js') }}"></script>
+{% if is_composer %}
+{# 배경·이론 ↔ 메시지 작성 화면 전환. 통신과 무관하므로 live 여부와 상관없이 싣는다. #}
+<script src="{{ asset('js/stage-switch.js') }}"></script>
+{% endif %}
 {% if target.model %}
 <script type="module" src="{{ asset('js/vendor/model-viewer.min.js') }}"></script>
 {% endif %}
@@ -113,5 +105,10 @@
 {# rci-live 뒤 — window.RCI 와 "rci:answer" 이벤트에 올라탄다. #}
 <script src="{{ asset('js/auto-sequence.js') }}"></script>
 {% endif %}
+{% endif %}
+{% if sequence %}
+{# 설명 패널 교체는 통신과 무관하다 — live 가 아니어도(브로커가 없어도) 읽을 수 있게
+   auto-sequence 바깥에 둔다. #}
+<script src="{{ asset('js/seq-brief.js') }}"></script>
 {% endif %}
 {% endblock %}
