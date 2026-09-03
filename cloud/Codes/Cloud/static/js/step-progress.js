@@ -68,12 +68,30 @@
   applyTree();
 
   // 반복 실습을 위한 초기화 (좌측 '세부 항목' 머리에 있다).
+  // '진행 초기화'는 말 그대로 처음 상태로 되돌리는 것이다 — 단계 체크만 지우고
+  // 세션 유지(3E) 반복 발행을 남겨 두면, 아무 단계도 밟지 않았는데 2초마다 3E 가
+  // 나가는 상태가 된다. 그래서 발행도 함께 멈춘 뒤 첫 단계로 돌아간다.
   var resetBtn = document.querySelector(".js-progress-reset");
   if (resetBtn) {
     resetBtn.addEventListener("click", function () {
       save([]);
+      stopKeepalive("진행 초기화");
       location.href = location.pathname;      // 첫 단계로 되돌아간다
     });
+  }
+
+  /* 세션 유지 발행을 멈춘다. window.RCI 가 있으면 타이머까지 정리되고, 없더라도
+     되살리기용 선언(sessionStorage)은 지워 재로딩 뒤 되살아나지 않게 한다. */
+  function stopKeepalive(reason) {
+    try {
+      if (window.RCI && window.RCI.keepalive) window.RCI.keepalive.stop(reason);
+    } catch (e) { /* 발행이 없던 상태 — 지우기만 하면 된다 */ }
+    try {
+      for (var i = sessionStorage.length - 1; i >= 0; i--) {
+        var k = sessionStorage.key(i);
+        if (k && k.indexOf("rci:keepalive:") === 0) sessionStorage.removeItem(k);
+      }
+    } catch (e) { /* 사생활 모드 등 */ }
   }
 
   var composer = document.querySelector(".composer[data-composer]");

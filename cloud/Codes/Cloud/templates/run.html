@@ -16,6 +16,9 @@
    live(=MQTT 연결 대상 여부)는 라우트 컨텍스트에서 주입 — 블록 간 공유를 위해. #}
 <div class="run" data-target="{{ target.id }}" data-device="{{ target.device }}"
      data-transport="{{ target.transport }}" data-ws-url="{{ ws_url or '' }}"
+     {# 세션 유지(3E) 반복 발행의 소유 범위. 이 값이 달라지는 곳으로 옮기면
+        rci-live.js 가 남은 발행을 되살리지 않고 버린다. #}
+     data-ka-scope="{{ ka_scope or '' }}"
      {% if live %}data-live="1"{% endif %}>
   {# ① 좌 세부 트리 #}
   <div class="run__left">

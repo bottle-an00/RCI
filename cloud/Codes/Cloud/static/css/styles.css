@@ -763,6 +763,12 @@ button.stepper__row:hover { background: #eef2f7; }
 .quiz-chip.is-ng { background: #fae5e3; }
 .quiz-chip.is-ng .quiz-chip__sign { color: var(--pdf-tag); }
 
+/* 결과 저장(서버 기록) 상태 — 실패를 조용히 넘기지 않는다 (static/js/quiz.js) */
+.quiz-save { margin-top: 14px; max-width: 420px; text-align: center; font-size: 13px;
+             line-height: 1.5; padding: 8px 12px; border-radius: 4px; }
+.quiz-save.is-ok { color: #2c6b45; background: #e8f5ed; }
+.quiz-save.is-ng { color: #8c2f27; background: #fae5e3; font-weight: 500; }
+
 /* 퀴즈 푸터 — 이전/다음을 양 끝으로 (실습 준비의 꽉 찬 주요버튼과 다름) */
 .detail__actions--quiz { justify-content: space-between; }
 .detail__actions--quiz .btn--primary { flex: none; }
