@@ -212,11 +212,14 @@ body {
 .tile__badge {
   position: absolute;
   top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #fff;
   color: var(--brand-blue);
   font-size: 11px;
   border-radius: 11px;
   padding: 4px 12px;
+  white-space: nowrap;
 }
 
 /* 하단 메뉴 — 흰색 + 상단 경계선. 5개 균등 배치 */

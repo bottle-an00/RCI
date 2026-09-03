@@ -394,8 +394,8 @@
   function loadMode() {
     try {
       var saved = localStorage.getItem(MODE_KEY);
-      return MODES[saved] ? saved : "mqtt";
-    } catch (e) { return "mqtt"; }
+      return MODES[saved] ? saved : "mock";
+    } catch (e) { return "mock"; }
   }
   function saveMode(m) { try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* 무시 */ } }
 

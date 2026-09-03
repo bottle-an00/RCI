@@ -20,7 +20,11 @@
     </div>
     <div class="tiles">
       {% for t in targets %}
-      <a class="tile" href="/{{ t.id }}">
+      {# UR Robot 은 임시로 막아둔다 — 다시 열려면 이 disabled 조건만 지우면 된다. #}
+      {% set disabled = t.id == "ur-robot" %}
+      <a class="tile{% if disabled %} tile--disabled{% endif %}"
+         {% if not disabled %}href="/{{ t.id }}"{% endif %}>
+        {% if disabled %}<span class="tile__badge">서비스 준비중</span>{% endif %}
         {{ icon(t.icon, "tile__icon") }}
         <span class="tile__label">{{ t.label }}</span>
         <span class="tile__sub">{{ t.tile_sub }}</span>
