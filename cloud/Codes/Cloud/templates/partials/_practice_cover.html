@@ -1,0 +1,31 @@
+{# 진단·강제구동·ECU 업그레이드 첫 진입 커버 — 트리·시퀀스 실행 화면 대신 만화로
+   이 실습이 뭘 하는지 먼저 보여준다. 상단바·서브바(크럼)는 그대로 두고 이 화면이
+   content 블록 전체를 대신 차지한다.
+
+   컷은 static/img/comic/{content-id}-cover-{n}.png 를 순서대로 찾은 만큼(main.py
+   practice_cover). 이전/다음은 comic-pager.js 를 그대로 쓴다(캡션 없음 — 만화만).
+   실습하러가기는 서버 재요청이다 — 아직 실습 전이라 잃을 라이브 상태가 없다. #}
+<div class="practice-cover">
+  <div class="comic-pager" data-comic-pager>
+    {# 이전/다음은 만화 우측 상단 — 시퀀스 화면의 제목 행 배치와 같은 자리다. #}
+    <div class="practice-cover__head">
+      <div class="comic-pager__nav">
+        <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
+        <span class="comic-pager__count"><span data-comic-current>1</span> / {{ cover.cuts|length }}</span>
+        <button class="btn" type="button" data-comic-next{% if cover.cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+      </div>
+    </div>
+    <div class="comic-pager__frame">
+      {% for c in cover.cuts %}
+      <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
+        <div class="comic__frame">
+          <img class="comic__img" src="{{ c.src }}" loading="lazy" alt="{{ title }} 소개 {{ c.no }}컷">
+          {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {# 실습하러가기는 하단에 폭 전체를 쓰는 버튼. #}
+    <a class="btn btn--primary practice-cover__start" href="{{ cover.start_url }}">실습하러가기 →</a>
+  </div>
+</div>

@@ -7,6 +7,9 @@
 {% block app_class %}app--fixed{% endblock %}
 
 {% block content %}
+{% if cover %}
+{% include "partials/_practice_cover.html" %}
+{% else %}
 {# Step3 · 실습 실행. 화면 구성이 둘로 갈린다.
      메시지 작성  좌 트리 / 중앙 [배경·이론 ↔ 작성기] / 우 통신 로그 + 3D
      진단 · 강제구동  좌 트리 / 중앙 [기능 설명(그림) | 시퀀스 설명(글)] + 통신 로그
@@ -80,6 +83,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -91,7 +95,9 @@
 {% if is_composer %}
 {# 배경·이론 ↔ 메시지 작성 화면 전환. 통신과 무관하므로 live 여부와 상관없이 싣는다. #}
 <script src="{{ asset('js/stage-switch.js') }}"></script>
-{# 배경·이론 탭 안의 만화 이전/다음 페이징. #}
+{% endif %}
+{% if is_composer or cover %}
+{# 배경·이론 탭 / 첫 진입 커버의 만화 이전/다음 페이징. #}
 <script src="{{ asset('js/comic-pager.js') }}"></script>
 {% endif %}
 {% if target.model %}

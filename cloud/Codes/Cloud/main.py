@@ -1280,6 +1280,36 @@ def _comic_cuts(topic):
     return cuts
 
 
+# 이론 자료 그룹(group_order) → 만화 topic 접두. 요청받은 4과목만 다룬다
+# (group_order 0인 '디지털 통신'은 대상 밖이라 매핑에 없다 — theory_intro_cuts 가
+# None 을 돌려준다).
+_THEORY_COVER_SUBJECT = {1: "can", 2: "uds", 3: "ethernet", 4: "doip"}
+_THEORY_COVER_DIFFICULTY = {"기초": "basic", "심화": "advanced"}
+
+
+def theory_intro_cuts(materials, selected):
+    """이론 자료 그룹(과목·난이도)의 **첫 강의 1페이지**에만 붙는 만화 컷.
+    해당 없으면 None — 만화 없이 본문만 보여준다."""
+    if not selected or selected.get("page") != 1:
+        return None
+    for g in materials:
+        if not g["docs"] or g["docs"][0]["id"] != selected["id"]:
+            continue
+        subject = _THEORY_COVER_SUBJECT.get(g["order"])
+        diff = _THEORY_COVER_DIFFICULTY.get(g["difficulty"])
+        return _comic_cuts(f"theory-{subject}-{diff}") if subject and diff else None
+    return None
+
+
+def practice_cover(topic, start_url):
+    """진단·강제구동·ECU 업그레이드 첫 진입 커버 — 트리·시퀀스 실행 화면 대신 만화로
+    이 실습이 뭘 하는 실습인지 먼저 보여준다. 이전/다음만 있고(comic-pager.js) 캡션은
+    없다 — _comic_cuts 를 그대로 쓴다. '실습하러가기' 를 누르면 start_url 로 넘어가
+    지금의 실행 화면이 뜬다(아직 실습 전이라 라이브 상태를 잃을 게 없어 서버 재요청으로
+    충분하다)."""
+    return {"cuts": _comic_cuts(topic), "start_url": start_url}
+
+
 def step_briefing(step):
     """메시지 작성 단계 → 배경·이론 만화(그림만, 이전/다음으로 넘긴다). 주제가 없으면 None."""
     topic = STEP_BRIEF.get(step["id"]) or _SID_BRIEF.get(step["spec"]["sid"])
@@ -1697,7 +1727,7 @@ def grid(request: Request, target_id: str):
 @app.get("/{target_id}/{content_id}", response_class=HTMLResponse)
 def content_view(request: Request, target_id: str, content_id: str,
                  item: str | None = None, doc: str | None = None,
-                 page: int | None = None):
+                 page: int | None = None, start: int | None = None):
     """Step3 · 콘텐츠별 화면. content.view 로 템플릿을 디스패치한다."""
     target = get_target(target_id)
     content = get_content(content_id) or CONTENTS[0]
@@ -1724,7 +1754,9 @@ def content_view(request: Request, target_id: str, content_id: str,
             first_id = theory_content.first_material_id(materials)
             if first_id:
                 selected = theory_content.load_material(first_id, 1)
-        ctx.update({"materials": materials, "selected": selected})
+        ctx.update({"materials": materials, "selected": selected,
+                    # 그 과목·난이도의 첫 강의 1페이지에만 붙는 만화(없으면 None).
+                    "intro_cuts": theory_intro_cuts(materials, selected)})
         tmpl = "theory.html"
     elif view == "quiz":
         # 좌 주제 목록 / 우 문항. 문항 진행·채점은 static/js/quiz.js (클라이언트) 몫이라
@@ -1735,10 +1767,18 @@ def content_view(request: Request, target_id: str, content_id: str,
         tmpl = "quiz.html"
     elif view == "ecu":
         tmpl = "ecu.html"
-        # 리프로그래밍도 실제 왕복이다 — 진단·강제구동과 같은 라이브 화면으로 다룬다.
-        ctx["live"] = True
-        ctx["transport_switch"] = True
-        ctx["sequence"] = auto_sequence(content_id, target, None)
+        if not start:
+            # 첫 진입 — 시퀀스 실행 화면 대신 이 실습이 뭘 하는지 만화로 먼저 보여준다.
+            # 전송 방식 토글은 상단 크롬이라 커버에서도 그대로 보인다(실습을 시작해야
+            # 의미가 있지만, 화면이 계속 바뀌지 않아야 낯설지 않다).
+            ctx["transport_switch"] = True
+            ctx["cover"] = practice_cover(
+                f"{content_id}-cover", f"/{target['id']}/{content_id}?start=1")
+        else:
+            # 리프로그래밍도 실제 왕복이다 — 진단·강제구동과 같은 라이브 화면으로 다룬다.
+            ctx["live"] = True
+            ctx["transport_switch"] = True
+            ctx["sequence"] = auto_sequence(content_id, target, None)
     else:
         # detail(prep) / run(diag·force·message) 공통: 트리 + 선택 잎
         nodes = content_tree(content_id, target)
@@ -1751,36 +1791,47 @@ def content_view(request: Request, target_id: str, content_id: str,
         else:
             tmpl = "run.html"
             ctx["is_composer"] = content.get("composer", False)
-            # 라이브(MQTT 연결) 대상 화면: 메시지 작성·진단·강제구동. 블록 간 공유 위해 컨텍스트로.
-            ctx["live"] = ctx["is_composer"] or content_id in ("diag", "force")
-            # 전송 방식(실 MQTT / 목업) 토글은 실제로 보낼 수 있는 화면에만 띄운다.
-            ctx["transport_switch"] = ctx["live"]
-            # 진단·강제구동은 '자동 시퀀스' 화면이다 (메시지 작성은 사람이 직접 친다).
-            if not ctx["is_composer"]:
-                ctx["sequence"] = auto_sequence(content_id, target, selected)
-                # 세션 유지(3E) 반복 발행의 소유 범위 — 고른 세부 항목이 바뀌면 남은
-                # 발행은 그 항목의 것이 아니다 (static/js/rci-live.js).
-                ctx["ka_scope"] = selected["id"] if selected else content_id
-            if ctx["is_composer"]:
-                # 메시지 작성: 상단 입력창은 정적이고, 선택 잎은 '아래에 깔릴 참고 자료'를 고른다.
-                sc, step, idx, total = find_step(message_scenarios(target),
-                                                 selected["id"] if selected else None)
-                addr = MSG_ADDR[target["id"]]
-                # 다음 단계 링크 — 단계를 통과하면 전송 버튼이 이 주소로 바뀐다.
-                # (통과 여부는 서버가 모른다. 브라우저가 응답을 보고 판단한다 —
-                #  static/js/step-progress.js)
-                nxt = sc["steps"][idx]["id"] if idx < total else None
-                ctx.update({"scenario": sc, "step": step, "step_no": idx, "step_total": total,
-                            "addr": addr, "examples": step_examples(step["spec"], addr),
-                            "layers": MSG_LAYERS, "nrc": MSG_NRC, "negative": MSG_NEGATIVE,
-                            # 세션 유지(3E) 반복 발행은 **코스 하나** 안에서만 이어진다.
-                            # 같은 코스의 다음 단계로 넘어가는 재로딩은 살아남지만,
-                            # 다른 세부 항목(예: 센서 리딩 → 강제 구동)으로 옮기면
-                            # 소유 범위가 달라져 발행이 끊긴다 (static/js/rci-live.js).
-                            "ka_scope": sc["id"],
-                            # 같은 윈도우에서 [배경·이론] ↔ [메시지 작성] 을 갈아 끼운다.
-                            "briefing": step_briefing(step),
-                            "next_url": f"/{target['id']}/{content_id}?item={nxt}" if nxt else None})
+            # 진단·강제구동 첫 진입(세부 항목을 아직 안 고른 상태, item 없음) — 트리+시퀀스
+            # 실행 화면 대신 만화로 이 실습이 뭘 하는지 먼저 보여준다. 메시지 작성은
+            # 이미 [배경·이론 ↔ 작성기] 화면이 있어 대상에서 뺀다.
+            is_cover = not ctx["is_composer"] and item is None
+            if is_cover:
+                # 전송 방식 토글은 상단 크롬이라 커버에서도 그대로 보인다.
+                ctx["transport_switch"] = content_id in ("diag", "force")
+                start_item = selected["id"] if selected else ""
+                ctx["cover"] = practice_cover(
+                    f"{content_id}-cover", f"/{target['id']}/{content_id}?item={start_item}")
+            else:
+                # 라이브(MQTT 연결) 대상 화면: 메시지 작성·진단·강제구동. 블록 간 공유 위해 컨텍스트로.
+                ctx["live"] = ctx["is_composer"] or content_id in ("diag", "force")
+                # 전송 방식(실 MQTT / 목업) 토글은 실제로 보낼 수 있는 화면에만 띄운다.
+                ctx["transport_switch"] = ctx["live"]
+                # 진단·강제구동은 '자동 시퀀스' 화면이다 (메시지 작성은 사람이 직접 친다).
+                if not ctx["is_composer"]:
+                    ctx["sequence"] = auto_sequence(content_id, target, selected)
+                    # 세션 유지(3E) 반복 발행의 소유 범위 — 고른 세부 항목이 바뀌면 남은
+                    # 발행은 그 항목의 것이 아니다 (static/js/rci-live.js).
+                    ctx["ka_scope"] = selected["id"] if selected else content_id
+                else:
+                    # 메시지 작성: 상단 입력창은 정적이고, 선택 잎은 '아래에 깔릴 참고 자료'를 고른다.
+                    sc, step, idx, total = find_step(message_scenarios(target),
+                                                     selected["id"] if selected else None)
+                    addr = MSG_ADDR[target["id"]]
+                    # 다음 단계 링크 — 단계를 통과하면 전송 버튼이 이 주소로 바뀐다.
+                    # (통과 여부는 서버가 모른다. 브라우저가 응답을 보고 판단한다 —
+                    #  static/js/step-progress.js)
+                    nxt = sc["steps"][idx]["id"] if idx < total else None
+                    ctx.update({"scenario": sc, "step": step, "step_no": idx, "step_total": total,
+                                "addr": addr, "examples": step_examples(step["spec"], addr),
+                                "layers": MSG_LAYERS, "nrc": MSG_NRC, "negative": MSG_NEGATIVE,
+                                # 세션 유지(3E) 반복 발행은 **코스 하나** 안에서만 이어진다.
+                                # 같은 코스의 다음 단계로 넘어가는 재로딩은 살아남지만,
+                                # 다른 세부 항목(예: 센서 리딩 → 강제 구동)으로 옮기면
+                                # 소유 범위가 달라져 발행이 끊긴다 (static/js/rci-live.js).
+                                "ka_scope": sc["id"],
+                                # 같은 윈도우에서 [배경·이론] ↔ [메시지 작성] 을 갈아 끼운다.
+                                "briefing": step_briefing(step),
+                                "next_url": f"/{target['id']}/{content_id}?item={nxt}" if nxt else None})
 
     ctx["crumbs"] = make_crumbs(
         target, section, title, selected["title"] if selected else None)

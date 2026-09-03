@@ -394,6 +394,13 @@ body {
 .viewer__md th { background: #f2f4f7; }
 .viewer__md .mermaid { margin: 16px 0; text-align: center; }
 
+/* 과목·난이도 첫 강의 1페이지에만 붙는 소개 만화 — 본문(viewer__md) 위, 고정 높이.
+   이전/다음은 위 페이지 이동(.pager)과 서로 무관하게 움직인다. */
+.theory-intro { flex: none; margin: 16px 18px 0; padding: 14px 16px; background: #f5f7fa; border: 1px solid var(--border); }
+.theory-intro .comic-pager__frame { height: 240px; }
+.theory-intro .comic__frame { height: 100%; }
+.theory-intro .comic-pager .comic__img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
+
 /* =========================================================================
    실습 컨텐츠 (Figma 22:29) — 좌 실습목록 / 우 상세
    ========================================================================= */
@@ -534,9 +541,27 @@ body {
 .app--fixed { height: 100vh; overflow: hidden; }
 .app--fixed .run,
 .app--fixed .run__center,
-.app--fixed .panel--grow { min-height: 0; }
+.app--fixed .panel--grow,
+.app--fixed .practice-cover { min-height: 0; }
 .run__grip { flex: none; width: 6px; align-self: stretch; background: var(--border); border-radius: 3px; cursor: col-resize; }
 .run__grip:hover { background: #aab4c0; }
+
+/* 진단·강제구동·ECU 첫 진입 커버 — 트리·시퀀스 실행 화면 대신, .run 이 차지하던
+   자리 전체를 만화 하나가 채운다(partials/_practice_cover.html). */
+.practice-cover { flex: 1; display: flex; flex-direction: column; background: #e6e9ee; }
+.practice-cover .comic-pager {
+  flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px;
+  padding: 22px 26px;
+}
+.practice-cover .comic-pager__frame { flex: 1; min-height: 0; display: flex; }
+.practice-cover .comic-pager__slide.is-active { flex: 1; min-height: 0; display: flex; width: 100%; }
+.practice-cover .comic-pager__slide .comic__frame { flex: 1; min-height: 0; width: 100%; }
+.practice-cover .comic-pager .comic__img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
+/* 이전/다음 — 만화 우측 상단. */
+.practice-cover__head { display: flex; justify-content: flex-end; }
+/* 실습하러가기 — 하단에 폭 전체. .btn--primary 의 flex:1 은 가로로 나눠 쓰는 줄
+   전제라, 세로로 쌓이는 이 자리에서는 취소하고 너비만 채운다. */
+.practice-cover__start { flex: none; width: 100%; }
 
 .panel { background: #fff; border: 1px solid var(--border); display: flex; flex-direction: column; }
 .panel--grow { flex: 1; }

@@ -4,6 +4,9 @@
 {% block app_class %}app--fixed{% endblock %}
 
 {% block content %}
+{% if cover %}
+{% include "partials/_practice_cover.html" %}
+{% else %}
 {# Step3 · ECU 업그레이드 — 진단·강제구동과 같은 구성이되 좌 세부 항목 트리가 없다
    (리프로그래밍은 고를 잎이 없는 단일 코스라서다).
      중앙 [기능 설명(그림) | 시퀀스 설명(글)] + 통신 로그 / 우 시퀀스 진행
@@ -27,15 +30,18 @@
     {% if sequence %}{% include "partials/_sequence.html" %}{% endif %}
   </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script src="{{ asset('js/run-resize.js') }}"></script>
+<script src="{{ asset('js/comic-pager.js') }}"></script>
+{% if not cover %}
 <script src="{{ asset('js/mock-rci.js') }}"></script>
 <script src="{{ asset('js/rci-live.js') }}"></script>
 <script src="{{ asset('js/transport-switch.js') }}"></script>
 <script src="{{ asset('js/auto-sequence.js') }}"></script>
-<script src="{{ asset('js/comic-pager.js') }}"></script>
 <script src="{{ asset('js/seq-brief.js') }}"></script>
+{% endif %}
 {% endblock %}

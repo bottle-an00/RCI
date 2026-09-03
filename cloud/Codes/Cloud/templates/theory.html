@@ -60,6 +60,27 @@
         {% endif %}
       </div>
     </div>
+    {% if intro_cuts %}
+    {# 이 과목·난이도 첫 강의의 1페이지에만 붙는 만화 소개. 이전/다음(comic-pager.js)은
+       위 페이지 이동(이전·다음 PAGE, theory-pager.js)과는 서로 무관하게 움직인다. #}
+    <div class="comic-pager theory-intro" data-comic-pager>
+      <div class="comic-pager__frame">
+        {% for c in intro_cuts %}
+        <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
+          <div class="comic__frame">
+            <img class="comic__img" src="{{ c.src }}" loading="lazy" alt="{{ selected.title }} 소개 {{ c.no }}컷">
+            {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="comic-pager__nav">
+        <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
+        <span class="comic-pager__count"><span data-comic-current>1</span> / {{ intro_cuts|length }}</span>
+        <button class="btn" type="button" data-comic-next{% if intro_cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+      </div>
+    </div>
+    {% endif %}
     {# 페이지 안 내용이 화면을 넘으면 이 영역만 스크롤된다. #}
     <article class="viewer__md">{{ selected.html | safe }}</article>
     {% else %}
@@ -80,4 +101,8 @@
 <script src="{{ asset('js/theory-mermaid.js') }}"></script>
 {# 페이지 이동 — 버튼은 링크라 JS 없이도 되고, 이 스크립트는 ←/→ 키를 얹기만 한다. #}
 <script src="{{ asset('js/theory-pager.js') }}"></script>
+{% if intro_cuts %}
+{# 첫 강의 소개 만화의 이전/다음 페이징(위 페이지 이동과는 별개). #}
+<script src="{{ asset('js/comic-pager.js') }}"></script>
+{% endif %}
 {% endblock %}
