@@ -1282,13 +1282,14 @@ def _comic_cuts(topic):
 
 # 이론 자료 그룹(group_order) → 만화 topic 접두. 요청받은 4과목만 다룬다
 # (group_order 0인 '디지털 통신'은 대상 밖이라 매핑에 없다 — theory_intro_cuts 가
-# None 을 돌려준다).
+# None 을 돌려준다). 기초·심화는 같은 만화를 그대로 쓴다 — 난이도별로 따로
+# 그리지 않고 과목 하나에 만화 한 벌.
 _THEORY_COVER_SUBJECT = {1: "can", 2: "uds", 3: "ethernet", 4: "doip"}
-_THEORY_COVER_DIFFICULTY = {"기초": "basic", "심화": "advanced"}
 
 
 def theory_intro_cuts(materials, selected):
-    """이론 자료 그룹(과목·난이도)의 **첫 강의 1페이지**에만 붙는 만화 컷.
+    """이론 자료 그룹(과목·난이도)의 **첫 강의 1페이지**에만 붙는 만화 컷 — 기초·심화
+    둘 다 같은 과목 topic(theory-{subject})을 써서 같은 그림을 보여준다.
     해당 없으면 None — 만화 없이 본문만 보여준다."""
     if not selected or selected.get("page") != 1:
         return None
@@ -1296,8 +1297,7 @@ def theory_intro_cuts(materials, selected):
         if not g["docs"] or g["docs"][0]["id"] != selected["id"]:
             continue
         subject = _THEORY_COVER_SUBJECT.get(g["order"])
-        diff = _THEORY_COVER_DIFFICULTY.get(g["difficulty"])
-        return _comic_cuts(f"theory-{subject}-{diff}") if subject and diff else None
+        return _comic_cuts(f"theory-{subject}") if subject else None
     return None
 
 
