@@ -22,8 +22,12 @@
          MQTT 목업  브로커 경유 · PC 의 mock_rci.py 가 응답
          RCI(MQTT)  브로커 경유 · PC 목업은 침묵하고 실물 RCI 만 응답
        뒤 둘은 전송 경로가 같고, minigit/control/mock/{device} 억제 선언만 다르다.
-       실제 전환은 static/js/transport-switch.js → window.RCI.setMode(). #}
-    <div class="modesw" data-transport-switch title="메시지 전송 방식">
+       실제 전환은 static/js/transport-switch.js → window.RCI.setMode().
+
+       지금은 화면에서 숨긴다(hidden) — 기본 모드(MQTT 목업, rci-live.js loadMode
+       의 저장값 없을 때 폴백)는 그대로 두고 버튼만 감춘다. 다시 보이려면 이
+       hidden 속성만 지우면 된다. #}
+    <div class="modesw" data-transport-switch title="메시지 전송 방식" hidden>
       <button class="modesw__btn" type="button" data-mode="mock">목업</button>
       <button class="modesw__btn" type="button" data-mode="mqtt">MQTT 목업</button>
       <button class="modesw__btn" type="button" data-mode="rci">RCI(MQTT)</button>

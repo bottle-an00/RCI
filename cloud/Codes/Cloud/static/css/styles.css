@@ -967,6 +967,9 @@ button.stepper__row:hover { background: #eef2f7; }
    목업일 때는 '실물이 아니다'가 한눈에 보여야 하므로 경고색으로 칠한다. */
 .crumbbar__right { display: flex; align-items: center; gap: 14px; }
 .modesw { display: inline-flex; border: 1px solid var(--border); overflow: hidden; }
+/* 지금은 화면에서 숨긴다 — display:inline-flex 가 UA 의 [hidden]{display:none} 을
+   이기므로 명시적으로 되돌린다(.btn[hidden] · .panel[hidden] 과 같은 이유). */
+.modesw[hidden] { display: none; }
 .modesw__btn {
   font: inherit; font-size: 11px; padding: 4px 10px; cursor: pointer;
   background: #fff; color: var(--muted); border: 0; border-left: 1px solid var(--border);
