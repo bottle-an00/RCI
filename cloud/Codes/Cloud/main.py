@@ -1302,23 +1302,17 @@ def _comic_cuts(topic):
 
 
 # 이론 자료 그룹(group_order) → 만화 topic 접두. 요청받은 4과목만 다룬다
-# (group_order 0인 '디지털 통신'은 대상 밖이라 매핑에 없다 — theory_intro_cuts 가
-# None 을 돌려준다). 기초·심화는 같은 만화를 그대로 쓴다 — 난이도별로 따로
-# 그리지 않고 과목 하나에 만화 한 벌.
+# (group_order 0인 '디지털 통신'은 대상 밖이라 매핑에 없다). 기초·심화는 같은
+# 만화를 그대로 쓴다 — 난이도별로 따로 그리지 않고 과목 하나에 만화 한 벌.
 _THEORY_COVER_SUBJECT = {1: "can", 2: "uds", 3: "ethernet", 4: "doip"}
 
 
-def theory_intro_cuts(materials, selected):
-    """이론 자료 그룹(과목·난이도)의 **첫 강의 1페이지**에만 붙는 만화 컷 — 기초·심화
-    둘 다 같은 과목 topic(theory-{subject})을 써서 같은 그림을 보여준다.
-    해당 없으면 None — 만화 없이 본문만 보여준다."""
-    if not selected or selected.get("page") != 1:
-        return None
+def _theory_group_of(materials, doc_id):
+    """자료 id → 그 자료가 속한 그룹(과목·난이도). 없으면 None."""
     for g in materials:
-        if not g["docs"] or g["docs"][0]["id"] != selected["id"]:
-            continue
-        subject = _THEORY_COVER_SUBJECT.get(g["order"])
-        return _comic_cuts(f"theory-{subject}") if subject else None
+        for m in g["docs"]:
+            if m["id"] == doc_id:
+                return g
     return None
 
 
@@ -1768,16 +1762,34 @@ def content_view(request: Request, target_id: str, content_id: str,
     if view == "theory":
         # 좌 목록은 폴더 스캔(그룹 트리), 우 본문은 선택 자료의 **한 페이지** md → HTML.
         # 자료는 소제목 단위로 끊겨 있고 page 로 그중 하나를 고른다 (theory_content).
-        # 선택이 없거나 없는 doc(또는 영상 자료)이면 목록 첫 자료 1페이지로 폴백한다.
+        # 선택이 없거나 없는 doc(또는 영상 자료)이면 목록 첫 자료로 폴백한다.
         materials = theory_content.load_materials()
-        selected = theory_content.load_material(doc, page or 1)
-        if selected is None:
-            first_id = theory_content.first_material_id(materials)
-            if first_id:
-                selected = theory_content.load_material(first_id, 1)
-        ctx.update({"materials": materials, "selected": selected,
-                    # 그 과목·난이도의 첫 강의 1페이지에만 붙는 만화(없으면 None).
-                    "intro_cuts": theory_intro_cuts(materials, selected)})
+        doc_id = doc or theory_content.first_material_id(materials)
+        group = _theory_group_of(materials, doc_id)
+        subject = _THEORY_COVER_SUBJECT.get(group["order"]) if group else None
+        is_group_first = bool(group and group["docs"] and group["docs"][0]["id"] == doc_id)
+
+        if is_group_first and subject and page is None:
+            # 그 과목의 표지 — 본문 없이 만화만. '다음'을 누르면 실제 1페이지로 넘어간다.
+            # (사이드바에서 자료를 고르면 page 없이 들어오므로 여기로 떨어진다.)
+            selected = theory_content.load_material(doc_id, 1)
+            ctx.update({
+                "materials": materials, "selected": selected,
+                "intro_cuts": _comic_cuts(f"theory-{subject}"),
+                "intro_next_url": f"/{target['id']}/{content_id}?doc={doc_id}&page=1",
+            })
+        else:
+            selected = theory_content.load_material(doc_id, page or 1)
+            if selected is None:
+                first_id = theory_content.first_material_id(materials)
+                if first_id:
+                    selected = theory_content.load_material(first_id, 1)
+            # 표지가 있는 자료의 1페이지는 '이전'이 표지로 돌아간다(원래는 비활성).
+            back_to_intro = None
+            if is_group_first and subject and selected and selected.get("page") == 1:
+                back_to_intro = f"/{target['id']}/{content_id}?doc={doc_id}"
+            ctx.update({"materials": materials, "selected": selected,
+                        "intro_cuts": None, "back_to_intro_url": back_to_intro})
         tmpl = "theory.html"
     elif view == "quiz":
         # 좌 주제 목록 / 우 문항. 문항 진행·채점은 static/js/quiz.js (클라이언트) 몫이라

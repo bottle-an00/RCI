@@ -33,6 +33,16 @@
       else localStorage.removeItem(KEY);
     } catch (e) { /* 저장 못 해도 이번 화면은 정상 동작한다 */ }
   }
+  /* 이 화면은 '더 이상 보지 않기'를 안 눌러도 같은 탭에서는 한 번만 뜬다.
+     이론 교육·진단·강제구동처럼 이전/다음이 페이지를 통째로 다시 불러오는
+     화면에서, 넘길 때마다 매번 떠서는 안 된다 — 탭을 새로 열면(sessionStorage
+     라서) 다시 한 번 보여준다. */
+  function seenThisTab() {
+    try { return sessionStorage.getItem(KEY) === "seen"; } catch (e) { return false; }
+  }
+  function markSeen() {
+    try { sessionStorage.setItem(KEY, "seen"); } catch (e) { /* 무시 */ }
+  }
 
   function open() {
     lastFocus = document.activeElement;
@@ -48,6 +58,7 @@
     // 확인이든 X 든 스크림이든, 닫는 순간의 체크 상태를 그대로 저장한다.
     // '체크해 놓고 X 를 눌렀는데 다음에 또 뜨는' 것은 체크박스를 무의미하게 만든다.
     if (mute) remember(mute.checked);
+    markSeen();
     modal.hidden = true;
     document.body.classList.remove("is-modal");
     if (lastFocus && lastFocus.focus) lastFocus.focus();
@@ -76,5 +87,5 @@
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 
-  if (!muted()) open();
+  if (!muted() && !seenThisTab()) open();
 })();

@@ -397,12 +397,14 @@ body {
 .viewer__md th { background: #f2f4f7; }
 .viewer__md .mermaid { margin: 16px 0; text-align: center; }
 
-/* 과목·난이도 첫 강의 1페이지에만 붙는 소개 만화 — 본문(viewer__md) 위, 고정 높이.
-   이전/다음은 위 페이지 이동(.pager)과 서로 무관하게 움직인다. */
-.theory-intro { flex: none; margin: 16px 18px 0; padding: 14px 16px; background: #f5f7fa; border: 1px solid var(--border); }
-.theory-intro .comic-pager__frame { height: 240px; }
-.theory-intro .comic__frame { height: 100%; }
-.theory-intro .comic-pager .comic__img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
+/* 과목 표지 — 그 과목 첫 강의 앞에 오는 별도 페이지(본문 없음, 만화만).
+   '학습 시작' 을 누르면 실제 1페이지로 넘어간다. .practice-cover 와 같은 규칙. */
+.theory-cover { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 22px 26px; }
+.theory-cover .comic-pager__frame { flex: 1; min-height: 0; display: flex; }
+.theory-cover .comic-pager__slide.is-active { flex: 1; min-height: 0; display: flex; width: 100%; }
+.theory-cover .comic-pager__slide .comic__frame { flex: 1; min-height: 0; width: 100%; }
+.theory-cover .comic-pager .comic__img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
+.theory-cover__start { flex: none; width: 100%; }
 
 /* =========================================================================
    실습 컨텐츠 (Figma 22:29) — 좌 실습목록 / 우 상세

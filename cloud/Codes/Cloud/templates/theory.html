@@ -33,37 +33,15 @@
   </div>
 
   <div class="md__detail viewer">
-    {% if selected %}
-    {# 페이지 이동 링크의 뿌리. 자료(doc)는 그대로 두고 page 만 갈아 끼운다. #}
-    {% set doc_url = "/" ~ target.id ~ "/" ~ content.id ~ "?doc=" ~ (selected.id | urlencode) %}
+    {% if intro_cuts %}
+    {# 그 과목의 표지 — 본문 없이 만화만. 이전은 없고(맨 앞이라), 다음은 실제 1페이지로.
+       컷 안 이전/다음(comic-pager.js)은 실제 본문의 페이지 이동과는 무관하게 움직인다. #}
     <div class="viewer__head">
       <span class="viewer__title">{{ selected.title }}</span>
       {% if selected.difficulty %}<span class="tag tag--uds">{{ selected.difficulty }}</span>{% endif %}
-
-      {# 소제목 단위로 끊은 페이지 이동. 서버가 그 페이지만 변환해 내려주므로
-         이동은 주소 이동이다 (theory_content.split_pages). #}
-      <div class="pager" data-pager
-           data-prev="{% if selected.prev_page %}{{ doc_url }}&page={{ selected.prev_page }}{% endif %}"
-           data-next="{% if selected.next_page %}{{ doc_url }}&page={{ selected.next_page }}{% endif %}">
-        <span class="pager__count">
-          <b>{{ selected.page }}</b>PAGE / {{ selected.page_total }}PAGE
-        </span>
-        {% if selected.prev_page %}
-        <a class="pager__btn" href="{{ doc_url }}&page={{ selected.prev_page }}">이전</a>
-        {% else %}
-        <span class="pager__btn is-off" aria-disabled="true">이전</span>
-        {% endif %}
-        {% if selected.next_page %}
-        <a class="pager__btn" href="{{ doc_url }}&page={{ selected.next_page }}">다음</a>
-        {% else %}
-        <span class="pager__btn is-off" aria-disabled="true">다음</span>
-        {% endif %}
-      </div>
+      <span class="pager__count" style="margin-left:auto">표지</span>
     </div>
-    {% if intro_cuts %}
-    {# 이 과목·난이도 첫 강의의 1페이지에만 붙는 만화 소개. 이전/다음(comic-pager.js)은
-       위 페이지 이동(이전·다음 PAGE, theory-pager.js)과는 서로 무관하게 움직인다. #}
-    <div class="comic-pager theory-intro" data-comic-pager>
+    <div class="comic-pager theory-cover" data-comic-pager>
       <div class="comic-pager__frame">
         {% for c in intro_cuts %}
         <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
@@ -79,8 +57,37 @@
         <span class="comic-pager__count"><span data-comic-current>1</span> / {{ intro_cuts|length }}</span>
         <button class="btn" type="button" data-comic-next{% if intro_cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
       </div>
+      <a class="btn btn--primary theory-cover__start" href="{{ intro_next_url }}">학습 시작 →</a>
     </div>
-    {% endif %}
+    {% elif selected %}
+    {# 페이지 이동 링크의 뿌리. 자료(doc)는 그대로 두고 page 만 갈아 끼운다. #}
+    {% set doc_url = "/" ~ target.id ~ "/" ~ content.id ~ "?doc=" ~ (selected.id | urlencode) %}
+    <div class="viewer__head">
+      <span class="viewer__title">{{ selected.title }}</span>
+      {% if selected.difficulty %}<span class="tag tag--uds">{{ selected.difficulty }}</span>{% endif %}
+
+      {# 소제목 단위로 끊은 페이지 이동. 서버가 그 페이지만 변환해 내려주므로
+         이동은 주소 이동이다 (theory_content.split_pages). 표지가 있는 자료는
+         1페이지의 '이전'이 표지(back_to_intro_url)로 돌아간다. #}
+      {% set prev_url = (doc_url ~ "&page=" ~ selected.prev_page) if selected.prev_page else back_to_intro_url %}
+      <div class="pager" data-pager
+           data-prev="{{ prev_url or '' }}"
+           data-next="{% if selected.next_page %}{{ doc_url }}&page={{ selected.next_page }}{% endif %}">
+        <span class="pager__count">
+          <b>{{ selected.page }}</b>PAGE / {{ selected.page_total }}PAGE
+        </span>
+        {% if prev_url %}
+        <a class="pager__btn" href="{{ prev_url }}">이전</a>
+        {% else %}
+        <span class="pager__btn is-off" aria-disabled="true">이전</span>
+        {% endif %}
+        {% if selected.next_page %}
+        <a class="pager__btn" href="{{ doc_url }}&page={{ selected.next_page }}">다음</a>
+        {% else %}
+        <span class="pager__btn is-off" aria-disabled="true">다음</span>
+        {% endif %}
+      </div>
+    </div>
     {# 페이지 안 내용이 화면을 넘으면 이 영역만 스크롤된다. #}
     <article class="viewer__md">{{ selected.html | safe }}</article>
     {% else %}
