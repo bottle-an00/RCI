@@ -696,7 +696,7 @@ button.stepper__row:hover { background: #eef2f7; }
 .seqbrief { flex: 1; min-height: 0; display: flex; gap: 12px; }
 .seqbrief__col { flex: 1; min-width: 0; }
 .seqbrief__body { padding: 12px 16px; gap: 12px; overflow-y: auto; min-height: 0; }
-.seqbrief__pane { display: flex; flex-direction: column; gap: 12px; }
+.seqbrief__pane { display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; }
 .seqbrief__lede { margin: 0; font-size: 13px; line-height: 1.75; color: #3d4a57; }
 /* 로그는 아래에서 고정 높이를 차지한다 — 설명이 화면 대부분을 갖게 하되,
    왕복이 몇 줄은 보여야 '방금 무엇이 오갔는지' 를 확인할 수 있다. */
@@ -1085,18 +1085,38 @@ body.is-modal { overflow: hidden; }
 }
 .comic__note { display: block; font-size: 11px; color: var(--muted); margin-left: 22px; }
 
-/* 배경·이론 탭 — 만화(그림만) 이전/다음 페이저. 컷을 모두 미리 그려두고
-   .is-active 만 보인다(comic-pager.js). */
+/* 배경·이론 탭 / 진단·강제구동·ECU 시퀀스 설명 — 만화(그림) 이전/다음 페이저.
+   컷을 모두 미리 그려두고 .is-active 만 보인다(comic-pager.js). */
+.comic-pager { display: flex; flex-direction: column; gap: 10px; }
 .comic-pager__frame { position: relative; }
 .comic-pager .comic__img { width: 80%; margin: 0 auto; }
 .comic-pager__slide { display: none; }
 .comic-pager__slide.is-active { display: block; }
 .comic-pager__nav {
   display: flex; align-items: center; justify-content: center; gap: 14px;
-  margin-top: 10px;
 }
 .comic-pager__nav .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .comic-pager__count { font-size: 13px; font-weight: 600; color: var(--muted); }
+.comic-pager__zoom { display: flex; justify-content: center; }
+
+/* 진단·강제구동·ECU 시퀀스 설명의 만화 자리는 패널이 남기는 세로 공간에 맞춰
+   고정한다(스크롤 없음) — 그림은 원래 비율을 지키며 그 틀 안에 들어간다. */
+.seqbrief .comic-pager { flex: 1; min-height: 0; }
+.seqbrief .comic-pager__frame { flex: 1; min-height: 0; display: flex; }
+.seqbrief .comic-pager__slide.is-active { flex: 1; min-height: 0; display: flex; }
+.seqbrief .comic-pager__slide .comic__cut { flex: 1; min-height: 0; }
+.seqbrief .comic-pager__slide .comic__frame { flex: 1; min-height: 0; }
+.seqbrief .comic-pager .comic__img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
+
+/* 확대 — 페이저를 화면에 고정해 기능 설명 · 시퀀스 기능 설명 · 통신 로그가 차지하던
+   영역 크기에 정확히 맞춘다(js: 좌표 계산). 축소를 누르면 인라인 스타일을 지우고
+   원래 자리로 돌아간다. */
+.comic-pager.is-expanded {
+  position: fixed; z-index: 60;
+  background: #fff; border: 1px solid var(--border); border-radius: 4px;
+  box-shadow: 0 18px 48px rgba(17, 27, 38, .28);
+  padding: 14px 16px;
+}
 
 /* ── 글 ── */
 .brief__text { display: flex; flex-direction: column; gap: 10px; }

@@ -17,22 +17,35 @@
       {% for b in sequence.briefs %}
       <div class="seqbrief__pane" data-brief-comic="{{ b.topic }}" hidden>
         <h2 class="brief__title">{{ b.title }}</h2>
-        {# 컷 수에 따라 4컷은 2열, 8컷은 4열. 그림이 아직 없으면 '준비 중' 딱지가 붙는다 —
+        {# 한 번에 한 컷만 보인다 — 이전/다음으로 넘긴다(static/js/comic-pager.js).
+           그림이 아직 없으면 '준비 중' 딱지가 붙는다 —
            static/img/comic/{topic}-{n}.png 를 넣으면 자동으로 바뀐다. #}
-        <div class="comic comic--{{ b.cuts|length }}">
-          {% for c in b.cuts %}
-          <figure class="comic__cut">
-            <div class="comic__frame">
-              <img class="comic__img" src="{{ c.src }}" loading="lazy"
-                   alt="{{ b.title }} {{ c.no }}컷 — {{ c.caption }}">
-              {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+        <div class="comic-pager" data-comic-pager>
+          <div class="comic-pager__nav">
+            <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
+            <span class="comic-pager__count"><span data-comic-current>1</span> / {{ b.cuts|length }}</span>
+            <button class="btn" type="button" data-comic-next{% if b.cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+          </div>
+          <div class="comic-pager__frame">
+            {% for c in b.cuts %}
+            <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
+              <figure class="comic__cut">
+                <div class="comic__frame">
+                  <img class="comic__img" src="{{ c.src }}" loading="lazy"
+                       alt="{{ b.title }} {{ c.no }}컷 — {{ c.caption }}">
+                  {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+                </div>
+                <figcaption class="comic__cap">
+                  <span class="comic__no">{{ c.no }}</span>{{ c.caption }}
+                  {% if c.note %}<span class="comic__note">{{ c.note }}</span>{% endif %}
+                </figcaption>
+              </figure>
             </div>
-            <figcaption class="comic__cap">
-              <span class="comic__no">{{ c.no }}</span>{{ c.caption }}
-              {% if c.note %}<span class="comic__note">{{ c.note }}</span>{% endif %}
-            </figcaption>
-          </figure>
-          {% endfor %}
+            {% endfor %}
+          </div>
+          <div class="comic-pager__zoom">
+            <button class="btn" type="button" data-comic-zoom>확대</button>
+          </div>
         </div>
       </div>
       {% endfor %}

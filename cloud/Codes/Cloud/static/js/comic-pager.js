@@ -1,7 +1,8 @@
-/* 배경·이론 탭의 만화 이전/다음 페이징.
+/* 만화 이전/다음 페이징 — 배경·이론 탭(partials/_briefing.html) 과
+ * 진단·강제구동·ECU 시퀀스 설명(partials/_seq_brief.html)이 함께 쓴다.
  *
- * 컷은 서버가 모두 미리 그려 두었다(partials/_briefing.html) — 페이지를 다시 받지
- * 않고 인덱스만 옮겨 현재 컷만 보이게 토글한다.
+ * 컷은 서버가 모두 미리 그려 두었다 — 페이지를 다시 받지 않고 인덱스만
+ * 옮겨 현재 컷만 보이게 토글한다.
  */
 (function () {
   "use strict";
@@ -14,6 +15,7 @@
     var prevBtn = root.querySelector("[data-comic-prev]");
     var nextBtn = root.querySelector("[data-comic-next]");
     var counter = root.querySelector("[data-comic-current]");
+    var zoomBtn = root.querySelector("[data-comic-zoom]");
     var idx = 0;
 
     function render() {
@@ -35,5 +37,61 @@
       idx += 1;
       render();
     });
+
+    if (zoomBtn) initZoom(root, zoomBtn);
+  }
+
+  /* 확대 — 페이저를 통째로 화면에 고정해, 기능 설명·시퀀스 기능 설명·통신 로그가
+   * 차지하던 영역(.seqbrief + .run__log) 크기·자리에 맞춘다. 창 크기가 바뀌면
+   * 그 영역도 바뀌므로 resize 때마다 다시 잰다.
+   */
+  function initZoom(root, btn) {
+    var onResize = null;
+
+    btn.addEventListener("click", function () {
+      if (root.classList.contains("is-expanded")) collapse();
+      else expand();
+    });
+
+    function targetRect() {
+      var zone = root.closest(".run__center--seq");
+      var brief = zone && zone.querySelector(".seqbrief");
+      var log = zone && zone.querySelector(".run__log");
+      if (!brief) return null;
+      var top = brief.getBoundingClientRect();
+      var bottom = log ? log.getBoundingClientRect() : top;
+      return {
+        top: top.top, left: top.left, width: top.width,
+        height: bottom.bottom - top.top
+      };
+    }
+
+    function applyRect(r) {
+      root.style.top = r.top + "px";
+      root.style.left = r.left + "px";
+      root.style.width = r.width + "px";
+      root.style.height = r.height + "px";
+    }
+
+    function expand() {
+      var r = targetRect();
+      if (!r) return;
+      root.classList.add("is-expanded");
+      applyRect(r);
+      onResize = function () {
+        var rr = targetRect();
+        if (rr) applyRect(rr);
+      };
+      window.addEventListener("resize", onResize);
+      btn.textContent = "축소";
+    }
+
+    function collapse() {
+      root.classList.remove("is-expanded");
+      root.removeAttribute("style");
+      if (onResize) window.removeEventListener("resize", onResize);
+      onResize = null;
+      btn.textContent = "확대";
+    }
   }
 })();
