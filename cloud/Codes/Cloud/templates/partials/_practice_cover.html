@@ -25,7 +25,9 @@
       </div>
       {% endfor %}
     </div>
-    {# 실습하러가기는 하단에 폭 전체를 쓰는 버튼. #}
-    <a class="btn btn--primary practice-cover__start" href="{{ cover.start_url }}">실습하러가기 →</a>
+    {# 실습하러가기는 하단에 폭 전체를 쓰는 버튼 — 만화를 끝까지(마지막 컷) 봐야
+       눌린다(comic-pager.js 가 data-comic-cta 를 마지막 컷에서만 켠다). #}
+    <button class="btn btn--primary practice-cover__start" type="button"
+            data-comic-cta data-href="{{ cover.start_url }}" disabled>실습하러가기 →</button>
   </div>
 </div>

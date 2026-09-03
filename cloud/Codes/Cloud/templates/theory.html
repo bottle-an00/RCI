@@ -52,12 +52,16 @@
         </div>
         {% endfor %}
       </div>
-      <div class="comic-pager__nav">
-        <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
-        <span class="comic-pager__count"><span data-comic-current>1</span> / {{ intro_cuts|length }}</span>
-        <button class="btn" type="button" data-comic-next{% if intro_cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+      <div class="theory-cover__bar">
+        <div class="comic-pager__nav">
+          <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
+          <span class="comic-pager__count"><span data-comic-current>1</span> / {{ intro_cuts|length }}</span>
+          <button class="btn" type="button" data-comic-next{% if intro_cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+        </div>
+        {# 만화를 끝까지(마지막 컷) 봐야 눌린다(comic-pager.js). #}
+        <button class="btn btn--primary theory-cover__start" type="button"
+                data-comic-cta data-href="{{ intro_next_url }}" disabled>학습 시작 →</button>
       </div>
-      <a class="btn btn--primary theory-cover__start" href="{{ intro_next_url }}">학습 시작 →</a>
     </div>
     {% elif selected %}
     {# 페이지 이동 링크의 뿌리. 자료(doc)는 그대로 두고 page 만 갈아 끼운다. #}

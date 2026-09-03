@@ -403,8 +403,11 @@ body {
 .theory-cover .comic-pager__frame { flex: 1; min-height: 0; display: flex; }
 .theory-cover .comic-pager__slide.is-active { flex: 1; min-height: 0; display: flex; width: 100%; }
 .theory-cover .comic-pager__slide .comic__frame { flex: 1; min-height: 0; width: 100%; }
-.theory-cover .comic-pager .comic__img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
-.theory-cover__start { flex: none; width: 100%; }
+.theory-cover .comic-pager .comic__img { width: 100%; height: 100%; object-fit: contain; }
+/* 이전/다음과 같은 줄, 우측에 — 작게. .btn--primary 의 flex:1 을 이겨야 하므로
+   클래스를 하나 더 걸어 우선순위를 올린다(소스 순서에 기대지 않는다). */
+.theory-cover__bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.theory-cover .theory-cover__start { flex: none; padding: 7px 14px; font-size: 12px; }
 
 /* =========================================================================
    실습 컨텐츠 (Figma 22:29) — 좌 실습목록 / 우 상세
@@ -1120,6 +1123,10 @@ body.is-modal { overflow: hidden; }
 .comic-pager__nav {
   display: flex; align-items: center; justify-content: center; gap: 14px;
 }
+/* 이전/다음도 학습 시작·실습하러가기 같은 주 색(파랑)을 쓴다 — 비활성일 때만
+   같은 색을 옅게 낮춘다(회색 opacity 대신). */
+.comic-pager__nav .btn { background: var(--brand-blue); color: #fff; border: 0; }
+.comic-pager__nav .btn:hover:not(:disabled) { filter: brightness(1.12); }
 .comic-pager__nav .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .comic-pager__count { font-size: 13px; font-weight: 600; color: var(--muted); }
 .comic-pager__zoom { display: flex; justify-content: flex-end; }

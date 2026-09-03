@@ -16,6 +16,8 @@
     var nextBtn = root.querySelector("[data-comic-next]");
     var counter = root.querySelector("[data-comic-current]");
     var zoomBtn = root.querySelector("[data-comic-zoom]");
+    // 실습하러가기 · 학습 시작 — 만화를 끝까지(마지막 컷) 봐야 눌린다.
+    var ctaBtn = root.querySelector("[data-comic-cta]");
     var idx = 0;
 
     function render() {
@@ -25,6 +27,7 @@
       if (counter) counter.textContent = idx + 1;
       prevBtn.disabled = idx === 0;
       nextBtn.disabled = idx === slides.length - 1;
+      if (ctaBtn) ctaBtn.disabled = idx !== slides.length - 1;
     }
 
     prevBtn.addEventListener("click", function () {
@@ -37,7 +40,14 @@
       idx += 1;
       render();
     });
+    if (ctaBtn) {
+      ctaBtn.addEventListener("click", function () {
+        if (ctaBtn.disabled) return;
+        location.href = ctaBtn.getAttribute("data-href");
+      });
+    }
 
+    render();
     if (zoomBtn) initZoom(root, zoomBtn);
   }
 
