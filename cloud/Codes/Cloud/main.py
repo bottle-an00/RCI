@@ -1251,15 +1251,36 @@ def _comic_src(topic, idx):
 
 
 def topic_briefing(topic):
-    """주제 → 브리핑(만화 컷 URL 까지 채운 것). 없는 주제면 None."""
+    """주제 → 브리핑(만화 컷 URL 까지 채운 것). 없는 주제면 None.
+
+    컷 개수는 BRIEFINGS 에 적어 둔 캡션 목록 길이가 아니라, static/img/comic/
+    {topic}-1.png, -2.png … 로 실제 준비된 이미지 파일 개수를 따른다(_comic_cuts
+    와 같은 규칙) — 4장으로 못박지 않고, 몇 장을 넣었든 그 개수만큼 보인다.
+    캡션은 있는 만큼만 짝지어 쓰고(넘치면 빈 캡션), 하나도 없으면 '준비중'
+    한 장으로 대체한다.
+    """
     brief = BRIEFINGS.get(topic)
     if not brief:
         return None
+    captions = brief["cuts"]
+
+    def _caption(i):
+        return captions[i - 1] if i <= len(captions) else {"caption": "", "note": ""}
+
     cuts = []
-    for i, cut in enumerate(brief["cuts"], start=1):
-        src, pending = _comic_src(topic, i)
-        cuts.append({"no": i, "src": src, "pending": pending,
-                     "caption": cut["caption"], "note": cut["note"]})
+    n = 1
+    while True:
+        src, pending = _comic_src(topic, n)
+        if pending:
+            break
+        cap = _caption(n)
+        cuts.append({"no": n, "src": src, "pending": False,
+                     "caption": cap["caption"], "note": cap["note"]})
+        n += 1
+    if not cuts:
+        cap = _caption(1)
+        cuts = [{"no": 1, "src": asset(COMIC_PENDING), "pending": True,
+                 "caption": cap["caption"], "note": cap["note"]}]
     return dict(brief, topic=topic, cuts=cuts)
 
 
