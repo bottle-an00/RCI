@@ -21,6 +21,7 @@ import json
 import logging
 import os
 import re
+import threading
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
@@ -308,8 +309,8 @@ PAGE_GUIDES = {
             "이론 교육을 보기 전에 푸는 편이 좋습니다.",
             "보기 순서는 응시할 때마다 새로 섞입니다. 고르지 않고 넘어간 문항은 오답 처리되고, "
             "마지막 문항의 '제출하기'로 채점합니다.",
-            "점수는 저장되지 않습니다 — 화면을 벗어나면 사라지니 사전·사후 점수는 "
-            "따로 적어 두고 비교하세요.",
+            "제출하면 소속·이름·직급과 함께 <b>점수가 서버에 기록</b>됩니다. "
+            "화면에는 남지 않으니 사전·사후 점수는 따로 적어 두고 비교하세요.",
         ],
     },
     "diag": {
@@ -363,10 +364,24 @@ PAGE_GUIDES = {
             "<b>메시지 작성</b> 버튼으로 입력창을 오갈 수 있습니다.",
             "보낸 요청과 받은 응답은 오른쪽 통신 로그에 남습니다. "
             "부정 응답(0x7F)이 오면 뒤에 붙은 NRC 를 보고 무엇이 빠졌는지 찾으세요.",
-            "처음부터 다시 하려면 왼쪽 위 '진행 초기화'를 누르면 됩니다.",
+            "처음부터 다시 하려면 왼쪽 위 '진행 초기화'를 누르면 됩니다 — 통과 표시와 "
+            "세션 유지(0x3E) 발행이 함께 멈춥니다. 다른 세부 항목으로 옮기면 세션 유지가 "
+            "중지되고, 이 화면을 벗어나면 통과 표시까지 모두 초기화됩니다.",
         ],
     },
 }
+
+
+# lede 는 한 문단으로 흘려 쓰면 한 덩어리로 보여 읽히지 않는다. 문장(온점)마다
+# 줄을 바꿔 "무슨 화면인가" 와 "왜 보는가" 를 눈으로 나눠 읽게 한다.
+# 한국어 종결어미(다/요) 뒤의 온점만 문장 끝으로 본다 — "0x22." 같은 표기나
+# 소수점을 문장 경계로 오인하지 않기 위해서다.
+_LEDE_SENTENCE_END = re.compile(r"(?<=[다요])\.[ \t]+")
+
+
+def _lede_lines(text):
+    """lede 한 문단을 문장 단위로 끊어 `<br>` 로 잇는다 (팝업의 첫 문단 전용)."""
+    return _LEDE_SENTENCE_END.sub(".<br>", text)
 
 
 def page_guide(content, target):
@@ -384,7 +399,7 @@ def page_guide(content, target):
     return {
         "key": content["id"],
         "name": content_title(content, target),
-        "lede": guide["lede"].format(**fmt),
+        "lede": _lede_lines(guide["lede"].format(**fmt)),
         "points": [p.format(**fmt) for p in guide["points"]],
         "note": guide["note"].format(**fmt) if guide.get("note") else None,
     }
@@ -1529,26 +1544,60 @@ class QuizResultSubmit(BaseModel):
     score: int = Field(..., ge=0, le=100)
 
 
+# 결과 로그는 **서버 PC 의 이 폴더**에만 쌓인다. 학습자는 각자의 PC 브라우저에서
+# 풀지만, 채점 결과는 POST /api/quiz-result 로 서버에 올라와 여기에 기록된다.
+# BASE_DIR 기준의 절대 경로다 — 서버를 어느 작업 디렉터리에서 띄우든 같은 곳에 쌓인다.
 RESULT_DIR = BASE_DIR / "TEST_RESULT"
+
+# 날짜 파일 하나를 '읽기 → 덧붙이기 → 쓰기' 로 갱신한다. 교육장에서는 여러 학습자가
+# 거의 동시에 제출하는데, 엔드포인트가 동기 함수라 FastAPI 가 스레드풀에서 병렬로
+# 돌린다. 잠그지 않으면 두 요청이 같은 배열을 읽고 각자 덮어써 한쪽 기록이 사라진다
+# (= "다른 PC 에서 낸 결과가 안 남는다"). 저장 전체를 이 락으로 직렬화한다.
+_RESULT_LOCK = threading.Lock()
+
+_quiz_log = logging.getLogger("quiz-result")
+
+
+def _load_records(path: Path) -> list:
+    """날짜 파일을 읽어 배열로 돌려준다. 깨져 있으면 옆으로 치우고 새로 시작한다.
+
+    여기서 예외가 나가면 그날의 **모든** 이후 제출이 500 으로 실패한다. 한 건이
+    깨졌다고 나머지 응시자의 기록까지 잃는 쪽이 훨씬 나쁘므로, 손상 파일은
+    `*.corrupt-<시각>.json` 으로 보존만 하고 진행한다.
+    """
+    if not path.exists():
+        return []
+    try:
+        with path.open(encoding="utf-8") as fp:
+            records = json.load(fp)
+        if isinstance(records, list):
+            return records
+        raise ValueError("최상위가 배열이 아님")
+    except (json.JSONDecodeError, ValueError, OSError) as exc:
+        backup = path.parent / f"{path.stem}.corrupt-{datetime.now():%H%M%S}.json"
+        _quiz_log.error("결과 로그 %s 를 읽을 수 없어 %s 로 옮깁니다: %s", path.name, backup.name, exc)
+        try:
+            path.replace(backup)
+        except OSError:
+            pass
+        return []
 
 
 @app.post("/api/quiz-result")
-def api_quiz_result(body: QuizResultSubmit):
-    """퀴즈 결과를 날짜별 로그(TEST_RESULT/YYYY-MM-DD.json)에 한 건 추가한다.
+def api_quiz_result(body: QuizResultSubmit, request: Request):
+    """퀴즈 결과를 **서버 PC** 의 날짜별 로그(TEST_RESULT/YYYY-MM-DD.json)에 한 건 추가한다.
 
     같은 날 여러 건이면 그 날짜 파일의 배열에 계속 이어 붙인다. 응시자가 직접
     제출 시각을 조작할 수 없도록, '제출시각'은 클라이언트 값이 아니라 이 요청을
-    받은 서버 시각으로 찍는다.
+    받은 서버 시각으로 찍는다. 같은 이유로 '제출IP'도 서버가 본 접속 주소를 쓴다 —
+    누가 어느 자리에서 냈는지 확인할 수 있어야 기록 누락도 눈에 띈다.
+
+    쓰기는 임시 파일에 다 쓴 뒤 교체한다. 도중에 서버가 죽어도 반쪽짜리 JSON 이
+    남지 않는다.
     """
     now = datetime.now()
-    RESULT_DIR.mkdir(exist_ok=True)
-    path = RESULT_DIR / f"{now:%Y-%m-%d}.json"
-
-    records = []
-    if path.exists():
-        with path.open(encoding="utf-8") as fp:
-            records = json.load(fp)
-    records.append({
+    client_ip = request.client.host if request.client else "-"
+    record = {
         "퀴즈": body.quiz_title,
         "소속": body.org,
         "이름": body.name,
@@ -1556,10 +1605,44 @@ def api_quiz_result(body: QuizResultSubmit):
         "제출시각": now.isoformat(timespec="seconds"),
         "소요시간_초": body.duration_sec,
         "점수": body.score,
-    })
-    with path.open("w", encoding="utf-8") as fp:
-        json.dump(records, fp, ensure_ascii=False, indent=2)
-    return {"ok": True}
+        "제출IP": client_ip,
+    }
+
+    path = RESULT_DIR / f"{now:%Y-%m-%d}.json"
+    try:
+        with _RESULT_LOCK:
+            RESULT_DIR.mkdir(parents=True, exist_ok=True)
+            records = _load_records(path)
+            records.append(record)
+            tmp = path.with_suffix(".tmp")
+            with tmp.open("w", encoding="utf-8") as fp:
+                json.dump(records, fp, ensure_ascii=False, indent=2)
+            tmp.replace(path)
+    except OSError as exc:
+        # 조용히 삼키면 "저장된 줄 알았는데 없다" 가 된다. 서버 로그에 남기고
+        # 클라이언트에도 실패를 알려 화면에서 다시 보내거나 경고할 수 있게 한다.
+        _quiz_log.exception("결과 저장 실패 (%s · %s)", client_ip, path)
+        raise HTTPException(500, f"결과 저장 실패: {exc}") from None
+
+    _quiz_log.info("결과 저장 · %s · %s/%s · %d점 · %s (총 %d건)",
+                   body.quiz_title, body.org, body.name, body.score, client_ip, len(records))
+    return {"ok": True, "saved_to": str(path), "count": len(records)}
+
+
+@app.get("/api/quiz-result")
+def api_quiz_result_list(date: str | None = None):
+    """저장된 결과를 되읽는다 — 서버에 실제로 쌓였는지 확인하는 용도.
+
+    `GET /api/quiz-result` 오늘치, `?date=2026-09-02` 로 특정 날짜.
+    브라우저에서 바로 열어 볼 수 있어야 "저장이 되긴 하나" 를 즉시 확인할 수 있다.
+    """
+    day = date or f"{datetime.now():%Y-%m-%d}"
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+        raise HTTPException(400, "date 는 YYYY-MM-DD 형식입니다")
+    path = RESULT_DIR / f"{day}.json"
+    with _RESULT_LOCK:
+        records = _load_records(path)
+    return {"date": day, "path": str(path), "count": len(records), "records": records}
 
 
 @app.get("/api/events")
@@ -1675,6 +1758,9 @@ def content_view(request: Request, target_id: str, content_id: str,
             # 진단·강제구동은 '자동 시퀀스' 화면이다 (메시지 작성은 사람이 직접 친다).
             if not ctx["is_composer"]:
                 ctx["sequence"] = auto_sequence(content_id, target, selected)
+                # 세션 유지(3E) 반복 발행의 소유 범위 — 고른 세부 항목이 바뀌면 남은
+                # 발행은 그 항목의 것이 아니다 (static/js/rci-live.js).
+                ctx["ka_scope"] = selected["id"] if selected else content_id
             if ctx["is_composer"]:
                 # 메시지 작성: 상단 입력창은 정적이고, 선택 잎은 '아래에 깔릴 참고 자료'를 고른다.
                 sc, step, idx, total = find_step(message_scenarios(target),
@@ -1687,6 +1773,11 @@ def content_view(request: Request, target_id: str, content_id: str,
                 ctx.update({"scenario": sc, "step": step, "step_no": idx, "step_total": total,
                             "addr": addr, "examples": step_examples(step["spec"], addr),
                             "layers": MSG_LAYERS, "nrc": MSG_NRC, "negative": MSG_NEGATIVE,
+                            # 세션 유지(3E) 반복 발행은 **코스 하나** 안에서만 이어진다.
+                            # 같은 코스의 다음 단계로 넘어가는 재로딩은 살아남지만,
+                            # 다른 세부 항목(예: 센서 리딩 → 강제 구동)으로 옮기면
+                            # 소유 범위가 달라져 발행이 끊긴다 (static/js/rci-live.js).
+                            "ka_scope": sc["id"],
                             # 같은 윈도우에서 [배경·이론] ↔ [메시지 작성] 을 갈아 끼운다.
                             "briefing": step_briefing(step),
                             "next_url": f"/{target['id']}/{content_id}?item={nxt}" if nxt else None})

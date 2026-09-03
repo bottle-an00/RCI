@@ -522,9 +522,17 @@
    * 없는 사용자에게는 원인 불명의 트래픽이 된다.
    *
    * 발행은 device 마다 따로 기억한다 — UR 탭과 RC 탭이 서로를 덮어쓰지 않게.
+   *
+   * 다만 '유지'에는 범위가 있다. 세션 유지는 **지금 밟고 있는 코스**의 것이라,
+   * 같은 코스의 다음 단계로 넘어갈 때만 이어져야 한다. 다른 세부 항목(예: 센서
+   * 리딩 → 강제 구동)이나 다른 화면으로 옮기면 그 발행은 주인이 없어진 것이다 —
+   * 그래서 발행 선언에 소유 범위(scope)를 함께 적고, 되살릴 때 지금 화면의
+   * 범위와 다르면 되살리지 않고 지운다. 범위 값은 서버가 내려준다
+   * (run.html 의 data-ka-scope · main.content_view 의 ka_scope).
    * ---------------------------------------------------------------------- */
 
   var KA_KEY = "rci:keepalive:" + device;
+  var KA_SCOPE = location.pathname + "#" + (root.dataset.kaScope || "");
   var KA_MIN = 500, KA_MAX = 5000;    // 5초를 넘기면 세션이 이미 풀린다
   var kaTimer = null;                 // setInterval 핸들 (null = 중지 상태)
   var kaRaw = "", kaPeriod = 0;
@@ -607,7 +615,7 @@
     kaHalt();                                  // 주기·페이로드 교체를 겸한다
     kaRaw = raw; kaPeriod = period;
     kaCount = 0; kaMiss = 0; kaAnswer = ""; kaLine = null; kaPending = null;
-    kaSave({ raw: kaRaw, period: kaPeriod });
+    kaSave({ raw: kaRaw, period: kaPeriod, scope: KA_SCOPE });
     kaTick();                                  // 첫 발행은 기다리지 않는다
     kaTimer = setInterval(kaTick, kaPeriod);
     kaPaint();
@@ -682,11 +690,20 @@
     if (kaStopBtn) kaStopBtn.addEventListener("click", function () { kaStop("사용자 중지"); });
   }
 
-  // 페이지를 넘어온 경우 남아 있는 발행 선언을 보고 이어서 띄운다.
+  // 페이지를 넘어온 경우 남아 있는 발행 선언을 보고 이어서 띄운다 — 단, 그 발행의
+  // 소유 범위가 지금 화면과 같을 때만. 다른 세부 항목으로 옮겨 왔다면 앞 코스의
+  // 발행이므로 되살리지 않고 지운다(= 세션 유지 중지).
   // start() 뒤에 와야 한다 — transport 가 없으면 sendRaw 가 아무것도 못 한다.
   (function () {
     var saved = kaLoad();
     if (!saved || !saved.raw) return;
+    if (saved.scope !== KA_SCOPE) {
+      kaSave(null);
+      kaPaint();
+      log("muted", "○ 다른 세부 항목으로 이동 — 앞 항목의 세션 유지 발행을 중지했습니다"
+        + " · 5초 뒤 기본 세션으로 돌아갑니다");
+      return;
+    }
     log("muted", "↻ 앞 단계에서 시작한 세션 유지 발행을 이어갑니다 · " + saved.raw);
     kaStart(saved.raw, saved.period);
   })();

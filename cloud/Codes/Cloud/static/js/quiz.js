@@ -40,24 +40,71 @@
     if (startedAt === null) startedAt = Date.now();
   });
 
-  /* 채점 결과를 결과 로그(TEST_RESULT/*.json)에 보낸다. 실패해도 학습자
-   * 화면에는 영향을 주지 않는다 — 응시 결과 확인이 기록보다 우선이다. */
-  function postResult(r) {
-    var learner = window.RCI_LEARNER;
-    if (!learner) return;
-    var durationSec = startedAt ? Math.max(0, Math.round((Date.now() - startedAt) / 1000)) : 0;
-    fetch("/api/quiz-result", {
+  /* 채점 결과를 **서버 PC** 의 결과 로그(TEST_RESULT/*.json)에 보낸다.
+   *
+   * 학습자는 각자 자기 PC 브라우저에서 풀지만 기록은 한 곳(서버)에 모여야 한다.
+   * 그래서 저장은 전적으로 이 POST 한 번에 달려 있는데, 예전에는 실패해도 아무
+   * 표시가 없어 '냈는데 안 남았다'를 아무도 눈치채지 못했다. 그래서:
+   *   · keepalive  결과 화면에서 바로 다음 화면으로 넘어가도 요청이 취소되지 않는다
+   *   · 재시도     일시적인 네트워크·서버 오류는 한 번 더 두드려 본다
+   *   · 실패 표시  그래도 안 되면 화면에 남긴다 (조용히 삼키지 않는다)
+   */
+  var posted = false;                     // 한 응시당 한 번만 보낸다
+
+  function saveNote(text, ok) {
+    var box = el.result;
+    if (!box) return;
+    var note = box.querySelector("[data-quiz-save]");
+    if (!note) {
+      note = document.createElement("div");
+      note.setAttribute("data-quiz-save", "");
+      box.appendChild(note);
+    }
+    note.className = "quiz-save" + (ok ? " is-ok" : " is-ng");
+    note.textContent = text;
+  }
+
+  function send(payload, retriesLeft) {
+    return fetch("/api/quiz-result", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        quiz_title: quizTitle,
-        org: learner.org,
-        name: learner.name,
-        position: learner.position,
-        duration_sec: durationSec,
-        score: r.score
-      })
-    }).catch(function () { /* 네트워크 문제 — 기록만 못 남길 뿐 응시는 끝났다 */ });
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      saveNote("제출 결과가 서버에 저장되었습니다.", true);
+    }).catch(function (err) {
+      if (retriesLeft > 0) {
+        return new Promise(function (done) { setTimeout(done, 1000); })
+          .then(function () { return send(payload, retriesLeft - 1); });
+      }
+      saveNote("결과를 서버에 저장하지 못했습니다 (" + err.message
+               + "). 점수를 적어 두고 교육 담당자에게 알려 주세요.", false);
+    });
+  }
+
+  function postResult(r) {
+    if (posted) return;
+    var learner = window.RCI_LEARNER;
+    // 게이트를 아직 못 채웠으면 채워지는 즉시 보낸다 — 예전에는 그냥 버렸다.
+    if (!learner) {
+      document.addEventListener("rci:learner-ready", function once() {
+        document.removeEventListener("rci:learner-ready", once);
+        postResult(r);
+      });
+      return;
+    }
+    posted = true;
+    var durationSec = startedAt ? Math.max(0, Math.round((Date.now() - startedAt) / 1000)) : 0;
+    saveNote("결과를 서버에 저장하는 중…", true);
+    send({
+      quiz_title: quizTitle,
+      org: learner.org,
+      name: learner.name,
+      position: learner.position,
+      duration_sec: durationSec,
+      score: r.score
+    }, 2);
   }
 
   var el = {
@@ -190,6 +237,9 @@
     orders = questions.map(shuffledOrder);
     at = 0;
     done = false;
+    posted = false;                       // 재응시는 새 기록 — 다시 저장한다
+    var note = el.result && el.result.querySelector("[data-quiz-save]");
+    if (note) note.remove();
     startedAt = Date.now();               // 재응시는 새 응시 — 소요시간도 새로 잰다
     if (el.tag) el.tag.textContent = "퀴즈";
     render();

@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+  {# 실습 진행 체크·세션 유지(3E)의 수명 관리. 화면이 바뀌면 앞 화면 상태를 지운다.
+     rci-live.js 가 세션 유지 발행을 되살리기 전에 실행돼야 해서 head 에 둔다. #}
+  <script src="{{ asset('js/practice-scope.js') }}"></script>
 </head>
 <body>
   <div class="app {% block app_class %}{% endblock %}">
