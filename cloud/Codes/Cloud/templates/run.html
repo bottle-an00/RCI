@@ -96,8 +96,8 @@
 {# 배경·이론 ↔ 메시지 작성 화면 전환. 통신과 무관하므로 live 여부와 상관없이 싣는다. #}
 <script src="{{ asset('js/stage-switch.js') }}"></script>
 {% endif %}
-{% if is_composer or cover %}
-{# 배경·이론 탭 / 첫 진입 커버의 만화 이전/다음 페이징. #}
+{% if is_composer or cover or sequence %}
+{# 배경·이론 탭 / 첫 진입 커버 / 시퀀스 기능 설명의 만화 이전·다음·확대. #}
 <script src="{{ asset('js/comic-pager.js') }}"></script>
 {% endif %}
 {% if target.model %}
