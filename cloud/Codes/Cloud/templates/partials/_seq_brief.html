@@ -16,35 +16,39 @@
     <div class="panel__body seqbrief__body">
       {% for b in sequence.briefs %}
       <div class="seqbrief__pane" data-brief-comic="{{ b.topic }}" hidden>
-        <h2 class="brief__title">{{ b.title }}</h2>
         {# 한 번에 한 컷만 보인다 — 이전/다음으로 넘긴다(static/js/comic-pager.js).
+           글 설명은 담지 않는다 — 그 내용은 만화 그림이 대신 보여준다.
            그림이 아직 없으면 '준비 중' 딱지가 붙는다 —
            static/img/comic/{topic}-{n}.png 를 넣으면 자동으로 바뀐다. #}
         <div class="comic-pager" data-comic-pager>
-          <div class="comic-pager__nav">
-            <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
-            <span class="comic-pager__count"><span data-comic-current>1</span> / {{ b.cuts|length }}</span>
-            <button class="btn" type="button" data-comic-next{% if b.cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+          <div class="comic-pager__head">
+            <h2 class="brief__title">{{ b.title }}</h2>
+            <div class="comic-pager__nav">
+              <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
+              <span class="comic-pager__count"><span data-comic-current>1</span> / {{ b.cuts|length }}</span>
+              <button class="btn" type="button" data-comic-next{% if b.cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+            </div>
           </div>
           <div class="comic-pager__frame">
             {% for c in b.cuts %}
             <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
-              <figure class="comic__cut">
-                <div class="comic__frame">
-                  <img class="comic__img" src="{{ c.src }}" loading="lazy"
-                       alt="{{ b.title }} {{ c.no }}컷 — {{ c.caption }}">
-                  {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
-                </div>
-                <figcaption class="comic__cap">
-                  <span class="comic__no">{{ c.no }}</span>{{ c.caption }}
-                  {% if c.note %}<span class="comic__note">{{ c.note }}</span>{% endif %}
-                </figcaption>
-              </figure>
+              <div class="comic__frame">
+                <img class="comic__img" src="{{ c.src }}" loading="lazy"
+                     alt="{{ b.title }} {{ c.no }}컷 — {{ c.caption }}">
+                {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+              </div>
             </div>
             {% endfor %}
           </div>
+          {# 확대/축소는 하나의 아이콘 버튼을 토글한다 — 두 아이콘을 data 속성에
+             담아 두고 JS(comic-pager.js)가 상태에 맞게 바꿔 끼운다. #}
           <div class="comic-pager__zoom">
-            <button class="btn" type="button" data-comic-zoom>확대</button>
+            <button class="comic-pager__iconbtn" type="button" data-comic-zoom
+                    data-icon-expand="&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 3H4v5M15 3h5v5M9 21H4v-5M15 21h5v-5&quot;/&gt;&lt;/svg&gt;"
+                    data-icon-collapse="&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5&quot;/&gt;&lt;/svg&gt;"
+                    aria-label="확대" title="확대">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4v5M15 3h5v5M9 21H4v-5M15 21h5v-5"/></svg>
+            </button>
           </div>
         </div>
       </div>

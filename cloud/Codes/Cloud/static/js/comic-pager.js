@@ -47,6 +47,8 @@
    */
   function initZoom(root, btn) {
     var onResize = null;
+    var iconExpand = btn.getAttribute("data-icon-expand");
+    var iconCollapse = btn.getAttribute("data-icon-collapse");
 
     btn.addEventListener("click", function () {
       if (root.classList.contains("is-expanded")) collapse();
@@ -83,7 +85,9 @@
         if (rr) applyRect(rr);
       };
       window.addEventListener("resize", onResize);
-      btn.textContent = "축소";
+      if (iconCollapse) btn.innerHTML = iconCollapse;
+      btn.setAttribute("aria-label", "축소");
+      btn.setAttribute("title", "축소");
     }
 
     function collapse() {
@@ -91,7 +95,9 @@
       root.removeAttribute("style");
       if (onResize) window.removeEventListener("resize", onResize);
       onResize = null;
-      btn.textContent = "확대";
+      if (iconExpand) btn.innerHTML = iconExpand;
+      btn.setAttribute("aria-label", "확대");
+      btn.setAttribute("title", "확대");
     }
   }
 })();
