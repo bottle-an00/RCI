@@ -195,19 +195,49 @@
     }
   }
 
-  /* ---- 3D 모델 연동 (조명 반짝임) ------------------------------------- */
-  // 강제구동 조명 제어(0x2F, DID 0x0207)가 정상 응답하면 3D 모델 조명을 반짝인다.
-  // 현재 통합 모델(아이오닉5)은 앞뒤 조명이 단일 발광 머티리얼 M_Emission 으로 묶여
-  // 함께 켜진다. 모델 교체 시 EMISSIVE_MAT 를 새 조명 머티리얼 이름으로 맞출 것.
-  var LIGHTS_DID = "0207";           // 조명 강제구동 DID
+  /* ---- 3D 모델 연동 (강제구동 반응) --------------------------------------
+   * 강제구동(0x2F InputOutputControlByIdentifier)의 긍정 응답(0x6F)에는 제어
+   * 옵션 바이트(bytes[3])가 그대로 되돌아온다 — 이것으로 시작·종료를 가른다.
+   *   03 단기 조정 → 시작(START)   00 제어권 반환 → 종료(STOP)
+   * (01 기본값 리셋·02 현재값 고정은 실습 화면에 버튼이 없어 다루지 않는다.)
+   *
+   * DID 마다 모델에 담을 수 있는 표현이 다르다. DRIVE_EFFECTS 가 그 대응을 못박는다.
+   *   light  발광 머티리얼 점멸 — 조명(0x0207), 모델 공통 표준.
+   *   motion 모델에 구워진 애니메이션 재생 — 관절 구동. 지금은 UR_Robot.glb 의
+   *          "UR3Track" 하나뿐이라 조인트(0x0201)·그리퍼(0x0203) 가 같은 클립을 쓴다.
+   *          장기 목표는 실제 관절 각도(DID 0x0101)로 자세를 직접 만드는 것이지만,
+   *          model-viewer 는 머티리얼만 공개하고(mv.model.materials) 노드 변환은
+   *          손댈 수 없다 — 그때는 3D 뷰를 three.js 로 직접 렌더해야 한다.
+   *   pulse  모델이 표현할 수단이 없는 동작(모터·서보·부저·MP3, 현재 RC카 전용) —
+   *          패널 배지로 "구동 중"을 알린다. 이게 없으면 응답은 오는데 화면은
+   *          아무 반응이 없어 '연동이 안 된다'로 오해된다.
+   */
+  var DRIVE_EFFECTS = {
+    "rc-car": {
+      "0201": {kind: "pulse", label: "모터 구동 중"},
+      "0202": {kind: "pulse", label: "서보 구동 중"},
+      "0207": {kind: "light"},
+      "0208": {kind: "pulse", label: "부저 ON"},
+      "0209": {kind: "pulse", label: "MP3 재생 중"},
+    },
+    "ur-robot": {
+      "0201": {kind: "motion"},
+      "0203": {kind: "motion"},
+    },
+  };
+
+  // -- light: 발광 머티리얼 점멸. 현재 통합 모델(아이오닉5)은 앞뒤 조명이 단일
+  //    발광 머티리얼 M_Emission 으로 묶여 함께 켜진다. 모델 교체 시 EMISSIVE_MAT 를
+  //    새 조명 머티리얼 이름으로 맞출 것.
   var EMISSIVE_MAT = "M_Emission";   // 발광 머티리얼 이름 (모델 의존)
+  var LIGHT_STRENGTH = 100;          // 점등 시 발광 강도(HDR, 어두운 배경에서 강조).
+  var lightTimer = null;             // setInterval 핸들 (null = 점멸 중 아님)
 
   function emissiveMat() {
     var mv = document.querySelector("model-viewer");
     if (!mv || !mv.model) return null;
     return mv.model.materials.find(function (x) { return x.name === EMISSIVE_MAT; }) || null;
   }
-  var LIGHT_STRENGTH = 100;   // 점등 시 발광 강도(HDR, 어두운 배경에서 강조).
   function setEmissive(on) {
     var m = emissiveMat();
     if (!m) return;
@@ -222,22 +252,31 @@
     var mv = document.querySelector("model-viewer");
     if (mv) mv.addEventListener("load", function () { setEmissive(false); });
   })();
-  /* ---- 3D 모델 연동 (강제구동 동작 재생) --------------------------------
-   * 강제구동(0x2F)이 수락되면 모델에 구워진 애니메이션을 1회 재생한다.
-   * UR_Robot.glb 의 "UR3Track" — 채널 4개가 UR3·Shoulder·Elbow·Wrist02 의 rotation
-   * 을 겨냥하고, 노드가 UR3→Shoulder→Elbow→Wrist01→Wrist02→Wrist03→EffectorJoint
-   * 순으로 물려 있어 부모를 돌리면 아래 팔이 따라온다.
-   *
-   * 장기 목표는 실제 관절 각도(DID 0x0101, 6×int16 0.1도)로 자세를 직접 만드는 것이다.
-   * 그건 이 방식으로는 안 된다 — model-viewer 는 머티리얼만 공개하고(mv.model.materials)
-   * 노드 변환은 압축된 내부 심볼에 갇혀 있어 손댈 수 없다. 그때가 되면 3D 뷰만
-   * three.js 로 직접 렌더해 getObjectByName("Shoulder").rotation 을 쓰게 될 것이다.
-   * 지금은 '응답이 오면 움직인다' 는 왕복의 인과만 보여주는 단계다.
-   */
+  // 시작: 3회(6토글) 깜빡인 뒤 기본 상태(소등)로 스스로 멈춘다 — 조명 ON 은 상태가
+  // 아니라 '켜졌다'는 순간을 보여주는 연출이다. 종료: 재생 중이면 즉시 끊고 확실히 끈다.
+  function startLight() {
+    if (!emissiveMat()) return;
+    stopLight();
+    var on = false, n = 0;
+    lightTimer = setInterval(function () {
+      on = !on;
+      setEmissive(on);
+      if (++n >= 6) stopLight();
+    }, 180);
+  }
+  function stopLight() {
+    if (lightTimer) { clearInterval(lightTimer); lightTimer = null; }
+    setEmissive(false);
+  }
+
+  // -- motion: 구워진 애니메이션 1회 재생. UR_Robot.glb 의 "UR3Track" — 채널 4개가
+  //    UR3·Shoulder·Elbow·Wrist02 의 rotation 을 겨냥하고, 노드가 UR3→Shoulder→
+  //    Elbow→Wrist01→Wrist02→Wrist03→EffectorJoint 순으로 물려 있어 부모를 돌리면
+  //    아래 팔이 따라온다.
   var MOTION_ANIM = "UR3Track";   // 없으면 첫 번째 애니메이션으로 대체한다
   var motionBusy = false;         // 연타로 겹쳐 재생하지 않는다
 
-  function playMotion() {
+  function startMotion() {
     var mv = document.querySelector("model-viewer");
     if (!mv) return;
     if (!mv.model) {
@@ -254,24 +293,49 @@
     mv.play({repetitions: 1});
     log("note", "   ↳ 3D 모델 동작 재생 · " + name
       + (mv.duration ? " (" + mv.duration.toFixed(1) + "초)" : ""));
-    // 끝나면 첫 프레임으로 되돌린다 — 다음 구동이 늘 같은 자세에서 시작하게.
+    // 끝까지 재생됐으면 자연스럽게, 제어 반환(00)이 먼저 오면 stopMotion() 이 대신
+    // 같은 자리로 되돌린다 — 다음 구동이 늘 같은 자세에서 시작하게.
     mv.addEventListener("finished", function done() {
       mv.removeEventListener("finished", done);
-      mv.currentTime = 0;
-      mv.pause();
-      motionBusy = false;
+      resetMotion();
     });
   }
+  function resetMotion() {
+    var mv = document.querySelector("model-viewer");
+    if (mv) { mv.pause(); mv.currentTime = 0; }
+    motionBusy = false;
+  }
+  // 제어 반환이 애니메이션보다 먼저 도착할 수 있다(사용자가 다음 단계를 서둘러
+  // 누르는 경우) — 그때는 재생을 즉시 끊고 처음 자세로 되돌린다.
+  function stopMotion() { resetMotion(); }
 
-  // 3회(6토글) 깜빡인 뒤 기본 상태(소등 = 검정 하우징)로 복귀한다.
-  function blinkLights() {
-    if (!emissiveMat()) return;
-    var on = false, n = 0;
-    var timer = setInterval(function () {
-      on = !on;
-      setEmissive(on);
-      if (++n >= 6) { clearInterval(timer); setEmissive(false); }   // 점멸 후 기본 baseColor 로
-    }, 180);
+  // -- pulse: 모델이 표현할 수단이 없는 동작 — 패널 배지 문구로만 알린다.
+  var driveBadge = document.getElementById("view3d-drive-badge");
+  function startPulse(label) {
+    if (!driveBadge) return;
+    driveBadge.textContent = label || "구동 중";
+    driveBadge.hidden = false;
+  }
+  function stopPulse() {
+    if (driveBadge) driveBadge.hidden = true;
+  }
+
+  // 0x6F 긍정 응답 → 옵션 바이트로 시작·종료를 갈라 DID 에 등록된 표현을 건다.
+  function applyDriveEffect(bytes) {
+    if (bytes.length < 4 || hex2(bytes[1]) !== "02") return;   // 0x02xx = 구동 DID 대역만
+    var did = hex2(bytes[1]) + hex2(bytes[2]);
+    var eff = (DRIVE_EFFECTS[target] || {})[did];
+    if (!eff) return;
+    var opt = hex2(bytes[3]);
+    if (opt === "03") {
+      if (eff.kind === "light") startLight();
+      else if (eff.kind === "motion") startMotion();
+      else if (eff.kind === "pulse") startPulse(eff.label);
+    } else if (opt === "00") {
+      if (eff.kind === "light") stopLight();
+      else if (eff.kind === "motion") stopMotion();
+      else if (eff.kind === "pulse") stopPulse();
+    }
   }
 
   /* ---- 수신 처리 (전송 방식과 무관하게 공용) ---------------------------- */
@@ -352,15 +416,8 @@
       // 프레임 조립기(can-composer.js)가 응답을 볼 수 있게 알린다 (Seed → Key 자동 채움 등).
       document.dispatchEvent(new CustomEvent("rci:resp", {detail: {raw: m.raw, bytes: bytes}}));
       emitAnswer({ id: m.id, type: "positive", raw: m.raw, bytes: bytes, note: note });
-      // 강제구동 응답(0x6F) → 3D 모델 반응. 조명(0207)은 발광으로, 그 밖의 구동
-      // DID(모터·조인트·그리퍼 …)는 내장 애니메이션으로 표현한다.
-      if (bytes[0] === 0x6F && hex2(bytes[1]) === "02") {     // 0x02xx = 구동 DID 대역
-        if (hex2(bytes[1]) + hex2(bytes[2]) === LIGHTS_DID) {
-          if (bytes[bytes.length - 1] !== 0x00) blinkLights();   // 상태 0 = 소등
-        } else {
-          playMotion();
-        }
-      }
+      // 강제구동 응답(0x6F) → 3D 모델 반응 (DRIVE_EFFECTS 참고).
+      if (bytes[0] === 0x6F) applyDriveEffect(bytes);
     } catch (e) {
       log("err", "✗ 처리 오류: " + e.message);
     }

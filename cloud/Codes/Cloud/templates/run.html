@@ -69,12 +69,18 @@
       </div>
       <div class="view3d">
         {% if target.model %}
+        {# auto-rotate 없음 — 유휴 상태에서는 멈춰 있고, camera-controls 의 드래그 회전만
+           남긴다. #}
         <model-viewer class="view3d__model"
                       src="{{ asset('models/' ~ target.model) }}"
                       alt="{{ target.label }} 3D 모델"
-                      camera-controls auto-rotate touch-action="pan-y"
+                      camera-controls touch-action="pan-y"
                       environment-image="neutral" exposure="0.55"
                       shadow-intensity="0.6"></model-viewer>
+        {# 강제구동 중 표시 배지 — 모델에 담을 수단이 없는 동작(모터·서보·부저·MP3)을
+           알리는 유일한 통로다. 조명·관절 구동은 모델 자체가 반응하므로 쓰지 않는다
+           (rci-live.js 의 DRIVE_EFFECTS 참고). #}
+        <span class="view3d__drive-badge" id="view3d-drive-badge" hidden></span>
         {% else %}
         {{ icon("cube", "view3d__icon") }}
         <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대</span>

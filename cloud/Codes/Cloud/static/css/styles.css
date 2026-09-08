@@ -598,10 +598,22 @@ body {
 
 /* 3D 뷰 */
 /* 어두운 공간 + 은은한 중앙 광 → 발광(LED 점등)이 도드라진다. */
-.view3d { flex: 1; background: radial-gradient(circle at 50% 42%, #242c3a 0%, #151b26 60%, #0b0e14 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; text-align: center; color: #9aa6b5; }
+.view3d { position: relative; flex: 1; background: radial-gradient(circle at 50% 42%, #242c3a 0%, #151b26 60%, #0b0e14 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; text-align: center; color: #9aa6b5; }
 .view3d__model { flex: 1; width: 100%; min-height: 0; background: transparent; --poster-color: transparent; }
 .view3d__icon { width: 56px; height: 56px; color: #9aa6b5; }
 .view3d__cap { font-size: 12px; }
+/* 강제구동 중 배지 — 모델 자체가 반응하지 못하는 동작(모터·서보·부저·MP3)의
+   유일한 시각 신호다. rci-live.js 의 startPulse/stopPulse 가 텍스트와 표시를 맡는다. */
+.view3d__drive-badge {
+  position: absolute; top: 10px; left: 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: #ffcf6b;
+  background: rgba(11, 14, 20, 0.72); border: 1px solid rgba(255, 207, 107, 0.35);
+  border-radius: 999px; padding: 4px 10px 4px 8px; pointer-events: none;
+}
+.view3d__drive-badge[hidden] { display: none; }
+.view3d__drive-badge::before { content: "●"; animation: view3d-pulse 0.9s ease-in-out infinite; }
+@keyframes view3d-pulse { 50% { opacity: 0.2; } }
 .mini-btn { font-size: 11px; color: var(--muted); background: #f5f7fa; border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
 
 /* 통신 로그 */
