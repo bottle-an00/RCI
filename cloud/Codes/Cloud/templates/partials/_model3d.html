@@ -1,0 +1,27 @@
+{# 3D 모델 뷰 — 만화와 자리를 나눠 쓴다(view3d-tab.js 가 [data-view3d-pane] 을 토글).
+   배경·이론(_briefing.html)·기능 설명(_seq_brief.html) 양쪽에서 include 한다.
+   auto-rotate 없음 — 유휴 상태에서는 멈춰 있고, camera-controls 의 드래그 회전만
+   남긴다. 강제구동 응답에 따른 반응은 static/js/rci-live.js(DRIVE_EFFECTS).
+
+   컨텍스트: target #}
+{% from "partials/_macros.html" import icon %}
+<div class="view3d" data-view3d-pane="model" hidden>
+  {% if target.model %}
+  {# loading="eager" 필수 — 기본값(auto)은 화면에 보여야(교차) 불러오기 시작하는데,
+     이 파인은 만화 탭이 기본이라 처음엔 숨겨져 있다. 강제구동 응답이 먼저 와도
+     (아직 3D 탭을 눌러보지 않았어도) 모델이 이미 준비돼 있어야 반응할 수 있다. #}
+  <model-viewer class="view3d__model" loading="eager"
+                src="{{ asset('models/' ~ target.model) }}"
+                alt="{{ target.label }} 3D 모델"
+                camera-controls touch-action="pan-y"
+                environment-image="neutral" exposure="0.55"
+                shadow-intensity="0.6"></model-viewer>
+  {# 강제구동 중 표시 배지 — 모델에 담을 수단이 없는 동작(모터·서보·부저·MP3)을
+     알리는 유일한 통로다. 조명·관절 구동은 모델 자체가 반응하므로 쓰지 않는다
+     (rci-live.js 의 DRIVE_EFFECTS 참고). #}
+  <span class="view3d__drive-badge" id="view3d-drive-badge" hidden></span>
+  {% else %}
+  {{ icon("cube", "view3d__icon") }}
+  <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대</span>
+  {% endif %}
+</div>

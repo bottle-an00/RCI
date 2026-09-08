@@ -1,5 +1,4 @@
 {% extends "base_shell.html" %}
-{% from "partials/_macros.html" import icon %}
 {% from "partials/_tree.html" import tree %}
 {% block title %}RCI · {{ title }} · {{ selected.title if selected else "" }}{% endblock %}
 {# 실행 화면만 뷰포트 높이에 고정한다 — 각 패널이 '안에서' 스크롤되게 하려면
@@ -11,11 +10,13 @@
 {% include "partials/_practice_cover.html" %}
 {% else %}
 {# Step3 · 실습 실행. 화면 구성이 둘로 갈린다.
-     메시지 작성  좌 트리 / 중앙 [배경·이론 ↔ 작성기] / 우 통신 로그 + 3D
-     진단 · 강제구동  좌 트리 / 중앙 [기능 설명(그림) | 시퀀스 설명(글)] + 통신 로그
-                      / 우 시퀀스 진행 + 3D
+     메시지 작성  좌 트리 / 중앙 [배경·이론(만화 ↔ 3D 모델 뷰) ↔ 작성기] / 우 통신 로그
+     진단 · 강제구동  좌 트리 / 중앙 [기능 설명(만화 ↔ 3D 모델 뷰) | 시퀀스 설명(글)]
+                      / 우 시퀀스 진행 + 통신 로그
    진단 쪽을 이렇게 가른 이유: 배우는 사람이 먼저 봐야 하는 것은 '지금 무엇을 왜
    하는가' 이고, 단계 목록은 그 옆에서 진행 상황만 알려주면 되기 때문이다.
+   3D 모델 뷰는 만화와 한 자리를 탭으로 나눠 쓴다(_briefing.html/_seq_brief.html +
+   static/js/view3d-tab.js) — 그 자리가 빠지며 넓어진 통신 로그가 대신 그 몫을 받는다.
    live(=MQTT 연결 대상 여부)는 라우트 컨텍스트에서 주입 — 블록 간 공유를 위해. #}
 <div class="run" data-target="{{ target.id }}" data-device="{{ target.device }}"
      data-transport="{{ target.transport }}" data-ws-url="{{ ws_url or '' }}"
@@ -45,48 +46,22 @@
       {% include "partials/_composer.html" %}
     </div>
     {% elif sequence %}
-    {# 위 2분할(그림 | 글) + 아래 통신 로그. 단계 목록은 우 컬럼으로 나갔다. #}
+    {# 위 2분할(그림·3D 모델 뷰 | 글). 통신 로그는 우 컬럼으로 옮겨 스텝퍼 아래 자리를
+       넓게 쓴다 — 예전엔 3D 모델 뷰가 그 자리를 나눠 썼다. #}
     {% include "partials/_seq_brief.html" %}
-    {% include "partials/_log.html" %}
     {% endif %}
   </div>
   <span class="run__grip"></span>
 
-  {# ③ 우 컬럼 — 시퀀스 진행(또는 통신 로그) + 그 아래 3D 모델 뷰(고정 높이) #}
+  {# ③ 우 컬럼 — (시퀀스 진행 +) 통신 로그. 3D 모델 뷰가 빠지며 로그가 남는 높이를
+     전부 받는다. #}
   <div class="run__right">
     {% if sequence %}
     {# 진단·강제구동은 요청 한 줄이 아니라 '순서'다 — 세션 오픈부터 정리까지를
        한 단계씩 밟는다 (partials/_sequence.html + static/js/auto-sequence.js). #}
     {% include "partials/_sequence.html" %}
-    {% else %}
-    {% include "partials/_log.html" %}
     {% endif %}
-
-    <div class="panel panel--3d">
-      <div class="panel__head">
-        <span class="panel__title">3D 모델 뷰 · {{ target.label }}</span>
-        <button class="mini-btn">－ 최소화</button>
-      </div>
-      <div class="view3d">
-        {% if target.model %}
-        {# auto-rotate 없음 — 유휴 상태에서는 멈춰 있고, camera-controls 의 드래그 회전만
-           남긴다. #}
-        <model-viewer class="view3d__model"
-                      src="{{ asset('models/' ~ target.model) }}"
-                      alt="{{ target.label }} 3D 모델"
-                      camera-controls touch-action="pan-y"
-                      environment-image="neutral" exposure="0.55"
-                      shadow-intensity="0.6"></model-viewer>
-        {# 강제구동 중 표시 배지 — 모델에 담을 수단이 없는 동작(모터·서보·부저·MP3)을
-           알리는 유일한 통로다. 조명·관절 구동은 모델 자체가 반응하므로 쓰지 않는다
-           (rci-live.js 의 DRIVE_EFFECTS 참고). #}
-        <span class="view3d__drive-badge" id="view3d-drive-badge" hidden></span>
-        {% else %}
-        {{ icon("cube", "view3d__icon") }}
-        <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대</span>
-        {% endif %}
-      </div>
-    </div>
+    {% include "partials/_log.html" %}
   </div>
 </div>
 {% endif %}
@@ -108,6 +83,10 @@
 {% endif %}
 {% if target.model %}
 <script type="module" src="{{ asset('js/vendor/model-viewer.min.js') }}"></script>
+{% if is_composer or sequence %}
+{# 만화 ↔ 3D 모델 뷰 탭 전환 (_briefing.html/_seq_brief.html 의 [data-view3d-scope]). #}
+<script src="{{ asset('js/view3d-tab.js') }}"></script>
+{% endif %}
 {% endif %}
 {% if live %}
 {# 목업 게이트웨이는 rci-live 보다 먼저 — 목업 모드로 시작하면 즉시 필요하다. #}

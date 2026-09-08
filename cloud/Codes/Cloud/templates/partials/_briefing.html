@@ -3,40 +3,46 @@
    컷은 모두 미리 그려두고 JS(comic-pager.js)가 한 장씩만 보이게 토글한다 — 페이지
    재로딩 없이 즉시 넘어간다. 그림이 아직 없는 주제는 '준비중' 더미 한 장으로 대체된다 —
    static/img/comic/{topic}-{n}.png 를 1번부터 순서대로 넣으면 그 수만큼 자동으로 늘어난다. #}
-{% from "partials/_macros.html" import stage_switch %}
+{% from "partials/_macros.html" import stage_switch, view3d_switch %}
 <div class="panel panel--emph panel--grow brief" data-stage-panel="brief">
 
   <div class="panel__head panel__head--brand panel__head--stage">
     <span class="panel__title">배경 · 이론</span>
     <span class="panel__meta panel__meta--light">{{ scenario.title }} · {{ step.title }} ({{ step_no }}/{{ step_total }})</span>
+    {% if target.model %}{{ view3d_switch() }}{% endif %}
     {{ stage_switch("brief") }}
   </div>
 
-  <div class="panel__body brief__body">
-    {% if briefing %}
-    <div class="comic-pager" data-comic-pager>
-      <div class="comic-pager__frame">
-        {% for c in briefing.cuts %}
-        <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
-          <div class="comic__frame">
-            <img class="comic__img" src="{{ c.src }}" alt="배경 · 이론 {{ c.no }}컷" loading="lazy">
-            {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+  {# data-view3d-scope 안에서 만화(data-view3d-pane="comic")와 3D 모델 뷰(_model3d.html,
+     data-view3d-pane="model")를 static/js/view3d-tab.js 가 갈아 낀다. #}
+  <div class="panel__body brief__body" data-view3d-scope>
+    <div class="view3d-pane" data-view3d-pane="comic">
+      {% if briefing %}
+      <div class="comic-pager" data-comic-pager>
+        <div class="comic-pager__frame">
+          {% for c in briefing.cuts %}
+          <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
+            <div class="comic__frame">
+              <img class="comic__img" src="{{ c.src }}" alt="배경 · 이론 {{ c.no }}컷" loading="lazy">
+              {% if c.pending %}<span class="comic__pending">준비 중</span>{% endif %}
+            </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
+        <div class="comic-pager__nav">
+          <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
+          <span class="comic-pager__count"><span data-comic-current>1</span> / {{ briefing.cuts|length }}</span>
+          <button class="btn" type="button" data-comic-next{% if briefing.cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
+        </div>
       </div>
-      <div class="comic-pager__nav">
-        <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
-        <span class="comic-pager__count"><span data-comic-current>1</span> / {{ briefing.cuts|length }}</span>
-        <button class="btn" type="button" data-comic-next{% if briefing.cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
-      </div>
-    </div>
 
-    <div class="brief__go">
-      <button class="btn btn--primary" type="button" data-stage-view="compose">메시지 작성으로 →</button>
+      <div class="brief__go">
+        <button class="btn btn--primary" type="button" data-stage-view="compose">메시지 작성으로 →</button>
+      </div>
+      {% else %}
+      <div class="run-hint">이 단계의 배경 설명은 준비 중입니다.</div>
+      {% endif %}
     </div>
-    {% else %}
-    <div class="run-hint">이 단계의 배경 설명은 준비 중입니다.</div>
-    {% endif %}
+    {% include "partials/_model3d.html" %}
   </div>
 </div>

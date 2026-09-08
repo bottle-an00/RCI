@@ -17,3 +17,13 @@
           type="button" data-stage-view="compose">메시지 작성</button>
 </span>
 {%- endmacro %}
+
+{# 만화 ↔ 3D 모델 뷰 전환 버튼. 실제 전환은 static/js/view3d-tab.js 가 가장 가까운
+   [data-view3d-scope] 안에서 처리한다 — stage_switch 와 같은 자리(패널 머리)에
+   두 번째 탭 묶음으로 놓인다. 기본은 만화. #}
+{% macro view3d_switch() -%}
+<span class="stagesw" data-view3d-switch>
+  <button class="stagesw__btn is-on" type="button" data-view3d-view="comic">만화</button>
+  <button class="stagesw__btn" type="button" data-view3d-view="model">3D 모델 뷰</button>
+</span>
+{%- endmacro %}

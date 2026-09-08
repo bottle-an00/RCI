@@ -51,9 +51,9 @@
     if (zoomBtn) initZoom(root, zoomBtn);
   }
 
-  /* 확대 — 페이저를 통째로 화면에 고정해, 기능 설명·시퀀스 기능 설명·통신 로그가
-   * 차지하던 영역(.seqbrief + .run__log) 크기·자리에 맞춘다. 창 크기가 바뀌면
-   * 그 영역도 바뀌므로 resize 때마다 다시 잰다.
+  /* 확대 — 페이저를 통째로 화면에 고정해, 기능 설명·시퀀스 기능 설명이 차지하던
+   * 영역(.seqbrief) 크기·자리에 맞춘다. 창 크기가 바뀌면 그 영역도 바뀌므로
+   * resize 때마다 다시 잰다.
    */
   function initZoom(root, btn) {
     var onResize = null;
@@ -66,16 +66,10 @@
     });
 
     function targetRect() {
-      var zone = root.closest(".run__center--seq");
-      var brief = zone && zone.querySelector(".seqbrief");
-      var log = zone && zone.querySelector(".run__log");
+      var brief = root.closest(".seqbrief");
       if (!brief) return null;
-      var top = brief.getBoundingClientRect();
-      var bottom = log ? log.getBoundingClientRect() : top;
-      return {
-        top: top.top, left: top.left, width: top.width,
-        height: bottom.bottom - top.top
-      };
+      var r = brief.getBoundingClientRect();
+      return { top: r.top, left: r.left, width: r.width, height: r.height };
     }
 
     function applyRect(r) {

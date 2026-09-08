@@ -526,7 +526,7 @@ body {
 .btn[hidden] { display: none; }
 
 /* =========================================================================
-   실습 실행 — 3분할 (좌 트리 / 중앙 실습·3D / 우 통신로그·작성기)
+   실습 실행 — 3분할 (좌 트리 / 중앙 실습·만화·3D / 우 시퀀스 진행·통신로그)
    ========================================================================= */
 .run {
   flex: 1;
@@ -542,9 +542,10 @@ body {
   overflow-y: auto;
 }
 .run__center { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-/* 우 컬럼 = 통신 로그(남는 높이 전부) + 3D 모델 뷰(고정 높이). */
+/* 우 컬럼 = (시퀀스 진행 +) 통신 로그, 남는 높이는 전부 로그가 받는다. 3D 모델 뷰는
+   더 이상 여기 없다 — 만화와 한 자리를 탭으로 나눠 쓴다(view3d-tab.js). */
 .run__right { width: 340px; flex: none; display: flex; flex-direction: column; gap: 16px; }
-.run__log { flex: 1; min-height: 0; }   /* min-height:0 이 없으면 로그가 넘쳐 3D 를 밀어낸다 */
+.run__log { flex: 1; min-height: 0; }   /* min-height:0 이 없으면 로그가 넘쳐 옆 패널을 밀어낸다 */
 
 /* 실행 화면 전용 — 뷰포트에 고정하고, 스크롤은 각 패널 내부에서 처리한다.
    flex 자식은 기본 min-height 가 auto(=내용 크기)라서, 사슬 전체에 min-height:0
@@ -576,7 +577,6 @@ body {
 
 .panel { background: #fff; border: 1px solid var(--border); display: flex; flex-direction: column; }
 .panel--grow { flex: 1; }
-.panel--3d { height: 230px; flex: none; }
 .panel__head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 12px 16px; border-bottom: 1px solid var(--border);
@@ -735,20 +735,19 @@ button.stepper__row:hover { background: #eef2f7; }
 .btn--stop { background: var(--pdf-tag); border-color: var(--pdf-tag); }
 .btn[disabled] { opacity: .55; cursor: default; }
 
-/* 진단·강제구동·ECU 화면의 가운데 — 위 2분할(그림 | 글) + 아래 통신 로그.
-   배우는 사람이 먼저 봐야 하는 것은 '지금 무엇을 왜 하는가' 라서 설명이 가운데를
-   차지하고, 단계 목록은 우 컬럼에서 진행만 알린다. */
+/* 진단·강제구동·ECU 화면의 가운데 — 2분할(그림·3D 모델 뷰 | 글) 하나뿐이다.
+   배우는 사람이 먼저 봐야 하는 것은 '지금 무엇을 왜 하는가' 라서 설명이 가운데
+   전체를 차지하고, 단계 목록·통신 로그는 우 컬럼에서 진행만 알린다. */
 .run__center--seq { gap: 12px; }
-.app--fixed .run__center--seq .seqbrief,
-.app--fixed .run__center--seq .run__log { min-height: 0; }
+.app--fixed .run__center--seq .seqbrief { min-height: 0; }
 .seqbrief { flex: 1; min-height: 0; display: flex; gap: 12px; }
 .seqbrief__col { flex: 1; min-width: 0; }
 .seqbrief__body { padding: 12px 16px; gap: 12px; overflow-y: auto; min-height: 0; }
 .seqbrief__pane { display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; }
 .seqbrief__lede { margin: 0; font-size: 13px; line-height: 1.75; color: #3d4a57; }
-/* 로그는 아래에서 고정 높이를 차지한다 — 설명이 화면 대부분을 갖게 하되,
-   왕복이 몇 줄은 보여야 '방금 무엇이 오갔는지' 를 확인할 수 있다. */
-.run__center--seq .run__log { flex: none; height: 210px; }
+/* 만화 파인 래퍼 — 실제 레이아웃에 끼어들지 않는다. 그 안의 각 주제 패널이 이전처럼
+   panel__body 의 바로 아래 자식인 것처럼 flex:1 을 그대로 받는다(view3d-tab.js). */
+.view3d-pane { display: contents; }
 
 /* =========================================================================
    퀴즈 (Figma 103:2) — 좌 주제 목록 / 우 문항. 이론 교육·실습 준비와 같은 .md 규약
@@ -1100,8 +1099,13 @@ body.is-modal { overflow: hidden; }
 /* .panel 은 display:flex 라 [hidden] 만으로는 감춰지지 않는다. */
 .panel[hidden] { display: none; }
 
-/* 화면 전환 버튼 — 단계 이름(패널 머리 오른쪽) 바로 옆. */
-.panel__head--stage .panel__meta { margin-left: auto; }
+/* 화면 전환 버튼 — 단계 이름(패널 머리 오른쪽) 바로 옆. 단계 이름은 길 수 있으니
+   (예: "① 진단 세션 오픈 (10 03) (1/8)") 버튼 자리를 위해 줄바꿈 대신 말줄임한다 —
+   특히 기능 설명 패널(_seq_brief.html)은 화면 절반 폭이라 더 좁다. */
+.panel__head--stage .panel__title { flex: none; white-space: nowrap; margin-right: 8px; }
+.panel__head--stage .panel__meta {
+  margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .stagesw { display: inline-flex; margin-left: 12px; flex: none; }
 .stagesw__btn {
   font: inherit; font-size: 11px; font-weight: 600; padding: 4px 10px; cursor: pointer;
