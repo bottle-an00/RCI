@@ -242,8 +242,14 @@
       "0209": {kind: "pulse", label: "MP3 재생 중"},
     },
     "ur-robot": {
-      "0201": {kind: "motion"},
-      "0203": {kind: "motion"},
+      "0201": {kind: "motion", label: "전체 구동 중"},   // UR3Track — 4개 관절이 함께 움직이는 기본 클립
+      "0203": {kind: "motion", label: "그리퍼 구동 중"}, // 그리퍼 전용 클립이 없어 같은 UR3Track 을 재사용
+      // 아래 4개는 UR3Track 의 채널을 관절별로 쪼갠 것 — 새 좌표를 만들지 않고
+      // 기존에 검증된 키프레임을 그대로 재사용했다(rci-live.js 주석·모델 참고).
+      "0204": {kind: "motion", anim: "JointBase", label: "베이스 회전 중"},
+      "0205": {kind: "motion", anim: "JointShoulder", label: "숄더 구동 중"},
+      "0206": {kind: "motion", anim: "JointElbow", label: "엘보우 구동 중"},
+      "0207": {kind: "motion", anim: "JointWrist2", label: "손목2 구동 중"},
     },
   };
 
@@ -290,14 +296,16 @@
     setEmissive(false);
   }
 
-  // -- motion: 구워진 애니메이션 1회 재생. UR_Robot.glb 의 "UR3Track" — 채널 4개가
-  //    UR3·Shoulder·Elbow·Wrist02 의 rotation 을 겨냥하고, 노드가 UR3→Shoulder→
-  //    Elbow→Wrist01→Wrist02→Wrist03→EffectorJoint 순으로 물려 있어 부모를 돌리면
-  //    아래 팔이 따라온다.
-  var MOTION_ANIM = "UR3Track";   // 없으면 첫 번째 애니메이션으로 대체한다
-  var motionBusy = false;         // 연타로 겹쳐 재생하지 않는다
+  // -- motion: 구워진 애니메이션 1회 재생. UR_Robot.glb 의 "UR3Track"(전체 구동) —
+  //    채널 4개가 UR3·Shoulder·Elbow·Wrist02 의 rotation 을 겨냥하고, 노드가
+  //    UR3→Shoulder→Elbow→Wrist01→Wrist02→Wrist03→EffectorJoint 순으로 물려 있어
+  //    부모를 돌리면 아래 팔이 따라온다. 이 4채널을 관절별로도 쪼개 두었다
+  //    (JointBase·JointShoulder·JointElbow·JointWrist2) — 같은 키프레임 데이터를
+  //    그대로 재사용한 것이라 새 좌표를 만들지는 않았다.
+  var DEFAULT_MOTION_ANIM = "UR3Track";   // 없으면 첫 번째 애니메이션으로 대체한다
+  var motionBusy = false;                 // 연타로 겹쳐 재생하지 않는다
 
-  function startMotion() {
+  function startMotion(animName, label) {
     var mv = document.querySelector("model-viewer");
     if (!mv) return;
     if (!mv.model) {
@@ -307,13 +315,18 @@
     }
     var list = mv.availableAnimations || [];
     if (!list.length || motionBusy) return;     // 애니메이션 없는 모델(현재 RC카)
-    var name = list.indexOf(MOTION_ANIM) !== -1 ? MOTION_ANIM : list[0];
+    var wanted = animName || DEFAULT_MOTION_ANIM;
+    var name = list.indexOf(wanted) !== -1 ? wanted : list[0];
     motionBusy = true;
     mv.animationName = name;
     mv.currentTime = 0;
     mv.play({repetitions: 1});
     log("note", "   ↳ 3D 모델 동작 재생 · " + name
       + (mv.duration ? " (" + mv.duration.toFixed(1) + "초)" : ""));
+    if (driveBadge && label) {
+      driveBadge.textContent = label;
+      driveBadge.hidden = false;
+    }
     // 끝까지 재생됐으면 자연스럽게, 제어 반환(00)이 먼저 오면 stopMotion() 이 대신
     // 같은 자리로 되돌린다 — 다음 구동이 늘 같은 자세에서 시작하게.
     mv.addEventListener("finished", function done() {
@@ -325,6 +338,7 @@
     var mv = document.querySelector("model-viewer");
     if (mv) { mv.pause(); mv.currentTime = 0; }
     motionBusy = false;
+    if (driveBadge) driveBadge.hidden = true;
   }
   // 제어 반환이 애니메이션보다 먼저 도착할 수 있다(사용자가 다음 단계를 서둘러
   // 누르는 경우) — 그때는 재생을 즉시 끊고 처음 자세로 되돌린다.
@@ -384,7 +398,7 @@
     var opt = hex2(bytes[3]);
     if (opt === "03") {
       if (eff.kind === "light") startLight();
-      else if (eff.kind === "motion") startMotion();
+      else if (eff.kind === "motion") startMotion(eff.anim, eff.label);
       else if (eff.kind === "pulse") startPulse(eff.label, eff.sound);
       else if (eff.kind === "loop") startLoop(eff.anim, eff.label);
       // 지금 만화를 보고 있었다면 3D 모델 뷰로 넘겨 반응을 직접 보게 한다

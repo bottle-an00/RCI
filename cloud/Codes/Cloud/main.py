@@ -452,7 +452,8 @@ _READ_DIDS = {
 _CTRL_DIDS = {
     "rc-car": [("0201", "모터"), ("0202", "서보"), ("0203", "와이퍼"), ("0207", "조명"),
                ("0208", "부저"), ("0209", "MP3 사운드")],
-    "ur-robot": [("0201", "조인트 구동"), ("0203", "그리퍼")],
+    "ur-robot": [("0201", "조인트 구동"), ("0203", "그리퍼"), ("0204", "베이스 회전"),
+                 ("0205", "숄더"), ("0206", "엘보우"), ("0207", "손목2")],
 }
 # 0x2E 쓰기 DID. F195 는 mock 이 NRC 0x31 로 거부한다 — 거부 사례 시연용으로 남겨둔다.
 _WRITE_DIDS = {
@@ -684,6 +685,10 @@ _FORCE_DID = {
     "rc-buzzer": ("02 08", "01", "부저 ON"),
     "rc-mp3": ("02 09", "01", "MP3 재생"),
     "ur-joint-drive": ("02 01", "3C", "조인트 구동"),
+    "ur-joint-base": ("02 04", "3C", "베이스 회전"),
+    "ur-joint-shoulder": ("02 05", "3C", "숄더 구동"),
+    "ur-joint-elbow": ("02 06", "3C", "엘보우 구동"),
+    "ur-joint-wrist2": ("02 07", "3C", "손목2 구동"),
 }
 # ECU 업그레이드 — 전송할 더미 블록. 실제 펌웨어가 아니라 카운터 흐름을 보이는 용도다.
 _ECU_BLOCKS = ["36 01 A5 5A 00 01", "36 02 A5 5A 00 02", "36 03 A5 5A 00 03"]
@@ -1463,7 +1468,11 @@ def content_tree(content_id, target):
                  {"id": "rc-buzzer", "title": "부저"},
                  {"id": "rc-mp3", "title": "MP3 가상 사운드"}]
                 if t == "rc-car" else
-                [{"id": "ur-joint-drive", "title": "조인트 자세·위치·각도·속도"}])
+                [{"id": "ur-joint-drive", "title": "조인트 자세·위치·각도·속도"},
+                 {"id": "ur-joint-base", "title": "베이스 회전"},
+                 {"id": "ur-joint-shoulder", "title": "숄더"},
+                 {"id": "ur-joint-elbow", "title": "엘보우"},
+                 {"id": "ur-joint-wrist2", "title": "손목2"}])
     if content_id == "message":
         # UDS 서비스 분류가 아니라 주제별 실습 코스 = 실제 진단 순서 (MSG 블록 참조).
         return [{"id": sc["id"], "title": sc["title"],
