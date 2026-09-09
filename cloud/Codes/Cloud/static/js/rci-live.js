@@ -214,20 +214,27 @@
    *
    * DID 마다 모델에 담을 수 있는 표현이 다르다. DRIVE_EFFECTS 가 그 대응을 못박는다.
    *   light  발광 머티리얼 점멸 — 조명(0x0207), 모델 공통 표준.
-   *   motion 모델에 구워진 애니메이션 재생 — 관절 구동. 지금은 UR_Robot.glb 의
-   *          "UR3Track" 하나뿐이라 조인트(0x0201)·그리퍼(0x0203) 가 같은 클립을 쓴다.
-   *          장기 목표는 실제 관절 각도(DID 0x0101)로 자세를 직접 만드는 것이지만,
-   *          model-viewer 는 머티리얼만 공개하고(mv.model.materials) 노드 변환은
-   *          손댈 수 없다 — 그때는 3D 뷰를 three.js 로 직접 렌더해야 한다.
-   *   pulse  모델이 표현할 수단이 없는 동작(모터·서보·부저·MP3, 현재 RC카 전용) —
-   *          패널 배지로 "구동 중"을 알린다. 이게 없으면 응답은 오는데 화면은
-   *          아무 반응이 없어 '연동이 안 된다'로 오해된다. sound 를 함께 적으면
-   *          그 오디오도 같이 재생·정지한다(지금은 부저 → 경적음 하나뿐).
+   *   motion 모델에 구워진 애니메이션을 한 번만 재생 — 관절 구동(한 동작을 보여주고
+   *          끝). 지금은 UR_Robot.glb 의 "UR3Track" 하나뿐이라 조인트(0x0201)·
+   *          그리퍼(0x0203) 가 같은 클립을 쓴다. 장기 목표는 실제 관절 각도
+   *          (DID 0x0101)로 자세를 직접 만드는 것이지만, model-viewer 는 머티리얼만
+   *          공개하고(mv.model.materials) 노드 변환은 손댈 수 없다 — 그때는 3D 뷰를
+   *          three.js 로 직접 렌더해야 한다.
+   *   loop   구워진 애니메이션을 제어 반환(00) 전까지 반복 재생 — "켜져 있는 동안
+   *          계속되는" 동작(바퀴 회전·와이퍼 왕복). anim 에 재생할 클립 이름을 적는다.
+   *          model-viewer 의 animationName 은 슬롯이 하나뿐이라, loop 이 두 개
+   *          동시에 걸리면 나중 것이 앞 것을 밀어낸다 — 지금 실습 흐름에선 한 번에
+   *          하나만 구동하므로 다루지 않는다.
+   *   pulse  모델이 표현할 수단이 없는 동작(서보·MP3, 현재 RC카 전용) — 패널
+   *          배지로 "구동 중"을 알린다. 이게 없으면 응답은 오는데 화면은 아무
+   *          반응이 없어 '연동이 안 된다'로 오해된다. sound 를 함께 적으면 그
+   *          오디오도 같이 재생·정지한다(지금은 부저 → 경적음 하나뿐).
    */
   var DRIVE_EFFECTS = {
     "rc-car": {
-      "0201": {kind: "pulse", label: "모터 구동 중"},
+      "0201": {kind: "loop", anim: "WheelSpin", label: "모터 구동 중"},
       "0202": {kind: "pulse", label: "서보 구동 중"},
+      "0203": {kind: "loop", anim: "WiperSweep", label: "와이퍼 작동 중"},
       "0207": {kind: "light"},
       "0208": {kind: "pulse", label: "부저 ON", sound: "horn"},
       "0209": {kind: "pulse", label: "MP3 재생 중"},
@@ -341,6 +348,31 @@
     if (audio) { audio.pause(); audio.currentTime = 0; }
   }
 
+  // -- loop: "켜져 있는 동안 계속" 반복되는 애니메이션 — 바퀴 회전(WheelSpin,
+  //    RC카 hyundai_ioniq_5_lowpoly.glb 에 직접 구운 클립)·와이퍼 왕복(WiperSweep).
+  //    motion 과 달리 repetitions:Infinity 로 틀고, 제어 반환(00)이 와야 멈춘다.
+  function startLoop(animName, label) {
+    var mv = document.querySelector("model-viewer");
+    if (!mv) return;
+    if (!mv.model) {
+      dbg("muted", "3D 모델 로딩 전이라 동작을 재생하지 않았습니다");
+      return;
+    }
+    var list = mv.availableAnimations || [];
+    if (list.indexOf(animName) === -1) return;   // 이 클립이 없는 모델
+    mv.animationName = animName;
+    mv.play({repetitions: Infinity});
+    if (driveBadge) {
+      driveBadge.textContent = label || "구동 중";
+      driveBadge.hidden = false;
+    }
+  }
+  function stopLoop() {
+    var mv = document.querySelector("model-viewer");
+    if (mv) mv.pause();
+    if (driveBadge) driveBadge.hidden = true;
+  }
+
   // 0x6F 긍정 응답 → 옵션 바이트로 시작·종료를 갈라 DID 에 등록된 표현을 건다.
   function applyDriveEffect(bytes) {
     if (bytes.length < 4 || hex2(bytes[1]) !== "02") return;   // 0x02xx = 구동 DID 대역만
@@ -352,12 +384,14 @@
       if (eff.kind === "light") startLight();
       else if (eff.kind === "motion") startMotion();
       else if (eff.kind === "pulse") startPulse(eff.label, eff.sound);
+      else if (eff.kind === "loop") startLoop(eff.anim, eff.label);
       // 지금 만화를 보고 있었다면 3D 모델 뷰로 넘겨 반응을 직접 보게 한다
       // (view3d-tab.js 가 듣는다). 이미 3D 를 보고 있으면 조용히 무시된다.
       document.dispatchEvent(new CustomEvent("view3d:show-model"));
     } else if (opt === "00") {
       if (eff.kind === "light") stopLight();
       else if (eff.kind === "motion") stopMotion();
+      else if (eff.kind === "loop") stopLoop();
       else if (eff.kind === "pulse") stopPulse(eff.sound);
     }
   }

@@ -450,8 +450,8 @@ _READ_DIDS = {
 }
 # 0x2F 강제구동 DID (0x02xx 대역 — 계약 §DID 대역).
 _CTRL_DIDS = {
-    "rc-car": [("0201", "모터"), ("0202", "서보"), ("0207", "조명"), ("0208", "부저"),
-               ("0209", "MP3 사운드")],
+    "rc-car": [("0201", "모터"), ("0202", "서보"), ("0203", "와이퍼"), ("0207", "조명"),
+               ("0208", "부저"), ("0209", "MP3 사운드")],
     "ur-robot": [("0201", "조인트 구동"), ("0203", "그리퍼")],
 }
 # 0x2E 쓰기 DID. F195 는 mock 이 NRC 0x31 로 거부한다 — 거부 사례 시연용으로 남겨둔다.
@@ -679,6 +679,7 @@ _DIAG_DID = {
 _FORCE_DID = {
     "rc-motor": ("02 01", "3C", "모터 60%"),
     "rc-servo": ("02 02", "5A", "서보 90도"),
+    "rc-wiper": ("02 03", "01", "와이퍼 ON"),
     "rc-led": ("02 07", "01", "전조등 ON"),
     "rc-buzzer": ("02 08", "01", "부저 ON"),
     "rc-mp3": ("02 09", "01", "MP3 재생"),
@@ -1457,6 +1458,7 @@ def content_tree(content_id, target):
     if content_id == "force":
         return ([{"id": "rc-motor", "title": "모터"},
                  {"id": "rc-servo", "title": "서보"},
+                 {"id": "rc-wiper", "title": "와이퍼"},
                  {"id": "rc-led", "title": "LED"},
                  {"id": "rc-buzzer", "title": "부저"},
                  {"id": "rc-mp3", "title": "MP3 가상 사운드"}]
