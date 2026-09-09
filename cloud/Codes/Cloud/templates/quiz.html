@@ -32,7 +32,9 @@
       <div class="detail__meta">{{ selected.subtitle }} · 총 {{ questions | length }}문항</div>
     </div>
 
-    {# 진행 화면 — 문항 내용은 JS가 채운다 #}
+    {# 진행 화면 — 문항 내용은 JS가 채운다. 해설 보기도 이 화면을 그대로 재활용한다
+       (quiz.js explainMode) — 문항·보기 레이아웃은 같고, 보기가 눌리지 않게 잠그고
+       정답·오답 색으로 표시한 뒤 해설 문단만 추가로 보여준다. #}
     <div class="detail__body quiz-play" data-quiz-play>
       <div class="quiz-meta">
         <span data-quiz-index></span>
@@ -42,6 +44,7 @@
       <div class="quiz-q" data-quiz-text></div>
       <pre class="quiz-code" data-quiz-code hidden></pre>
       <div class="quiz-opts" data-quiz-opts></div>
+      <div class="quiz-explain" data-quiz-explain hidden></div>
     </div>
 
     {# 결과 화면 — 제출 시 표시 #}
@@ -49,6 +52,7 @@
       <div class="quiz-score" data-quiz-score></div>
       <div class="quiz-score__sub" data-quiz-sub></div>
       <div class="quiz-marks" data-quiz-marks></div>
+      <button class="btn btn--ghost quiz-explain-btn" type="button" data-quiz-explain-btn>해설 보기</button>
     </div>
 
     <div class="detail__actions detail__actions--quiz">

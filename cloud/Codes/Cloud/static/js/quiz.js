@@ -117,9 +117,11 @@
     text: root.querySelector("[data-quiz-text]"),
     code: root.querySelector("[data-quiz-code]"),
     opts: root.querySelector("[data-quiz-opts]"),
+    explain: root.querySelector("[data-quiz-explain]"),
     score: root.querySelector("[data-quiz-score]"),
     sub: root.querySelector("[data-quiz-sub]"),
     marks: root.querySelector("[data-quiz-marks]"),
+    explainBtn: root.querySelector("[data-quiz-explain-btn]"),
     prev: root.querySelector("[data-quiz-prev]"),
     next: root.querySelector("[data-quiz-next]")
   };
@@ -128,6 +130,9 @@
   var orders = questions.map(shuffledOrder);
   var at = 0;
   var done = false;
+  // 해설 보기 — 결과 화면의 "해설 보기" 버튼으로 켠다. 진행 화면(el.play)을 그대로
+  // 재활용해 문항·보기를 다시 보여주되, 보기는 잠그고 정답·오답을 색으로 표시한다.
+  var explainMode = false;
 
   /* 문항의 보기 표시 순서를 Fisher-Yates 로 섞어 반환.
    * 반환값[표시위치] = 원본 보기 인덱스. 응시 1회 동안은 고정이라
@@ -163,12 +168,14 @@
     return { score: score, correctCount: correctCount, total: total, marks: marks };
   }
 
-  /* 진행 화면 그리기 */
+  /* 진행 화면 그리기 — 해설 보기(explainMode)도 이 화면을 그대로 쓴다. 문항·보기
+   * 레이아웃은 같고, 보기 버튼을 잠근 뒤 정답(초록)·내가 고른 오답(빨강)만 다르게
+   * 칠하고 해설 문단을 덧붙인다. */
   function renderQuestion() {
     var q = questions[at];
     var ratio = Math.round(((at + 1) / questions.length) * 100);
 
-    el.index.textContent = "문항 " + (at + 1) + " / " + questions.length;
+    el.index.textContent = (explainMode ? "해설 " : "문항 ") + (at + 1) + " / " + questions.length;
     el.percent.textContent = "진행률 " + ratio + "%";
     el.bar.style.width = ratio + "%";
     el.text.textContent = q.text;
@@ -184,19 +191,39 @@
     orders[at].forEach(function (origin) {
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "quiz-opt" + (picks[at] === origin ? " is-on" : "");
+      var cls = "quiz-opt";
+      if (explainMode) {
+        btn.disabled = true;
+        if (origin === q.answer) cls += " is-correct";
+        else if (picks[at] === origin) cls += " is-wrong";
+      } else if (picks[at] === origin) {
+        cls += " is-on";
+      }
+      btn.className = cls;
       btn.innerHTML = '<span class="quiz-mark"></span>';
       btn.appendChild(document.createTextNode(q.choices[origin]));
-      btn.addEventListener("click", function () {
-        picks[at] = origin;
-        renderQuestion();
-      });
+      if (!explainMode) {
+        btn.addEventListener("click", function () {
+          picks[at] = origin;
+          renderQuestion();
+        });
+      }
       el.opts.appendChild(btn);
     });
 
+    if (el.explain) {
+      el.explain.hidden = !explainMode;
+      if (explainMode) el.explain.textContent = q.explain || "이 문항에는 별도 해설이 없습니다.";
+    }
+
     el.prev.disabled = at === 0;
-    el.prev.textContent = "← 이전";
-    el.next.textContent = at === questions.length - 1 ? "제출하기" : "다음 →";
+    if (explainMode) {
+      el.prev.textContent = "← 이전 해설";
+      el.next.textContent = at === questions.length - 1 ? "결과로 돌아가기" : "다음 해설 →";
+    } else {
+      el.prev.textContent = "← 이전";
+      el.next.textContent = at === questions.length - 1 ? "제출하기" : "다음 →";
+    }
   }
 
   /* 결과 화면 그리기 */
@@ -223,12 +250,13 @@
     el.next.textContent = "확인 · 퀴즈 처음으로";
   }
 
-  /* 진행/결과 화면 전환 */
+  /* 진행/결과 화면 전환 — 해설 보기는 done 이어도 진행 화면(el.play)을 보여준다. */
   function render() {
-    el.play.hidden = done;
-    el.result.hidden = !done;
-    if (done) renderResult();
-    else renderQuestion();
+    var showPlay = !done || explainMode;
+    el.play.hidden = !showPlay;
+    el.result.hidden = showPlay;
+    if (showPlay) renderQuestion();
+    else renderResult();
   }
 
   /* 처음부터 다시 (같은 주제) — 보기 순서도 새로 섞는다 */
@@ -237,6 +265,7 @@
     orders = questions.map(shuffledOrder);
     at = 0;
     done = false;
+    explainMode = false;
     posted = false;                       // 재응시는 새 기록 — 다시 저장한다
     var note = el.result && el.result.querySelector("[data-quiz-save]");
     if (note) note.remove();
@@ -246,11 +275,17 @@
   }
 
   el.prev.addEventListener("click", function () {
+    if (explainMode) { if (at > 0) { at -= 1; render(); } return; }
     if (done) { restart(); return; }          // 결과 화면에서는 '다시 풀기'
     if (at > 0) { at -= 1; render(); }
   });
 
   el.next.addEventListener("click", function () {
+    if (explainMode) {
+      if (at < questions.length - 1) { at += 1; render(); }
+      else { explainMode = false; render(); }   // 마지막 해설 → 결과 화면으로
+      return;
+    }
     if (done) {                               // 결과 화면에서는 '확인' → 첫 주제로
       window.location.href = homeUrl;
       return;
@@ -258,6 +293,14 @@
     if (at < questions.length - 1) { at += 1; render(); }
     else { done = true; render(); }           // 마지막 문항 → 제출
   });
+
+  if (el.explainBtn) {
+    el.explainBtn.addEventListener("click", function () {
+      explainMode = true;
+      at = 0;
+      render();
+    });
+  }
 
   render();
 })();

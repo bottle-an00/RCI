@@ -542,10 +542,17 @@ body {
   overflow-y: auto;
 }
 .run__center { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-/* 우 컬럼 = (시퀀스 진행 +) 통신 로그, 남는 높이는 전부 로그가 받는다. 3D 모델 뷰는
-   더 이상 여기 없다 — 만화와 한 자리를 탭으로 나눠 쓴다(view3d-tab.js). */
+/* 우 컬럼 — 메시지 작성 화면에서는 통신 로그 하나뿐이다(예전엔 3D 모델 뷰와 같이
+   썼는데, 3D 가 만화 탭으로 옮겨가며 이 컬럼을 로그가 그대로 물려받는다). 진단·
+   강제구동 화면에서는 시퀀스 진행만 담고, 로그는 .run__body 아래로 내려간다. */
 .run__right { width: 340px; flex: none; display: flex; flex-direction: column; gap: 16px; }
 .run__log { flex: 1; min-height: 0; }   /* min-height:0 이 없으면 로그가 넘쳐 옆 패널을 밀어낸다 */
+
+/* 진단·강제구동 전용 — 위(가운데 기능 설명 | 우측 시퀀스 진행) + 아래 통신 로그를
+   가운데+우측 전체 폭으로 깐다. 로그가 3D 모델 뷰가 있던 자리(우측)까지 이어지되,
+   그 컬럼으로 옮겨가는 게 아니라 폭 전체를 가로지르는 별도의 아래 칸으로 둔다. */
+.run__body { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 16px; }
+.run__split { flex: 2; min-height: 0; display: flex; gap: 8px; }
 
 /* 실행 화면 전용 — 뷰포트에 고정하고, 스크롤은 각 패널 내부에서 처리한다.
    flex 자식은 기본 min-height 가 auto(=내용 크기)라서, 사슬 전체에 min-height:0
@@ -796,12 +803,26 @@ button.stepper__row:hover { background: #eef2f7; }
 .quiz-opt.is-on { border: 1.5px solid var(--brand-blue); background: var(--select-bg); color: var(--brand-blue); font-weight: 600; }
 .quiz-mark { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #c4cbd4; flex: none; }
 .quiz-opt.is-on .quiz-mark { border-color: var(--brand-blue); background: var(--brand-blue); }
+/* 해설 보기 — 정답·내가 고른 오답을 색으로 구분한다(결과 화면 O/X 칩과 같은 배색).
+   버튼은 그대로 두되(레이아웃 재사용) 눌리지 않게 disabled 로 잠근다. */
+.quiz-opt:disabled { cursor: default; }
+.quiz-opt.is-correct { border: 1.5px solid var(--status-green); background: #e8f5ed; color: #2c6b45; font-weight: 600; }
+.quiz-opt.is-correct .quiz-mark { border-color: var(--status-green); background: var(--status-green); }
+.quiz-opt.is-wrong { border: 1.5px solid var(--pdf-tag); background: #fae5e3; color: #8c2f27; font-weight: 600; }
+.quiz-opt.is-wrong .quiz-mark { border-color: var(--pdf-tag); background: var(--pdf-tag); }
+.quiz-explain {
+  margin-top: 4px; padding: 12px 14px; border-radius: 6px;
+  background: #f5f7fa; border: 1px solid var(--border);
+  font-size: 13px; line-height: 1.7; color: #3d4a57; white-space: pre-wrap;
+}
+.quiz-explain::before { content: "해설  "; font-weight: 700; color: var(--brand-blue); }
 
 /* 우측 결과 화면 */
 .quiz-result { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
 .quiz-score { font-size: 52px; font-weight: 700; line-height: 1.1; color: var(--brand-blue); }
 .quiz-score__sub { font-size: 15px; color: #3d4a57; }
 .quiz-marks { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.quiz-explain-btn { margin-top: 16px; }
 .quiz-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 10px; border-radius: 4px; }
 .quiz-chip__no { font-size: 10px; color: var(--muted); }
 .quiz-chip__sign { font-size: 15px; font-weight: 700; }
@@ -1115,6 +1136,11 @@ body.is-modal { overflow: hidden; }
 .stagesw__btn:first-child { border-left-width: 1px; }
 .stagesw__btn:hover { background: rgba(255, 255, 255, 0.22); }
 .stagesw__btn.is-on { background: #fff; color: var(--brand-blue); }
+/* .stagesw 는 어두운(brand-blue) 패널 머리 전용 배색이다. 통신 로그 머리는 흰
+   배경이라(panel__head 기본) 색을 뒤집는다 — 통신/디버그 탭(_log.html)이 쓴다. */
+.stagesw--light .stagesw__btn { background: #f5f7fa; color: var(--muted); border-color: var(--border); }
+.stagesw--light .stagesw__btn:hover { background: #eef2f7; }
+.stagesw--light .stagesw__btn.is-on { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
 
 /* ── 배경·이론 본문 ── */
 .brief__body { padding: 14px 18px 18px; gap: 14px; overflow-y: auto; min-height: 0; }

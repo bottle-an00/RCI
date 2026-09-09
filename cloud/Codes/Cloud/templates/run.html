@@ -11,12 +11,15 @@
 {% else %}
 {# Step3 · 실습 실행. 화면 구성이 둘로 갈린다.
      메시지 작성  좌 트리 / 중앙 [배경·이론(만화 ↔ 3D 모델 뷰) ↔ 작성기] / 우 통신 로그
-     진단 · 강제구동  좌 트리 / 중앙 [기능 설명(만화 ↔ 3D 모델 뷰) | 시퀀스 설명(글)]
-                      / 우 시퀀스 진행 + 통신 로그
+     진단 · 강제구동  좌 트리 / [가운데(기능 설명) | 우측(시퀀스 진행)] 위·아래 전체를
+                      가로지르는 통신 로그 (아래)
    진단 쪽을 이렇게 가른 이유: 배우는 사람이 먼저 봐야 하는 것은 '지금 무엇을 왜
    하는가' 이고, 단계 목록은 그 옆에서 진행 상황만 알려주면 되기 때문이다.
    3D 모델 뷰는 만화와 한 자리를 탭으로 나눠 쓴다(_briefing.html/_seq_brief.html +
-   static/js/view3d-tab.js) — 그 자리가 빠지며 넓어진 통신 로그가 대신 그 몫을 받는다.
+   static/js/view3d-tab.js). 메시지 작성 화면은 원래도 로그가 3D 와 같은 컬럼에
+   있었으니 그 컬럼을 그대로 넓혀 받고, 진단·강제구동은 3D 가 우 컬럼 쪽에 있었던
+   반면 로그는 원래 가운데 있어 컬럼이 달랐다 — 그래서 이쪽은 로그를 가운데+우측
+   전체 폭으로 늘려 그 자리까지 이어지게 한다(.run__split + .run__body).
    live(=MQTT 연결 대상 여부)는 라우트 컨텍스트에서 주입 — 블록 간 공유를 위해. #}
 <div class="run" data-target="{{ target.id }}" data-device="{{ target.device }}"
      data-transport="{{ target.transport }}" data-ws-url="{{ ws_url or '' }}"
@@ -36,33 +39,40 @@
   </div>
   <span class="run__grip"></span>
 
-  {# ② 중앙 #}
-  <div class="run__center{% if sequence %} run__center--seq{% endif %}">
-    {% if is_composer %}
-    {# 한 윈도우 안의 두 화면 — [배경·이론](만화+글) / [메시지 작성]. 머리의 버튼으로
-       갈아 낀다 (static/js/stage-switch.js). 기본은 배경·이론부터. #}
+  {% if sequence %}
+  {# 진단·강제구동 — 위쪽(가운데 기능 설명 | 우측 시퀀스 진행)을 .run__split 에
+     묶고, 그 아래 통신 로그를 가운데+우측 전체 폭으로 깐다(.run__body). #}
+  <div class="run__body">
+    <div class="run__split">
+      <div class="run__center run__center--seq">
+        {% include "partials/_seq_brief.html" %}
+      </div>
+      <span class="run__grip"></span>
+      <div class="run__right">
+        {# 진단·강제구동은 요청 한 줄이 아니라 '순서'다 — 세션 오픈부터 정리까지를
+           한 단계씩 밟는다 (partials/_sequence.html + static/js/auto-sequence.js). #}
+        {% include "partials/_sequence.html" %}
+      </div>
+    </div>
+    {% include "partials/_log.html" %}
+  </div>
+  {% else %}
+  {# ② 중앙 — 한 윈도우 안의 두 화면 [배경·이론](만화+글) / [메시지 작성].
+     머리의 버튼으로 갈아 낀다 (static/js/stage-switch.js). 기본은 배경·이론부터. #}
+  <div class="run__center">
     <div class="stage" data-stage>
       {% include "partials/_briefing.html" %}
       {% include "partials/_composer.html" %}
     </div>
-    {% elif sequence %}
-    {# 위 2분할(그림·3D 모델 뷰 | 글). 통신 로그는 우 컬럼으로 옮겨 스텝퍼 아래 자리를
-       넓게 쓴다 — 예전엔 3D 모델 뷰가 그 자리를 나눠 썼다. #}
-    {% include "partials/_seq_brief.html" %}
-    {% endif %}
   </div>
   <span class="run__grip"></span>
 
-  {# ③ 우 컬럼 — (시퀀스 진행 +) 통신 로그. 3D 모델 뷰가 빠지며 로그가 남는 높이를
-     전부 받는다. #}
+  {# ③ 우 컬럼 — 통신 로그. 3D 모델 뷰가 만화 탭으로 옮겨가며 이 컬럼을 로그가
+     전부 물려받는다(원래도 이 컬럼에 있었다). #}
   <div class="run__right">
-    {% if sequence %}
-    {# 진단·강제구동은 요청 한 줄이 아니라 '순서'다 — 세션 오픈부터 정리까지를
-       한 단계씩 밟는다 (partials/_sequence.html + static/js/auto-sequence.js). #}
-    {% include "partials/_sequence.html" %}
-    {% endif %}
     {% include "partials/_log.html" %}
   </div>
+  {% endif %}
 </div>
 {% endif %}
 {% endblock %}
@@ -73,6 +83,9 @@
 {{ super() }}
 <script src="{{ asset('js/run-resize.js') }}"></script>
 <script src="{{ asset('js/tree-toggle.js') }}"></script>
+{# 통신 ↔ 디버그 로그 탭 전환 (_log.html). 통신과 무관하게(live 아니어도) 항상 싣는다
+   — live 가 아닐 때도 데모 로그 줄을 오갈 수 있어야 한다. #}
+<script src="{{ asset('js/log-tab.js') }}"></script>
 {% if is_composer %}
 {# 배경·이론 ↔ 메시지 작성 화면 전환. 통신과 무관하므로 live 여부와 상관없이 싣는다. #}
 <script src="{{ asset('js/stage-switch.js') }}"></script>

@@ -26,17 +26,28 @@
   var errTopic = "minigit/error/" + device;
   var statusTopic = "minigit/status/rci-" + (device === "urrobot" ? "ur" : "rc");
 
+  /* 통신 로그(#log-body) / 디버그 로그(#debug-log-body) — 실제 UDS 왕복(raw)과
+   * 연결·모드·에러 같은 운영 메시지를 한 곳에 섞으면 학습자가 지금 무엇이
+   * 오갔는지 읽어내기 어렵다. log() 는 왕복(요청·응답·그 해석)만, dbg() 는
+   * 그 밖의 모든 것(연결 상태, 전송 모드 선언, 접속 실패, 예외)을 맡는다.
+   * 어느 쪽에 쓸지는 호출부마다 판단해 고정한다 — 태그로 자동 분류하지 않는다
+   * (예: NRC 부정 응답은 raw 를 담고 있어 err 클래스라도 통신 로그로 간다).
+   */
   var logBody = document.getElementById("log-body");
+  var debugBody = document.getElementById("debug-log-body");
   var seq = 0;
   var seen = {};   // QoS1 중복 수신 방지 (id → true)
 
-  function log(cls, text) {
+  function appendLine(body, cls, text) {
+    if (!body) return;
     var line = document.createElement("span");
     line.className = "log-line " + cls;
     line.textContent = text;
-    logBody.appendChild(line);
-    logBody.scrollTop = logBody.scrollHeight;
+    body.appendChild(line);
+    body.scrollTop = body.scrollHeight;
   }
+  function log(cls, text) { appendLine(logBody, cls, text); }
+  function dbg(cls, text) { appendLine(debugBody, cls, text); }
 
   /* ---- UDS 디코딩 (raw → 사람이 읽는 값) ------------------------------- */
 
@@ -281,7 +292,7 @@
     if (!mv) return;
     if (!mv.model) {
       // 모델이 아직 안 떴는데 조용히 넘어가면 '연동이 안 된다'로 오해된다.
-      log("muted", "   ↳ 3D 모델 로딩 전이라 동작을 재생하지 않았습니다");
+      dbg("muted", "3D 모델 로딩 전이라 동작을 재생하지 않았습니다");
       return;
     }
     var list = mv.availableAnimations || [];
@@ -331,6 +342,9 @@
       if (eff.kind === "light") startLight();
       else if (eff.kind === "motion") startMotion();
       else if (eff.kind === "pulse") startPulse(eff.label);
+      // 지금 만화를 보고 있었다면 3D 모델 뷰로 넘겨 반응을 직접 보게 한다
+      // (view3d-tab.js 가 듣는다). 이미 3D 를 보고 있으면 조용히 무시된다.
+      document.dispatchEvent(new CustomEvent("view3d:show-model"));
     } else if (opt === "00") {
       if (eff.kind === "light") stopLight();
       else if (eff.kind === "motion") stopMotion();
@@ -370,7 +384,7 @@
     try {
       // 토픽 접두어로 라우팅 (device 접미사 무관하게 견고).
       if (startsWith(topic, "minigit/status/")) {
-        log("muted", "◆ RCI " + (m.state || "") + (m.robot ? " · robot " + m.robot : ""));
+        dbg("muted", "◆ RCI " + (m.state || "") + (m.robot ? " · robot " + m.robot : ""));
         linkRci = m.state || null;            // 상단바 연결 표시 (link-status.js)
         linkPaint();
         return;
@@ -419,7 +433,7 @@
       // 강제구동 응답(0x6F) → 3D 모델 반응 (DRIVE_EFFECTS 참고).
       if (bytes[0] === 0x6F) applyDriveEffect(bytes);
     } catch (e) {
-      log("err", "✗ 처리 오류: " + e.message);
+      dbg("err", "✗ 처리 오류: " + e.message);
     }
   }
 
@@ -460,26 +474,26 @@
   // suppressMock: 이 device 를 실물 RCI 가 맡는다고 목에게 선언할지 (rci 모드)
   function mqttTransport(suppressMock) {
     if (typeof mqtt === "undefined") {
-      log("err", "✗ mqtt.js 를 불러오지 못했습니다");
+      dbg("err", "✗ mqtt.js 를 불러오지 못했습니다");
       return { publish: function () {}, stop: function () {} };
     }
     // 접속에 시간이 걸리고 실패할 수도 있다 — 빈 로그로 두면 사용자는 뭐가 잘못됐는지
     // 알 수 없다. 시도·성공·끊김을 각각 한 줄로 남긴다(재접속 스팸은 한 번만).
-    log("muted", "○ 브로커 접속 중… " + wsUrl);
+    dbg("muted", "○ 브로커 접속 중… " + wsUrl);
     var client = mqtt.connect(wsUrl, { reconnectPeriod: 2000, connectTimeout: 4000 });
     var warned = false;
     client.on("connect", function () {
       warned = false;
       linkBroker = true; linkRci = null;   // retained status 가 곧 도착해 채운다
       linkPaint();
-      log("muted", "● 브로커 연결됨 · " + wsUrl);
+      dbg("muted", "● 브로커 연결됨 · " + wsUrl);
       client.subscribe([respTopic, errTopic, statusTopic], { qos: 1 });
       // 억제 선언은 retained 다. 목이 나중에 떠도, 페이지를 닫아도 마지막 선언이
       // 남는다 — 목을 껐다 켤 때마다 모드를 다시 누르지 않아도 되게 하려는 것이다.
       // 재접속마다 다시 쓰는 이유: 그 사이 다른 탭이 뒤집어 놨을 수 있다.
       client.publish(ctrlTopic, JSON.stringify({ suppress: !!suppressMock }),
                      { qos: 1, retain: true });
-      log("muted", suppressMock
+      dbg("muted", suppressMock
         ? "◆ 실물 RCI 모드 · PC 목업에 " + device + " 응답 중지를 선언했습니다"
         : "◆ MQTT 목업 모드 · PC 목업이 " + device + " 에 응답합니다");
     });
@@ -488,7 +502,7 @@
       linkPaint();
       if (warned) return;
       warned = true;
-      log("err", "✗ 브로커 접속 실패: " + (e && e.message ? e.message : "알 수 없음")
+      dbg("err", "✗ 브로커 접속 실패: " + (e && e.message ? e.message : "알 수 없음")
         + " — 재시도 중입니다. RCI·브로커가 떠 있는지 확인하거나 '목업' 으로 전환하세요.");
     });
     client.on("close", function () {
@@ -496,7 +510,7 @@
       linkPaint();
       if (warned) return;
       warned = true;
-      log("muted", "○ 브로커 연결 끊김 — 재접속 시도 중…");
+      dbg("muted", "○ 브로커 연결 끊김 — 재접속 시도 중…");
     });
     client.on("message", function (topic, payload) {
       var m;
@@ -514,7 +528,7 @@
   var MOCK_DELAY = 120;
   function mockTransport() {
     var timers = [];
-    log("muted", "● 목업 모드 · 브로커 없이 브라우저에서 응답 생성");
+    dbg("muted", "● 목업 모드 · 브로커 없이 브라우저에서 응답 생성");
     timers.push(setTimeout(function () {
       handleMessage(statusTopic, window.MockRci.status());
     }, 60));
@@ -689,7 +703,7 @@
   function kaStop(reason) {
     if (!kaTimer && !kaLoad()) return;
     kaHalt();
-    log("muted", "○ 세션 유지 발행 중지" + (reason ? " — " + reason : "")
+    dbg("muted", "○ 세션 유지 발행 중지" + (reason ? " — " + reason : "")
       + " · 5초 뒤 기본 세션으로 돌아갑니다");
     kaPaint();
   }
@@ -757,11 +771,11 @@
     if (saved.scope !== KA_SCOPE) {
       kaSave(null);
       kaPaint();
-      log("muted", "○ 다른 세부 항목으로 이동 — 앞 항목의 세션 유지 발행을 중지했습니다"
+      dbg("muted", "○ 다른 세부 항목으로 이동 — 앞 항목의 세션 유지 발행을 중지했습니다"
         + " · 5초 뒤 기본 세션으로 돌아갑니다");
       return;
     }
-    log("muted", "↻ 앞 단계에서 시작한 세션 유지 발행을 이어갑니다 · " + saved.raw);
+    dbg("muted", "↻ 앞 단계에서 시작한 세션 유지 발행을 이어갑니다 · " + saved.raw);
     kaStart(saved.raw, saved.period);
   })();
 

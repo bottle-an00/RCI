@@ -1,12 +1,15 @@
-/* 화면 진입 안내 팝업 — 열고, 닫고, '더 이상 보지 않기'를 기억한다.
+/* 화면 진입 안내 팝업 — 열고, 닫고, '오늘 보지 않기'를 기억한다.
  *
  * 왜 있는가: 교육생은 컨텐츠 그리드에서 타일 하나를 눌러 곧장 실습 화면에 떨어진다.
  * 화면은 3~4분할이고 패널마다 역할이 달라서, 설명 없이 들어오면 어디부터 봐야 할지
  * 모른다. 그래서 진입하면 한 번 가려서 설명하고, 확인을 받은 뒤 화면을 내준다.
  *
- * 기억 범위는 **화면(콘텐츠)별**이다. 진단을 익혔다고 퀴즈 규칙까지 아는 것은
- * 아니므로, 진단에서 껐어도 퀴즈에는 처음 진입할 때 뜬다. 대상(RC카/UR로봇)은
- * 구분하지 않는다 — 화면 사용법은 대상이 달라도 같다.
+ * 기억 범위는 **화면(콘텐츠)별 + 오늘 하루**다. 진단을 익혔다고 퀴즈 규칙까지 아는
+ * 것은 아니므로, 진단에서 껐어도 퀴즈에는 처음 진입할 때 뜬다. 대상(RC카/UR로봇)은
+ * 구분하지 않는다 — 화면 사용법은 대상이 달라도 같다. '영구히' 가 아니라 '오늘'
+ * 인 이유: 다음 교육생이 같은 PC 를 쓸 수도 있는 실습실 환경이라, 한 번 끄면
+ * 계속 안 뜨는 것은 다음 사람에게는 오히려 불친절하다 — 하루 지나면 자동으로
+ * 되살아난다.
  *
  * 문구·표시 여부는 서버가 정한다 (main.PAGE_GUIDES). 여기는 여닫기만 맡는다.
  */
@@ -22,14 +25,22 @@
   var opener = document.querySelector("[data-guide-open]");
   var lastFocus = null;
 
+  /* 오늘 날짜를 "YYYY-MM-DD"(로컬 기준)로 — 자정이 지나면 값이 달라져 저절로
+     만료된다. toISOString() 은 UTC 라 자정 근처에서 하루가 어긋날 수 있어 쓰지
+     않는다. */
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2)
+      + "-" + ("0" + d.getDate()).slice(-2);
+  }
   /* localStorage 는 사생활 보호 모드·정책에 따라 통째로 막힐 수 있다. 그때는
      '기억하지 못할 뿐' 이어야 한다 — 예외가 튀어 팝업 자체가 안 열리면 안 된다. */
   function muted() {
-    try { return localStorage.getItem(KEY) === "off"; } catch (e) { return false; }
+    try { return localStorage.getItem(KEY) === todayKey(); } catch (e) { return false; }
   }
   function remember(off) {
     try {
-      if (off) localStorage.setItem(KEY, "off");
+      if (off) localStorage.setItem(KEY, todayKey());
       else localStorage.removeItem(KEY);
     } catch (e) { /* 저장 못 해도 이번 화면은 정상 동작한다 */ }
   }
