@@ -221,14 +221,15 @@
    *          손댈 수 없다 — 그때는 3D 뷰를 three.js 로 직접 렌더해야 한다.
    *   pulse  모델이 표현할 수단이 없는 동작(모터·서보·부저·MP3, 현재 RC카 전용) —
    *          패널 배지로 "구동 중"을 알린다. 이게 없으면 응답은 오는데 화면은
-   *          아무 반응이 없어 '연동이 안 된다'로 오해된다.
+   *          아무 반응이 없어 '연동이 안 된다'로 오해된다. sound 를 함께 적으면
+   *          그 오디오도 같이 재생·정지한다(지금은 부저 → 경적음 하나뿐).
    */
   var DRIVE_EFFECTS = {
     "rc-car": {
       "0201": {kind: "pulse", label: "모터 구동 중"},
       "0202": {kind: "pulse", label: "서보 구동 중"},
       "0207": {kind: "light"},
-      "0208": {kind: "pulse", label: "부저 ON"},
+      "0208": {kind: "pulse", label: "부저 ON", sound: "horn"},
       "0209": {kind: "pulse", label: "MP3 재생 중"},
     },
     "ur-robot": {
@@ -320,15 +321,24 @@
   // 누르는 경우) — 그때는 재생을 즉시 끊고 처음 자세로 되돌린다.
   function stopMotion() { resetMotion(); }
 
-  // -- pulse: 모델이 표현할 수단이 없는 동작 — 패널 배지 문구로만 알린다.
+  // -- pulse: 모델이 표현할 수단이 없는 동작 — 패널 배지 문구로 알리고, sound 가
+  //    지정돼 있으면(지금은 부저 → 경적) 그 오디오도 같이 튼다. loop 속성이 있어
+  //    제어 반환(00)이 올 때까지 계속 울린다 — 자동재생 정책 때문에 play() 가
+  //    실패할 수 있어(권한 없이는 소리가 안 날 수 있다) 조용히 무시한다.
   var driveBadge = document.getElementById("view3d-drive-badge");
-  function startPulse(label) {
-    if (!driveBadge) return;
-    driveBadge.textContent = label || "구동 중";
-    driveBadge.hidden = false;
+  var SOUNDS = { horn: document.getElementById("view3d-horn-audio") };
+  function startPulse(label, sound) {
+    if (driveBadge) {
+      driveBadge.textContent = label || "구동 중";
+      driveBadge.hidden = false;
+    }
+    var audio = SOUNDS[sound];
+    if (audio) { audio.currentTime = 0; audio.play().catch(function () {}); }
   }
-  function stopPulse() {
+  function stopPulse(sound) {
     if (driveBadge) driveBadge.hidden = true;
+    var audio = SOUNDS[sound];
+    if (audio) { audio.pause(); audio.currentTime = 0; }
   }
 
   // 0x6F 긍정 응답 → 옵션 바이트로 시작·종료를 갈라 DID 에 등록된 표현을 건다.
@@ -341,14 +351,14 @@
     if (opt === "03") {
       if (eff.kind === "light") startLight();
       else if (eff.kind === "motion") startMotion();
-      else if (eff.kind === "pulse") startPulse(eff.label);
+      else if (eff.kind === "pulse") startPulse(eff.label, eff.sound);
       // 지금 만화를 보고 있었다면 3D 모델 뷰로 넘겨 반응을 직접 보게 한다
       // (view3d-tab.js 가 듣는다). 이미 3D 를 보고 있으면 조용히 무시된다.
       document.dispatchEvent(new CustomEvent("view3d:show-model"));
     } else if (opt === "00") {
       if (eff.kind === "light") stopLight();
       else if (eff.kind === "motion") stopMotion();
-      else if (eff.kind === "pulse") stopPulse();
+      else if (eff.kind === "pulse") stopPulse(eff.sound);
     }
   }
 

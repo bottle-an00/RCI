@@ -20,6 +20,10 @@
      알리는 유일한 통로다. 조명·관절 구동은 모델 자체가 반응하므로 쓰지 않는다
      (rci-live.js 의 DRIVE_EFFECTS 참고). #}
   <span class="view3d__drive-badge" id="view3d-drive-badge" hidden></span>
+  {# 부저(경적) 강제구동용 소리 — RC카 전용(DRIVE_EFFECTS 의 sound:"horn"). 다른
+     대상·DID 는 참조하지 않으니 그냥 놀린다. loop 는 부저가 "ON" 상태를 유지하는
+     동안(제어 반환 전까지) 계속 울리게 하기 위해서다. #}
+  <audio id="view3d-horn-audio" src="{{ asset('audio/horn.wav') }}" preload="auto" loop></audio>
   {% else %}
   {{ icon("cube", "view3d__icon") }}
   <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대</span>
