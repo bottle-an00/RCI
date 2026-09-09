@@ -623,7 +623,16 @@ body {
 @keyframes view3d-pulse { 50% { opacity: 0.2; } }
 .mini-btn { font-size: 11px; color: var(--muted); background: #f5f7fa; border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
 
-/* 통신 로그 */
+/* 통신 로그 — 좌 통신 / 우 디버그, 늘 나란히 보인다. 실제 UDS 왕복과 연결·모드·
+   에러 같은 운영 메시지를 한 곳에 섞으면 학습자가 무엇이 오갔는지 읽어내기
+   어렵다(rci-live.js 의 log()/dbg() 가 쓰는 곳만 다르다). */
+.log-split { flex: 1; min-height: 0; display: flex; }
+.log-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.log-col--debug { border-left: 1px solid var(--border); }
+.log-col__head {
+  padding: 5px 16px; font-size: 11px; font-weight: 600; color: var(--muted);
+  background: #f5f7fa; border-bottom: 1px solid var(--border); flex: none;
+}
 /* 로그가 길어지면 이 영역만 휠로 스크롤한다 (rci-live.js 가 하단으로 자동 추적). */
 .log-body {
   flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
@@ -1136,11 +1145,6 @@ body.is-modal { overflow: hidden; }
 .stagesw__btn:first-child { border-left-width: 1px; }
 .stagesw__btn:hover { background: rgba(255, 255, 255, 0.22); }
 .stagesw__btn.is-on { background: #fff; color: var(--brand-blue); }
-/* .stagesw 는 어두운(brand-blue) 패널 머리 전용 배색이다. 통신 로그 머리는 흰
-   배경이라(panel__head 기본) 색을 뒤집는다 — 통신/디버그 탭(_log.html)이 쓴다. */
-.stagesw--light .stagesw__btn { background: #f5f7fa; color: var(--muted); border-color: var(--border); }
-.stagesw--light .stagesw__btn:hover { background: #eef2f7; }
-.stagesw--light .stagesw__btn.is-on { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
 
 /* ── 배경·이론 본문 ── */
 .brief__body { padding: 14px 18px 18px; gap: 14px; overflow-y: auto; min-height: 0; }

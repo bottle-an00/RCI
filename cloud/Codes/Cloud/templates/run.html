@@ -83,9 +83,6 @@
 {{ super() }}
 <script src="{{ asset('js/run-resize.js') }}"></script>
 <script src="{{ asset('js/tree-toggle.js') }}"></script>
-{# 통신 ↔ 디버그 로그 탭 전환 (_log.html). 통신과 무관하게(live 아니어도) 항상 싣는다
-   — live 가 아닐 때도 데모 로그 줄을 오갈 수 있어야 한다. #}
-<script src="{{ asset('js/log-tab.js') }}"></script>
 {% if is_composer %}
 {# 배경·이론 ↔ 메시지 작성 화면 전환. 통신과 무관하므로 live 여부와 상관없이 싣는다. #}
 <script src="{{ asset('js/stage-switch.js') }}"></script>

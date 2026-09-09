@@ -3,10 +3,10 @@
    메시지 작성(run.html)에서는 우 컬럼에, 진단·강제구동·ECU 에서는 가운데+우측을
    가로지르는 아래 칸에 놓인다. 어디에 놓이든 내용과 id 는 같다.
 
-   통신/디버그 두 탭으로 나뉜다 — 실제 UDS 왕복(raw)과 연결 상태·모드 전환·에러 같은
-   운영 메시지를 한 곳에 섞으면 학습자가 지금 무엇이 오갔는지 읽어내기 어렵다.
-   rci-live.js 가 쓰는 쪽만 다르다(log()→#log-body, dbg()→#debug-log-body).
-   전환은 static/js/log-tab.js.
+   좌 통신 / 우 디버그 — 실제 UDS 왕복(raw)과 연결 상태·모드 전환·에러 같은 운영
+   메시지를 한 곳에 섞으면 학습자가 지금 무엇이 오갔는지 읽어내기 어렵다. 둘 다
+   늘 보이는 두 컬럼으로 나란히 두고, rci-live.js 가 쓰는 쪽만 다르다
+   (log()→#log-body, dbg()→#debug-log-body).
 
    컨텍스트: target · live (연결 대상 화면인가) #}
 <div class="panel run__log">
@@ -18,29 +18,33 @@
       <span class="ka-badge__text"></span>
       <button class="mini-btn js-ka-stop" type="button">■ 중지</button>
     </span>
-    <span class="stagesw stagesw--light" data-log-switch>
-      <button class="stagesw__btn is-on" type="button" data-log-view="comm">통신</button>
-      <button class="stagesw__btn" type="button" data-log-view="debug">디버그</button>
-    </span>
     <span class="tag tag--uds">{{ target.transport }}</span>
   </div>
-  {# 로그가 길어지면 이 영역만 휠로 스크롤된다 (패널 밖으로 밀지 않는다). #}
-  <div class="log-body" id="log-body" data-log-pane="comm">
-    {% if live %}
-    <span class="log-line muted">브로커 연결 대기 중…</span>
-    {% else %}
-    {% set p = "[DoIP] " if target.transport == "DoIP" else "" %}
-    <span class="log-line send">→ {{ p }}10 03</span>
-    <span class="log-line recv">← {{ p }}50 03 00 32 01 F4</span>
-    <span class="log-line send">→ {{ p }}3E 00</span>
-    <span class="log-line recv">← {{ p }}7E 00</span>
-    <span class="log-line send">→ {{ p }}22 F1 90</span>
-    <span class="log-line recv">← {{ p }}62 F1 90 00 12 34</span>
-    <span class="log-line send">→ {{ p }}19 02 0C</span>
-    <span class="log-line recv">← {{ p }}59 02 FF 00 12 34</span>
-    {% endif %}
-  </div>
-  <div class="log-body" id="debug-log-body" data-log-pane="debug" hidden>
-    <span class="log-line muted">연결 상태·전송 모드·에러 등 통신 외 알림이 여기 남습니다.</span>
+  <div class="log-split">
+    <div class="log-col">
+      <div class="log-col__head">통신</div>
+      {# 로그가 길어지면 이 영역만 휠로 스크롤된다 (패널 밖으로 밀지 않는다). #}
+      <div class="log-body" id="log-body">
+        {% if live %}
+        <span class="log-line muted">브로커 연결 대기 중…</span>
+        {% else %}
+        {% set p = "[DoIP] " if target.transport == "DoIP" else "" %}
+        <span class="log-line send">→ {{ p }}10 03</span>
+        <span class="log-line recv">← {{ p }}50 03 00 32 01 F4</span>
+        <span class="log-line send">→ {{ p }}3E 00</span>
+        <span class="log-line recv">← {{ p }}7E 00</span>
+        <span class="log-line send">→ {{ p }}22 F1 90</span>
+        <span class="log-line recv">← {{ p }}62 F1 90 00 12 34</span>
+        <span class="log-line send">→ {{ p }}19 02 0C</span>
+        <span class="log-line recv">← {{ p }}59 02 FF 00 12 34</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="log-col log-col--debug">
+      <div class="log-col__head">디버그</div>
+      <div class="log-body" id="debug-log-body">
+        <span class="log-line muted">연결 상태·전송 모드·에러 등 통신 외 알림이 여기 남습니다.</span>
+      </div>
+    </div>
   </div>
 </div>
