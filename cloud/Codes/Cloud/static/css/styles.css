@@ -336,6 +336,13 @@ body {
 .md__group-title { flex: 1; }
 .md__group .material__level { margin-left: 8px; }
 .md__list .tree__row.material { padding-left: 34px; }
+/* 과목 안의 난이도 단(기초·심화) — 과목 헤더보다 한 단 들여쓰고 한 톤 옅게 해서
+   같은 굵은 회색 띠가 두 줄 겹쳐 보이지 않게 한다. 그 아래 자료는 두 단. */
+.md__group--level {
+  padding-left: 30px; background: #fafbfc; font-size: 13px; color: var(--muted);
+}
+.md__group--level .md__group-title { color: var(--ink); }
+.md__list .tree__children .tree__children .tree__row.material { padding-left: 48px; }
 
 .viewer { flex: 1; }
 .viewer__head {
@@ -385,7 +392,8 @@ body {
 .viewer__md .mermaid { margin: 16px 0; text-align: center; }
 
 /* 과목 표지 — 그 과목 첫 강의 앞에 오는 별도 페이지(본문 없음, 만화만).
-   '학습 시작' 을 누르면 실제 1페이지로 넘어간다. .practice-cover 와 같은 규칙. */
+   컷 이동(이전/다음)과 '학습 시작' 은 본문 페이지와 같은 자리, 헤더 오른쪽 끝의
+   .pager 안에 있다 (templates/theory.html) — 여기는 컷 그림 영역만 다룬다. */
 .theory-cover { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 22px 26px; }
 .theory-cover .comic-pager__frame { flex: 1; min-width: 0; min-height: 0; display: flex; }
 .theory-cover .comic-pager__slide.is-active { flex: 1; min-width: 0; min-height: 0; display: flex; width: 100%; }
@@ -394,10 +402,6 @@ body {
    ".theory-cover .comic-pager" 처럼 둘을 조상·자손으로 쓰면 그런 자손이 없어
    전혀 매칭되지 않는다 — .theory-cover 만으로 내려간다. */
 .theory-cover .comic__img { width: 100%; height: 100%; object-fit: contain; }
-/* 이전/다음과 같은 줄, 우측에 — 작게. .btn--primary 의 flex:1 을 이겨야 하므로
-   클래스를 하나 더 걸어 우선순위를 올린다(소스 순서에 기대지 않는다). */
-.theory-cover__bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.theory-cover .theory-cover__start { flex: none; padding: 7px 14px; font-size: 12px; }
 
 /* =========================================================================
    실습 컨텐츠 (Figma 22:29) — 좌 실습목록 / 우 상세
@@ -460,10 +464,13 @@ body {
   gap: 18px;
   overflow-y: auto;
 }
-.cat-group__label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
-.cat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.cat-group__label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+/* 타일은 태블릿에서 손가락으로 누른다 — 한 줄에 4개를 유지하면서 타일 자체를 키웠다.
+   화면이 좁으면(태블릿 세로) 3개·2개로 접히게 해서 타일이 눌러지기 어려울 만큼
+   납작해지지 않게 한다. */
+.cat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .cat-tile {
-  min-height: 150px;
+  min-height: 210px;
   background: #fff;
   border: 1px solid #e5e8ec;
   border-radius: 10px;
@@ -471,15 +478,21 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  padding: 24px 12px 18px;
+  gap: 18px;
+  padding: 32px 16px 26px;
   text-decoration: none;
   color: var(--ink);
   transition: box-shadow .15s ease, border-color .15s ease;
 }
 .cat-tile:hover { border-color: var(--brand-blue); box-shadow: 0 2px 12px rgba(0,44,95,.10); }
-.cat-tile__icon { width: 48px; height: 48px; color: var(--brand-blue); }
-.cat-tile__label { font-size: 15px; font-weight: 600; }
+.cat-tile__icon { width: 68px; height: 68px; color: var(--brand-blue); }
+.cat-tile__label { font-size: 18px; font-weight: 600; text-align: center; }
+@media (max-width: 1100px) {
+  .cat-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 820px) {
+  .cat-row { grid-template-columns: repeat(2, 1fr); }
+}
 
 /* 접이식 트리 (세부 항목) — 좌측 목록 안에서 사용 */
 .tree__group {
@@ -1234,6 +1247,39 @@ body.is-modal { overflow: hidden; }
   color: var(--brand-blue); background: #fff;
   border: 1px solid var(--brand-blue); padding: 4px 14px;
 }
-.pager__btn:hover { background: var(--select-bg); }
+.pager__btn:hover:not(:disabled) { background: var(--select-bg); }
 /* 끝 페이지에서는 <a> 가 아니라 <span> 이 온다 — 눌러도 아무 일이 없음을 색으로 알린다. */
-.pager__btn.is-off { color: #b3bcc9; border-color: var(--border); background: #fafbfc; cursor: default; }
+.pager__btn.is-off,
+.pager__btn:disabled { color: #b3bcc9; border-color: var(--border); background: #fafbfc; cursor: default; }
+/* 본문은 <a>, 표지 컷 이동은 <button> 이다(주소 이동이 아니라 컷 토글이라서).
+   같은 자리·같은 크기로 보이려면 버튼이 물려받는 기본 글꼴·박스를 지워야 한다. */
+button.pager__btn {
+  font-family: inherit; line-height: 1.4; cursor: pointer;
+  display: inline-flex; align-items: center;
+}
+/* 마지막 컷에서 '다음' 자리를 대신하는 학습 시작 — 크기는 그대로 두고 색만 채운다
+   (comic-pager.js 의 data-comic-swap-cta). */
+.pager__btn--cta { background: var(--brand-blue); color: #fff; }
+.pager__btn--cta:hover:not(:disabled) { background: var(--brand-blue); filter: brightness(1.12); }
+
+/* 진입 코치마크 — 화면을 음영으로 덮고 우상단 이전·다음만 남긴다 (theory-coach.js).
+   진입 안내 팝업(.modal, z-index 100)보다 아래에 둔다 — 둘이 겹치면 안 되고,
+   순서는 팝업 → 코치마크다. */
+.coach { position: fixed; inset: 0; z-index: 80; }
+.coach__scrim { position: absolute; inset: 0; background: rgba(17, 27, 38, .55); }
+/* 음영 위로 끌어올린 이전·다음. .viewer__head 는 z-index 를 쓰지 않으므로
+   여기서 올린 값이 스크림과 직접 겨룬다. */
+body.is-coach [data-coach-target] {
+  position: relative; z-index: 82;
+  background: #fff; padding: 8px 10px;
+  box-shadow: 0 0 0 3px var(--brand-blue), 0 0 24px rgba(255, 255, 255, .55);
+}
+.coach__tip {
+  position: absolute; z-index: 84; width: 320px;
+  background: #fff; border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .28); padding: 16px 18px;
+}
+.coach__title { font-size: 14px; font-weight: 700; color: var(--brand-blue); }
+.coach__text { margin: 8px 0 14px; font-size: 13px; line-height: 1.65; color: var(--ink); }
+.coach__text b { color: var(--brand-blue); }
+.coach__ok { width: 100%; padding: 9px 14px; font-size: 13px; }

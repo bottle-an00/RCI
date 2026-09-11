@@ -1775,6 +1775,9 @@ def content_view(request: Request, target_id: str, content_id: str,
         # 자료는 소제목 단위로 끊겨 있고 page 로 그중 하나를 고른다 (theory_content).
         # 선택이 없거나 없는 doc(또는 영상 자료)이면 목록 첫 자료로 폴백한다.
         materials = theory_content.load_materials()
+        # 좌측 목록만 '과목 ▸ 난이도' 2단으로 묶어 보여준다 — 아래 표지·페이지 로직은
+        # 평면 목록(materials) 단위로 돌아간다 (theory_content.group_by_subject).
+        subjects = theory_content.group_by_subject(materials)
         doc_id = doc or theory_content.first_material_id(materials)
         group = _theory_group_of(materials, doc_id)
         subject = _THEORY_COVER_SUBJECT.get(group["order"]) if group else None
@@ -1785,7 +1788,7 @@ def content_view(request: Request, target_id: str, content_id: str,
             # (사이드바에서 자료를 고르면 page 없이 들어오므로 여기로 떨어진다.)
             selected = theory_content.load_material(doc_id, 1)
             ctx.update({
-                "materials": materials, "selected": selected,
+                "subjects": subjects, "selected": selected,
                 "intro_cuts": _comic_cuts(f"theory-{subject}"),
                 "intro_next_url": f"/{target['id']}/{content_id}?doc={doc_id}&page=1",
             })
@@ -1799,7 +1802,7 @@ def content_view(request: Request, target_id: str, content_id: str,
             back_to_intro = None
             if is_group_first and subject and selected and selected.get("page") == 1:
                 back_to_intro = f"/{target['id']}/{content_id}?doc={doc_id}"
-            ctx.update({"materials": materials, "selected": selected,
+            ctx.update({"subjects": subjects, "selected": selected,
                         "intro_cuts": None, "back_to_intro_url": back_to_intro})
         tmpl = "theory.html"
     elif view == "quiz":

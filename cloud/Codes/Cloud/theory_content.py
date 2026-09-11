@@ -302,6 +302,45 @@ def load_materials():
     return out
 
 
+def group_by_subject(groups):
+    """평면 그룹 목록(과목×난이도) → '과목 ▸ 난이도 ▸ 자료' 2단 트리 (화면 표시용).
+
+    load_materials 는 난이도가 다르면 별개 그룹으로 돌려준다 — 표지·페이지 이동 로직이
+    그 단위로 돌아가기 때문이다(main.content_view). 그런데 좌측 목록에서는 같은 과목이
+    'CAN 통신 기초' / 'CAN 통신 심화' 두 줄로 갈라져, 과목 수의 두 배만큼 목록이 길어진다.
+    과목을 한 번 펴고 그 안에서 난이도를 고르는 편이 훑기 쉽다. 그래서 화면용으로만
+    한 단 더 묶는다 — 평면 목록(load_materials)은 그대로 두고 여기서 파생시킨다.
+
+    난이도가 하나뿐인 과목(디지털 통신)은 단을 만들지 않는다 — 펼 것이 하나면 클릭만
+    한 번 늘어난다. 그런 과목은 levels=[] 이고 docs 에 자료가 바로 들어 있다.
+
+    반환: [{"id","title","order","difficulty","levels":[평면그룹…],"docs":[자료…]}]
+    """
+    subjects = {}
+    for g in groups:
+        key = f"{g['order']:04d}|{g['title']}"
+        s = subjects.get(key)
+        if s is None:
+            s = subjects[key] = {
+                "id": f"subject|{key}", "title": g["title"],
+                "order": g["order"], "difficulty": "", "levels": [], "docs": [],
+            }
+        s["levels"].append(g)
+
+    out = []
+    for s in subjects.values():
+        s["levels"].sort(key=lambda g: (DIFFICULTY_RANK.get(g["difficulty"], 99), g["title"]))
+        if len(s["levels"]) == 1:                 # 난이도 하나 — 단을 접어 평평하게
+            only = s["levels"][0]
+            s["id"] = only["id"]                  # 접힘 상태 키를 평면 그룹과 공유한다
+            s["difficulty"] = only["difficulty"]
+            s["docs"] = only["docs"]
+            s["levels"] = []
+        out.append(s)
+    out.sort(key=lambda s: (s["order"], s["title"]))
+    return out
+
+
 def first_material_id(groups):
     """그룹 트리에서 가장 먼저 오는 자료 id (없으면 None). 선택 폴백용."""
     for g in groups:
