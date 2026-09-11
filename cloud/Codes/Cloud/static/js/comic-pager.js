@@ -18,16 +18,27 @@
     var zoomBtn = root.querySelector("[data-comic-zoom]");
     // 실습하러가기 · 학습 시작 — 만화를 끝까지(마지막 컷) 봐야 눌린다.
     var ctaBtn = root.querySelector("[data-comic-cta]");
+    /* 이론 표지(templates/theory.html)만 켜는 모드. CTA 를 '다음' 옆에 따로 두지 않고
+       마지막 컷에서 '다음' 자리를 CTA 가 대신한다 — 버튼 수가 늘지 않으니 다음으로
+       넘기던 손이 그대로 학습 시작을 누른다. 다른 화면(커버·브리핑)은 CTA 가 제자리에
+       늘 보여야 해서(누를 수만 없다) 기존 방식을 그대로 쓴다. */
+    var swapCta = root.hasAttribute("data-comic-swap-cta");
     var idx = 0;
 
     function render() {
+      var last = idx === slides.length - 1;
       Array.prototype.forEach.call(slides, function (s, i) {
         s.classList.toggle("is-active", i === idx);
       });
       if (counter) counter.textContent = idx + 1;
       prevBtn.disabled = idx === 0;
-      nextBtn.disabled = idx === slides.length - 1;
-      if (ctaBtn) ctaBtn.disabled = idx !== slides.length - 1;
+      if (swapCta && ctaBtn) {
+        nextBtn.hidden = last;                 // 자리를 비켜 준다
+        ctaBtn.hidden = !last;
+      } else {
+        nextBtn.disabled = last;
+        if (ctaBtn) ctaBtn.disabled = !last;
+      }
     }
 
     prevBtn.addEventListener("click", function () {

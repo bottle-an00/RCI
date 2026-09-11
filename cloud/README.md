@@ -83,6 +83,9 @@ Universal Robots **UR3 (CB3)** 협동로봇을 이용해, 입문자가 **진단�
 
 상세 역할·읽을 수 있는 값·프로토콜 매트릭스는 `Requirements_Definition.md` 참조.
 
+현재 구현된 웹앱의 화면·기능·인터페이스는
+[`Documents/클라우드_웹앱_기능명세서.md`](Documents/클라우드_웹앱_기능명세서.md) 에 정리되어 있다.
+
 ---
 
 ## 로컬 개발

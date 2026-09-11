@@ -5,43 +5,79 @@
    넘칠 때만 본문(.viewer__md) 안에서 스크롤되고, 이전·다음 버튼은 늘 같은 자리에 있다. #}
 {% block app_class %}app--fixed{% endblock %}
 
+{# 자료 행(잎). 매크로는 호출부 문맥을 물려받지 않으므로 쓰는 값을 모두 인자로 받는다.
+   level=false 는 난이도 단(기초·심화) 안에 들어가는 자료 — 바로 위 헤더가 이미
+   난이도를 말하고 있으므로 행마다 같은 배지를 되풀이하지 않는다. #}
+{% macro doc_rows(docs, selected, base, level=true) %}
+  {% for m in docs %}
+  <a class="tree__row material {% if selected and selected.id == m.id %}is-selected{% endif %}"
+     href="{{ base }}?doc={{ m.id | urlencode }}">
+    <span class="material__label">{{ icon("file-lines") }}{{ m.title }}</span>
+    {% if level and m.difficulty %}<span class="material__level">{{ m.difficulty }}</span>{% endif %}
+  </a>
+  {% endfor %}
+{% endmacro %}
+
 {% block content %}
 {# Step3 · 이론 교육 — 좌 자료목록 / 우 md 뷰어(이미지·SVG·mermaid).
    자료 원천은 content/theory/*.md, 서버가 HTML 로 변환(theory_content.py). #}
+{% set base = "/" ~ target.id ~ "/" ~ content.id %}
 <div class="md">
   <div class="md__list">
     <div class="md__list-head">교육 자료</div>
-    {% for g in materials %}
-    {# 큰 주제(그룹) = 접이식 헤더. tree-toggle.js 가 tree__group/tree__children 을 접는다. #}
-    <div class="tree__group md__group" data-group="{{ g.id }}" role="button" tabindex="0"
+    {% for s in subjects %}
+    {# 과목(큰 주제) = 접이식 헤더. 난이도가 둘 이상이면 그 안에 기초·심화 단이 한 번 더
+       접힌 채로 들어간다 (theory_content.group_by_subject). tree-toggle.js 가 두 단을
+       같은 규칙(data-group ↔ data-children)으로 접는다. #}
+    <div class="tree__group md__group" data-group="{{ s.id }}" role="button" tabindex="0"
          aria-expanded="true">
-      <span class="tree__caret">▾</span><span class="md__group-title">{{ g.title }}</span>
-      {% if g.difficulty %}<span class="material__level">{{ g.difficulty }}</span>{% endif %}
+      <span class="tree__caret">▾</span><span class="md__group-title">{{ s.title }}</span>
+      {% if s.difficulty %}<span class="material__level">{{ s.difficulty }}</span>{% endif %}
     </div>
-    <div class="tree__children" data-children="{{ g.id }}">
-      {% for m in g.docs %}
-      <a class="tree__row material {% if selected and selected.id == m.id %}is-selected{% endif %}"
-         href="/{{ target.id }}/{{ content.id }}?doc={{ m.id | urlencode }}">
-        <span class="material__label">{{ icon("file-lines") }}{{ m.title }}</span>
-        {% if m.difficulty %}<span class="material__level">{{ m.difficulty }}</span>{% endif %}
-      </a>
-      {% endfor %}
+    <div class="tree__children" data-children="{{ s.id }}">
+      {% if s.levels %}
+        {% for g in s.levels %}
+        <div class="tree__group md__group md__group--level" data-group="{{ g.id }}"
+             role="button" tabindex="0" aria-expanded="true">
+          <span class="tree__caret">▾</span><span class="md__group-title">{{ g.difficulty or g.title }}</span>
+        </div>
+        <div class="tree__children" data-children="{{ g.id }}">
+          {{ doc_rows(g.docs, selected, base, level=false) }}
+        </div>
+        {% endfor %}
+      {% else %}
+        {{ doc_rows(s.docs, selected, base) }}
+      {% endif %}
     </div>
     {% else %}
     <div class="md__list-head">content/theory/ 에 자료가 없습니다.</div>
     {% endfor %}
   </div>
 
-  <div class="md__detail viewer">
+  {# 표지일 때는 뷰어 전체가 만화 페이저의 뿌리다 — 컷은 아래 프레임에, 이전/다음은
+     위 헤더에 있어서(본문 페이지와 같은 자리) 둘을 함께 감싸는 조상이 필요하다.
+     data-comic-swap-cta: 마지막 컷에서 '다음'을 '학습 시작'으로 갈아 끼운다. #}
+  <div class="md__detail viewer" {% if intro_cuts %}data-comic-pager data-comic-swap-cta{% endif %}>
     {% if intro_cuts %}
-    {# 그 과목의 표지 — 본문 없이 만화만. 이전은 없고(맨 앞이라), 다음은 실제 1페이지로.
-       컷 안 이전/다음(comic-pager.js)은 실제 본문의 페이지 이동과는 무관하게 움직인다. #}
+    {# 그 과목의 표지 — 본문 없이 만화만. 마지막 컷까지 보면 '학습 시작'이 나타나
+       실제 1페이지로 넘어간다. #}
     <div class="viewer__head">
       <span class="viewer__title">{{ selected.title }}</span>
       {% if selected.difficulty %}<span class="tag tag--uds">{{ selected.difficulty }}</span>{% endif %}
-      <span class="pager__count" style="margin-left:auto">표지</span>
+      <div class="pager" data-coach-target>
+        <span class="pager__count">
+          표지 <b data-comic-current>1</b> / {{ intro_cuts|length }}컷
+        </span>
+        <button class="pager__btn" type="button" data-comic-prev disabled>이전</button>
+        <button class="pager__btn" type="button" data-comic-next
+                {% if intro_cuts|length <= 1 %}hidden{% endif %}>다음</button>
+        {# 만화를 끝까지(마지막 컷) 봐야 나타난다(comic-pager.js). #}
+        <button class="pager__btn pager__btn--cta" type="button"
+                data-comic-cta data-href="{{ intro_next_url }}"
+                {% if intro_cuts|length > 1 %}hidden{% endif %}>학습 시작 →</button>
+      </div>
     </div>
-    <div class="comic-pager theory-cover" data-comic-pager>
+    <div class="comic-pager theory-cover">
       <div class="comic-pager__frame">
         {% for c in intro_cuts %}
         <div class="comic-pager__slide{% if loop.first %} is-active{% endif %}" data-comic-slide>
@@ -52,20 +88,10 @@
         </div>
         {% endfor %}
       </div>
-      <div class="theory-cover__bar">
-        <div class="comic-pager__nav">
-          <button class="btn" type="button" data-comic-prev disabled>‹ 이전</button>
-          <span class="comic-pager__count"><span data-comic-current>1</span> / {{ intro_cuts|length }}</span>
-          <button class="btn" type="button" data-comic-next{% if intro_cuts|length <= 1 %} disabled{% endif %}>다음 ›</button>
-        </div>
-        {# 만화를 끝까지(마지막 컷) 봐야 눌린다(comic-pager.js). #}
-        <button class="btn btn--primary theory-cover__start" type="button"
-                data-comic-cta data-href="{{ intro_next_url }}" disabled>학습 시작 →</button>
-      </div>
     </div>
     {% elif selected %}
     {# 페이지 이동 링크의 뿌리. 자료(doc)는 그대로 두고 page 만 갈아 끼운다. #}
-    {% set doc_url = "/" ~ target.id ~ "/" ~ content.id ~ "?doc=" ~ (selected.id | urlencode) %}
+    {% set doc_url = base ~ "?doc=" ~ (selected.id | urlencode) %}
     <div class="viewer__head">
       <span class="viewer__title">{{ selected.title }}</span>
       {% if selected.difficulty %}<span class="tag tag--uds">{{ selected.difficulty }}</span>{% endif %}
@@ -74,7 +100,7 @@
          이동은 주소 이동이다 (theory_content.split_pages). 표지가 있는 자료는
          1페이지의 '이전'이 표지(back_to_intro_url)로 돌아간다. #}
       {% set prev_url = (doc_url ~ "&page=" ~ selected.prev_page) if selected.prev_page else back_to_intro_url %}
-      <div class="pager" data-pager
+      <div class="pager" data-pager data-coach-target
            data-prev="{{ prev_url or '' }}"
            data-next="{% if selected.next_page %}{{ doc_url }}&page={{ selected.next_page }}{% endif %}">
         <span class="pager__count">
@@ -101,6 +127,22 @@
     {% endif %}
   </div>
 </div>
+
+{% if selected %}
+{# 진입 코치마크 — 화면을 음영으로 덮고 우상단 이전·다음만 남겨 거기를 보게 한다.
+   진입 안내 팝업(_guide_modal)이 닫힌 **뒤에** 뜬다 (theory-coach.js). #}
+<div class="coach" data-coach hidden>
+  <div class="coach__scrim" data-coach-close></div>
+  <div class="coach__tip" role="dialog" aria-label="페이지 넘기기 안내" data-coach-tip>
+    <div class="coach__title">여기로 페이지를 넘깁니다</div>
+    <p class="coach__text">
+      자료는 소제목 단위로 끊겨 있습니다. 오른쪽 위 <b>이전 · 다음</b>으로 한 장씩
+      넘겨 읽으세요. 키보드 <b>←</b> <b>→</b> 도 같은 동작입니다.
+    </p>
+    <button class="btn btn--primary coach__ok" type="button" data-coach-close>알겠습니다</button>
+  </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -116,4 +158,6 @@
 {# 첫 강의 소개 만화의 이전/다음 페이징(위 페이지 이동과는 별개). #}
 <script src="{{ asset('js/comic-pager.js') }}"></script>
 {% endif %}
+{# 이전·다음 자리를 처음 한 번 짚어주는 코치마크. #}
+<script src="{{ asset('js/theory-coach.js') }}"></script>
 {% endblock %}
