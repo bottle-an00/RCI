@@ -142,10 +142,25 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* 히어로는 내용을 수직 가운데 두는데(.hero justify-content: center), 그러면
+     상단바·서브바와 로고 사이가 넓게 벌어진다. 블록 전체를 조금 끌어올려 그 틈을
+     줄인다 — 가운데 정렬 자체는 유지하므로 화면이 길어져도 균형이 깨지지 않는다. */
+  margin-top: -40px;
 }
 
-.hero__logo { height: 62px; margin: 8px 0 24px; }
+.hero__logo { height: 152px; margin: 0 0 26px; }
 .hero__logo img { height: 100%; width: auto; display: block; }
+
+/* 세로로 짧은 화면 — 히어로는 overflow: hidden 이라 넘치면 스크롤이 아니라 **잘린다**.
+   로고를 키운 뒤 1024x640 같은 창에서 타일 아래가 14px 잘렸다. 높이가 모자라면
+   로고·타일·여백을 함께 줄여 세 타일이 통째로 보이는 것을 지킨다. */
+@media (max-height: 780px) {
+  .hero { padding-top: 24px; padding-bottom: 28px; }
+  .hero__inner { margin-top: -16px; }
+  .hero__logo { height: 104px; margin-bottom: 20px; }
+  .tile { min-height: 260px; gap: 22px; }
+  .tile__icon { width: 48px; height: 48px; }
+}
 
 /* 검색창 — 흰 바탕 + 우측 다크 버튼. 메인은 radius 6 */
 .searchbar {
@@ -208,9 +223,8 @@ body {
 .tile:hover { filter: brightness(1.12); }
 .tile__icon { width: 60px; height: 60px; color: #fff; }
 .tile__label { font-weight: 700; font-size: 20px; }
-/* 사용성 평가 — 실습 대상(차량·로봇)이 아니므로 한 톤 옅게, 좁게 둔다.
-   같은 크기·같은 색이면 "세 번째 실습 대상" 으로 읽힌다. */
-.tile--survey { flex: 0.62; background: #3f5f86; }
+/* 사용성 평가도 .tile 그대로 — 세 타일은 같은 크기·같은 색이다(리뷰 지시).
+   flex:1 과 배경색을 공유하므로 별도 규칙이 없다. */
 
 /* 하단 메뉴 — 흰색 + 상단 경계선. 5개 균등 배치 */
 .bottomnav {

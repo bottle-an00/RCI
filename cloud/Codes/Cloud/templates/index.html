@@ -16,7 +16,9 @@
   <div class="hero__clouds"><span></span><span></span><span></span><span></span><span></span></div>
   <div class="hero__inner">
     <div class="hero__logo">
-      <img src="{{ asset('img/git-logo.png') }}" alt="G1T">
+      {# 원본은 흰 배경의 불투명 PNG(2340x672)였다 — 히어로의 하늘 그라데이션 위에
+         흰 사각형이 떠서, 흰 바탕을 알파로 되돌리고 3배 축소해 넣었다(780x224). #}
+      <img src="{{ asset('img/giteacher-logo.png') }}" alt="G1Teacher">
     </div>
     <div class="tiles">
       {% for t in targets %}
@@ -27,9 +29,9 @@
       </a>
       {% endfor %}
       {# 사용성 평가 — 대상(차량/로봇)이 아니라 '이 시스템 전체'에 대한 평가라
-         대상 목록(targets)에 끼우지 않고 별도 타일로 둔다. 교육을 마친 뒤 누르는
-         자리라 색을 달리해(tile--survey) 실습 대상과 구분한다. #}
-      <a class="tile tile--survey" href="/survey">
+         대상 목록(targets)에 끼우지 않고 별도 타일로 둔다. 다만 크기·색은 앞 두
+         타일과 동일하게 맞춘다 — 셋을 같은 무게의 선택지로 보이게 한다. #}
+      <a class="tile" href="/survey">
         {# 'e-Report' 아이콘은 e 글자라 평가지로 읽히지 않는다 — 문서 아이콘을 쓴다. #}
         {{ icon("doc", "tile__icon") }}
         <span class="tile__label">사용성 평가</span>
