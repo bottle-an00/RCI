@@ -1372,11 +1372,10 @@ body.is-coach [data-coach-target] {
 .survey__hint { font-size: 12.5px; color: var(--muted); }
 .survey__submit { flex: none; padding: 11px 26px; }
 
-/* 제출 완료 — 점수 하나를 크게. 등급 문구는 survey.js 의 gradeLabel 이 채운다. */
-.survey__done { text-align: center; padding: 48px 30px; }
-.survey__score { font-size: 44px; font-weight: 700; color: var(--brand-blue); }
-.survey__grade { margin-top: 6px; font-size: 14px; font-weight: 600; color: var(--ink); }
-.survey__done-note { margin: 14px 0 22px; font-size: 13px; color: var(--muted); }
+/* 제출 완료 — 인사 한 줄. 점수는 응답자에게 보여주지 않는다(templates/survey.html). */
+.survey__done { text-align: center; padding: 56px 30px; }
+.survey__thanks { font-size: 22px; font-weight: 700; color: var(--brand-blue); }
+.survey__done-note { margin: 12px 0 26px; font-size: 14px; color: var(--muted); }
 .survey__done-note.is-ng { color: var(--pdf-tag); }
 
 @media (max-width: 900px) {

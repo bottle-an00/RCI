@@ -86,16 +86,6 @@
       : "제출하면 서버에 기록됩니다.";
   }
 
-  /* SUS 점수(0~100)를 사람이 읽을 한 줄로.
-   *
-   * SUS 는 백분율이 아니다 — 68점이 업계 평균선이라, 그 위·아래를 기준으로 읽는다.
-   * 여기서 어떤 구간을 어떤 문구로 부를지는 이 평가 결과를 누가 어떻게 읽을지에
-   * 달린 선택이다 (교육 담당자가 개선 우선순위를 정하는 데 쓴다).
-   */
-  function gradeLabel(score) {
-    // TODO(human)
-  }
-
   function saveNote(text, ok) {
     var note = root.querySelector("[data-survey-save]");
     if (!note) return;
@@ -103,13 +93,11 @@
     note.textContent = text;
   }
 
-  function showResult(score) {
+  /* 제출 완료 화면으로 넘긴다. 점수는 보여주지 않는다 (survey.html 주석 참고) —
+     서버가 계산해 기록에만 남긴다. */
+  function showResult() {
     form.hidden = true;
     result.hidden = false;
-    root.querySelector("[data-survey-score]").textContent =
-      (score === null ? "—" : score + "점");
-    root.querySelector("[data-survey-grade]").textContent =
-      (score === null ? "" : (gradeLabel(score) || ""));
   }
 
   function payload() {
@@ -134,10 +122,10 @@
       keepalive: true
     }).then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.json();
-    }).then(function (data) {
-      showResult(typeof data.sus_score === "number" ? data.sus_score : null);
-      saveNote("제출해 주셔서 감사합니다. 결과가 서버에 저장되었습니다.", true);
+      return res.json();       // 응답에 점수가 오지만 화면에는 쓰지 않는다
+    }).then(function () {
+      showResult();
+      saveNote("감사합니다. 응답이 서버에 저장되었습니다.", true);
     }).catch(function (err) {
       if (retriesLeft > 0) {
         return new Promise(function (done) { setTimeout(done, 1000); })
