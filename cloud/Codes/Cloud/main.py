@@ -27,12 +27,14 @@ from datetime import datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
 import theory_content
+import visit_log
 from mqtt_bridge import BridgeError, BrokerConfig, MqttBridge, RequestTimeout
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)-7s %(name)s: %(message)s")
@@ -62,6 +64,54 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 # theory_content.ASSET_URL_BASE(/content/theory/) 와 짝을 이룬다.
 app.mount("/content", StaticFiles(directory=BASE_DIR / "content"), name="content")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
+
+# 방문 로그도 **서버 PC 의 이 폴더**에만 쌓인다 (퀴즈 결과 TEST_RESULT 와 같은 규칙).
+# 경로는 visit_log 가 쥔다 — 단독 실행 리포트(`python visit_log.py`)와 같은 곳을 봐야 한다.
+VISIT_DIR = visit_log.DEFAULT_DIR
+
+
+@app.middleware("http")
+async def track_visit(request: Request, call_next):
+    """화면 진입을 방문 로그에 센다 (visit_log).
+
+    두 개의 쿠키로만 판정한다 — 서버는 만료 시각을 들고 있지 않다.
+      rci_vid  방문자(브라우저). 1년.
+      rci_sid  방문(세션). **응답마다 수명을 1시간으로 다시 설정**하므로, 마지막
+               클릭 후 1시간 조용하면 브라우저가 잊는다. 그 뒤 진입은 쿠키가 없으니
+               새 방문이 된다 — "같은 사람이 1시간 뒤에 오면 다른 방문" 이 여기서 나온다.
+
+    기록은 응답을 만든 **뒤에** 한다. 렌더가 500 으로 깨진 요청까지 방문으로 세면
+    숫자가 사실과 어긋나고, 화면을 내주는 일이 파일 쓰기에 발목 잡히지도 않는다.
+    파일 I/O 는 동기라서 스레드풀로 내보낸다(이벤트 루프를 막지 않게).
+    """
+    if not visit_log.is_page_path(request.url.path):
+        return await call_next(request)
+
+    visitor_id = request.cookies.get(visit_log.VISITOR_COOKIE)
+    session_id = request.cookies.get(visit_log.SESSION_COOKIE)
+    returning = bool(visitor_id) and not session_id   # 쿠키는 있는데 세션이 끊긴 사람
+    new_session = not session_id
+    visitor_id = visitor_id or visit_log.new_id()
+    session_id = session_id or visit_log.new_id()
+
+    response = await call_next(request)
+
+    # 세션 쿠키는 매 응답에 다시 심는다 — 이 갱신이 '유휴 1시간' 시계를 되돌리는 일이다.
+    response.set_cookie(visit_log.VISITOR_COOKIE, visitor_id,
+                        max_age=visit_log.VISITOR_MAX_AGE, httponly=True, samesite="lax")
+    response.set_cookie(visit_log.SESSION_COOKIE, session_id,
+                        max_age=visit_log.SESSION_IDLE_SEC, httponly=True, samesite="lax")
+
+    if response.status_code < 400:
+        await run_in_threadpool(
+            visit_log.track, VISIT_DIR,
+            visitor_id=visitor_id, session_id=session_id, new_session=new_session,
+            now=datetime.now(), path=request.url.path,
+            ip=request.client.host if request.client else "-",
+            agent=request.headers.get("user-agent", "-"),
+            returning=returning,
+        )
+    return response
 
 
 def asset(path: str) -> str:
@@ -106,6 +156,64 @@ TARGETS = [
      "transport": "DoIP", "tile_sub": "DoIP · 이더넷", "icon": "robotarm",
      "model": _UR_MODEL},
 ]
+
+# --------------------------------------------------------------------------- #
+# 사용성 평가 (SUS · System Usability Scale)
+#
+# 표준 10문항을 원문 순서 그대로 쓴다. 홀수는 긍정, 짝수는 부정 문항이 번갈아 오는데,
+# 이것이 SUS 의 핵심 장치다 — 다 읽지 않고 한쪽으로만 찍는 응답(묵종 편향)을 드러낸다.
+# 그래서 문항 순서를 섞거나 긍정·부정을 모아 배치하면 안 된다(퀴즈는 보기를 섞지만
+# 여기는 섞지 않는 이유).
+#
+# 채점은 서버에서 한다 (sus_score). 응답자 화면에서 계산해 보내면 값을 신뢰할 수
+# 없고, 척도 해석이 바뀌었을 때 과거 기록을 다시 계산할 수도 없다 — 원응답(1~5)을
+# 그대로 저장하고 점수는 파생값으로 함께 남긴다.
+# --------------------------------------------------------------------------- #
+SUS_ITEMS = [
+    {"no": 1, "polarity": "긍정", "text": "이 시스템을 자주 사용하고 싶다."},
+    {"no": 2, "polarity": "부정", "text": "이 시스템이 불필요하게 복잡하다고 느꼈다."},
+    {"no": 3, "polarity": "긍정", "text": "이 시스템은 사용하기 쉽다고 생각했다."},
+    {"no": 4, "polarity": "부정",
+     "text": "이 시스템을 사용하려면 기술적인 역량을 가진 사람의 도움이 필요할 것 같다."},
+    {"no": 5, "polarity": "긍정", "text": "이 시스템의 다양한 기능들이 잘 통합되어 있다고 느꼈다."},
+    {"no": 6, "polarity": "부정", "text": "이 시스템은 일관성이 너무 없다고 생각했다."},
+    {"no": 7, "polarity": "긍정", "text": "대부분의 사람들이 이 시스템을 매우 빠르게 배울 수 있을 것 같다."},
+    {"no": 8, "polarity": "부정", "text": "이 시스템을 사용하는 것이 매우 번거롭고 까다롭다고 느꼈다."},
+    {"no": 9, "polarity": "긍정", "text": "이 시스템을 사용하는 데 매우 자신감을 가질 수 있었다."},
+    {"no": 10, "polarity": "부정", "text": "이 시스템에 익숙해지기 위해 알아야 할 것이 너무 많다고 느꼈다."},
+]
+
+# 5점 척도 라벨 (1: 매우 동의하지 않음 ~ 5: 매우 동의함).
+SUS_SCALE = [
+    {"value": 1, "label": "매우 동의하지 않음"},
+    {"value": 2, "label": "동의하지 않음"},
+    {"value": 3, "label": "보통"},
+    {"value": 4, "label": "동의함"},
+    {"value": 5, "label": "매우 동의함"},
+]
+
+# 응답자 직급(G1~G4). 팀·성함은 자유 입력이지만 직급은 넷 중 하나다 — 집계 축이라
+# 오타("g2", "G2 " 등)가 섞이면 직급별 평균이 둘로 갈라진다.
+# 키 이름은 퀴즈 결과(TEST_RESULT)의 '직급' 과 맞춰 두었다 — 두 로그를 나란히 놓고
+# 볼 때 같은 뜻의 열이 다른 이름이면 합치는 사람이 매번 손으로 짝지어야 한다.
+SUS_POSITIONS = ["G1", "G2", "G3", "G4"]
+
+
+def sus_score(answers: list[int]) -> float:
+    """SUS 원응답(1~5, 10개) → 0~100 점수.
+
+    긍정 문항(홀수)은 값-1, 부정 문항(짝수)은 5-값 으로 뒤집어 0~4 로 만든 뒤 모두
+    더하고(0~40) 2.5 를 곱한다. 부정 문항을 뒤집는 이 단계가 없으면 "복잡하다"에
+    5점을 준 사람이 만점을 받는다.
+
+    100점 만점이지만 백분율이 아니다 — 업계 평균이 68점 근처라, 68 을 기준선으로
+    읽는다(그 해석은 화면 쪽 몫이다).
+    """
+    total = 0
+    for item, value in zip(SUS_ITEMS, answers):
+        total += (value - 1) if item["polarity"] == "긍정" else (5 - value)
+    return round(total * 2.5, 1)
+
 
 # 하단 5메뉴 (GDS-SMART 라벨 그대로).
 BOTTOM_NAV = [
@@ -1536,6 +1644,21 @@ def index(request: Request):
     )
 
 
+@app.get("/survey", response_class=HTMLResponse)
+def survey(request: Request):
+    """사용성 평가(SUS) — 대상 선택 화면에서 바로 들어오는, 대상과 무관한 화면.
+
+    `/{target_id}` 캐치올보다 **먼저** 선언해야 한다 — 뒤에 두면 /survey 가 대상
+    id 로 잡아먹혀 컨텐츠 그리드가 뜬다 (아래 MQTT API 와 같은 이유).
+    """
+    return templates.TemplateResponse(
+        request, "survey.html",
+        {"items": SUS_ITEMS, "scale": SUS_SCALE, "positions": SUS_POSITIONS,
+         "bottom_nav": BOTTOM_NAV, "status": "사용성 평가",
+         "crumbs": [{"text": "사용성 평가", "tier": "content"}]},
+    )
+
+
 @app.get("/search", response_class=HTMLResponse)
 def search(request: Request, q: str | None = None):
     """통합 검색 — 현재 플레이스홀더."""
@@ -1639,6 +1762,29 @@ def _load_records(path: Path) -> list:
         return []
 
 
+def _append_daily(base_dir: Path, record: dict, now: datetime) -> tuple[Path, int]:
+    """날짜 파일(YYYY-MM-DD.json)의 배열에 한 건 덧붙인다. (파일경로, 총건수) 반환.
+
+    퀴즈 결과와 사용성 평가가 이 함수를 공유한다 — 저장 규칙(락·원자적 교체·날짜
+    파일)을 한 곳에만 두어야 한쪽만 고쳐지는 일이 없다. 락은 폴더별이 아니라 전역
+    하나다: 교육장 규모에서 저장은 드물고, 폴더마다 락을 두면 어느 락이 어느 파일을
+    지키는지가 흐려진다.
+
+    OSError 는 잡지 않고 올린다 — 호출부가 화면에 실패를 알려야 하기 때문이다
+    (조용히 삼키면 "저장된 줄 알았는데 없다" 가 된다).
+    """
+    path = base_dir / f"{now:%Y-%m-%d}.json"
+    with _RESULT_LOCK:
+        base_dir.mkdir(parents=True, exist_ok=True)
+        records = _load_records(path)
+        records.append(record)
+        tmp = path.with_suffix(".tmp")
+        with tmp.open("w", encoding="utf-8") as fp:
+            json.dump(records, fp, ensure_ascii=False, indent=2)
+        tmp.replace(path)
+    return path, len(records)
+
+
 @app.post("/api/quiz-result")
 def api_quiz_result(body: QuizResultSubmit, request: Request):
     """퀴즈 결과를 **서버 PC** 의 날짜별 로그(TEST_RESULT/YYYY-MM-DD.json)에 한 건 추가한다.
@@ -1664,25 +1810,17 @@ def api_quiz_result(body: QuizResultSubmit, request: Request):
         "제출IP": client_ip,
     }
 
-    path = RESULT_DIR / f"{now:%Y-%m-%d}.json"
     try:
-        with _RESULT_LOCK:
-            RESULT_DIR.mkdir(parents=True, exist_ok=True)
-            records = _load_records(path)
-            records.append(record)
-            tmp = path.with_suffix(".tmp")
-            with tmp.open("w", encoding="utf-8") as fp:
-                json.dump(records, fp, ensure_ascii=False, indent=2)
-            tmp.replace(path)
+        path, count = _append_daily(RESULT_DIR, record, now)
     except OSError as exc:
         # 조용히 삼키면 "저장된 줄 알았는데 없다" 가 된다. 서버 로그에 남기고
         # 클라이언트에도 실패를 알려 화면에서 다시 보내거나 경고할 수 있게 한다.
-        _quiz_log.exception("결과 저장 실패 (%s · %s)", client_ip, path)
+        _quiz_log.exception("결과 저장 실패 (%s · %s)", client_ip, RESULT_DIR)
         raise HTTPException(500, f"결과 저장 실패: {exc}") from None
 
     _quiz_log.info("결과 저장 · %s · %s/%s · %d점 · %s (총 %d건)",
-                   body.quiz_title, body.org, body.name, body.score, client_ip, len(records))
-    return {"ok": True, "saved_to": str(path), "count": len(records)}
+                   body.quiz_title, body.org, body.name, body.score, client_ip, count)
+    return {"ok": True, "saved_to": str(path), "count": count}
 
 
 @app.get("/api/quiz-result")
@@ -1699,6 +1837,117 @@ def api_quiz_result_list(date: str | None = None):
     with _RESULT_LOCK:
         records = _load_records(path)
     return {"date": day, "path": str(path), "count": len(records), "records": records}
+
+
+class SurveySubmit(BaseModel):
+    """`POST /api/survey-result` 본문 — 사용성 평가(SUS) 한 건.
+
+    answers 는 1~10번 **원응답**(1~5)이고 순서가 곧 문항 번호다. 점수는 받지 않는다 —
+    서버가 계산한다(sus_score). 응답자 화면에서 계산해 보내면 값을 신뢰할 수 없고,
+    나중에 해석이 바뀌어도 과거 기록을 다시 계산할 수 없다.
+    """
+
+    team: str = Field(..., min_length=1, max_length=60)
+    position: str = Field(..., min_length=1, max_length=10)
+    name: str = Field(..., min_length=1, max_length=40)
+    answers: list[int] = Field(..., min_length=10, max_length=10)
+    duration_sec: int = Field(0, ge=0, le=24 * 60 * 60)
+    comment: str = Field("", max_length=1000)
+
+
+# 사용성 평가 결과도 서버 PC 의 날짜 파일에 쌓는다 (퀴즈 결과와 같은 규칙).
+SURVEY_DIR = BASE_DIR / "SURVEY_RESULT"
+
+_survey_log = logging.getLogger("survey-result")
+
+
+@app.post("/api/survey-result")
+def api_survey_result(body: SurveySubmit, request: Request):
+    """사용성 평가를 SURVEY_RESULT/YYYY-MM-DD.json 에 한 건 추가하고 SUS 점수를 돌려준다.
+
+    저장 형태는 원응답 10개 + 파생 점수다. 원응답을 남기는 이유는 두 가지 —
+    문항별 평균(어느 항목이 나쁜가)을 나중에 뽑을 수 있고, 채점 규칙이 바뀌어도
+    다시 계산할 수 있다. 점수만 남기면 둘 다 불가능해진다.
+
+    '제출시각'·'제출IP' 는 퀴즈 결과와 같은 이유로 클라이언트 값이 아니라 서버가 찍는다.
+    """
+    if any(v < 1 or v > 5 for v in body.answers):
+        raise HTTPException(422, "답변은 1~5 사이여야 합니다")
+    if body.position not in SUS_POSITIONS:
+        raise HTTPException(422, f"직급은 {', '.join(SUS_POSITIONS)} 중 하나여야 합니다")
+
+    now = datetime.now()
+    client_ip = request.client.host if request.client else "-"
+    score = sus_score(body.answers)
+    record = {
+        "팀": body.team,
+        "직급": body.position,
+        "이름": body.name,
+        "제출시각": now.isoformat(timespec="seconds"),
+        "소요시간_초": body.duration_sec,
+        "SUS점수": score,
+        # 문항 번호를 키로 남긴다 — 배열 순서만으로는 나중에 문항이 바뀌면 짝이 어긋난다.
+        "응답": {str(item["no"]): value for item, value in zip(SUS_ITEMS, body.answers)},
+        "의견": body.comment,
+        "제출IP": client_ip,
+    }
+
+    try:
+        path, count = _append_daily(SURVEY_DIR, record, now)
+    except OSError as exc:
+        _survey_log.exception("설문 저장 실패 (%s · %s)", client_ip, SURVEY_DIR)
+        raise HTTPException(500, f"설문 저장 실패: {exc}") from None
+
+    _survey_log.info("설문 저장 · %s/%s/%s · SUS %.1f점 · %s (총 %d건)",
+                     body.team, body.position, body.name, score, client_ip, count)
+    return {"ok": True, "sus_score": score, "saved_to": str(path), "count": count}
+
+
+@app.get("/api/survey-result")
+def api_survey_result_list(date: str | None = None):
+    """저장된 사용성 평가를 되읽는다 — 오늘치 또는 `?date=YYYY-MM-DD`.
+
+    평균·문항별 평균을 함께 돌려준다. 원응답이 남아 있어 계산이 가능하고, 담당자가
+    엑셀로 옮기기 전에 "어느 문항이 나쁜가" 를 바로 볼 수 있다.
+    """
+    day = date or f"{datetime.now():%Y-%m-%d}"
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+        raise HTTPException(400, "date 는 YYYY-MM-DD 형식입니다")
+    with _RESULT_LOCK:
+        records = _load_records(SURVEY_DIR / f"{day}.json")
+
+    scores = [r.get("SUS점수") for r in records if isinstance(r.get("SUS점수"), (int, float))]
+    per_item = {}
+    for item in SUS_ITEMS:
+        key = str(item["no"])
+        values = [r["응답"][key] for r in records
+                  if isinstance(r.get("응답"), dict) and key in r["응답"]]
+        if values:
+            per_item[key] = round(sum(values) / len(values), 2)
+
+    return {
+        "날짜": day,
+        "응답수": len(records),
+        "SUS평균": round(sum(scores) / len(scores), 1) if scores else None,
+        "문항평균": per_item,
+        "기록": records,
+    }
+
+
+@app.get("/api/visits")
+def api_visits(date: str | None = None):
+    """방문 집계를 되읽는다 — `GET /api/visits` 오늘치, `?date=2026-09-14` 로 특정 날짜.
+
+    방문수  그날의 세션 수. 같은 사람이 1시간 이상 쉬고 다시 들어오면 따로 센다.
+    방문자수 그날의 고유 브라우저 수(쿠키 기준) — 사람 수의 하한선으로 읽는다.
+
+    브라우저에서 바로 열어 볼 수 있어야 "집계가 되긴 하나" 를 즉시 확인할 수 있다
+    (퀴즈 결과 조회 API 와 같은 이유).
+    """
+    day = date or f"{datetime.now():%Y-%m-%d}"
+    if not visit_log.is_day(day):
+        raise HTTPException(400, "date 는 YYYY-MM-DD 형식입니다")
+    return visit_log.summary(VISIT_DIR, day)
 
 
 @app.get("/api/events")
