@@ -208,6 +208,9 @@ body {
 .tile:hover { filter: brightness(1.12); }
 .tile__icon { width: 60px; height: 60px; color: #fff; }
 .tile__label { font-weight: 700; font-size: 20px; }
+/* 사용성 평가 — 실습 대상(차량·로봇)이 아니므로 한 톤 옅게, 좁게 둔다.
+   같은 크기·같은 색이면 "세 번째 실습 대상" 으로 읽힌다. */
+.tile--survey { flex: 0.62; background: #3f5f86; }
 
 /* 하단 메뉴 — 흰색 + 상단 경계선. 5개 균등 배치 */
 .bottomnav {
@@ -1283,3 +1286,102 @@ body.is-coach [data-coach-target] {
 .coach__text { margin: 8px 0 14px; font-size: 13px; line-height: 1.65; color: var(--ink); }
 .coach__text b { color: var(--brand-blue); }
 .coach__ok { width: 100%; padding: 9px 14px; font-size: 13px; }
+
+/* =========================================================================
+   사용성 평가 (SUS 10문항) — templates/survey.html · static/js/survey.js
+   대상 선택 화면에서 바로 들어오는 단일 화면이라, 좌우 분할 없이 한 장으로 둔다.
+   ========================================================================= */
+.survey {
+  flex: 1; overflow-y: auto; background: #e6e9ee; padding: 22px 26px;
+  display: flex; justify-content: center; align-items: flex-start;
+}
+.survey__form, .survey__done {
+  width: 100%; max-width: 900px;
+  background: #fff; border: 1px solid var(--border); padding: 26px 30px 24px;
+}
+.survey__head { display: flex; align-items: flex-start; gap: 20px; }
+.survey__title { font-size: 19px; font-weight: 700; }
+.survey__lede { margin: 8px 0 0; font-size: 13.5px; line-height: 1.7; color: #374151; }
+.survey__lede b { color: var(--brand-blue); }
+/* 남은 문항 수를 머리에 붙여 둔다 — 아래로 길어서 스크롤 중에도 진행이 보이게. */
+.survey__count {
+  flex: none; font-size: 13px; color: var(--muted); white-space: nowrap;
+  border: 1px solid var(--border); padding: 6px 12px;
+}
+.survey__count b { color: var(--brand-blue); font-size: 16px; }
+
+.survey__who {
+  display: grid; grid-template-columns: 1.4fr 1.2fr 1fr; gap: 16px;
+  margin: 20px 0 6px; padding: 18px; background: #f7f9fb; border: 1px solid var(--border);
+}
+.survey__field { display: flex; flex-direction: column; gap: 6px; }
+.survey__field--wide { margin-top: 18px; }
+.survey__field label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.survey__field input, .survey__field textarea {
+  font: inherit; font-size: 14px; padding: 9px 11px;
+  border: 1px solid var(--border); background: #fff; color: var(--ink);
+}
+.survey__field input:focus, .survey__field textarea:focus {
+  outline: none; border-color: var(--brand-blue);
+}
+/* 직급 G1~G4 — 넷 중 하나라 입력창이 아니라 버튼이다(오타가 집계를 갈라놓지 않게). */
+.survey__positions { display: flex; gap: 8px; }
+.survey__position {
+  flex: 1; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  padding: 9px 0; background: #fff; color: var(--ink); border: 1px solid var(--border);
+}
+.survey__position:hover { background: var(--select-bg); }
+.survey__position.is-on { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
+
+/* 척도 머리글 — 1~5 가 무슨 뜻인지 한 번만 적고, 문항마다 되풀이하지 않는다.
+   보기 버튼 줄과 같은 5등분 그리드라 숫자가 버튼 위에 정확히 선다. */
+.survey__scale-head {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
+  margin: 22px 0 8px; margin-left: auto; width: 330px;
+  font-size: 11px; color: var(--muted); text-align: center;
+}
+.survey__scale-head span { display: flex; flex-direction: column; gap: 2px; font-weight: 700; }
+.survey__scale-head em { font-style: normal; font-weight: 400; font-size: 9.5px; line-height: 1.3; }
+
+.survey__items { list-style: none; margin: 0; padding: 0; }
+.survey__item {
+  display: flex; align-items: center; gap: 18px;
+  padding: 13px 0; border-bottom: 1px solid var(--border);
+}
+.survey__q { flex: 1; display: flex; align-items: baseline; gap: 10px; }
+.survey__no {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  background: #eef1f5; color: var(--muted);
+  font-size: 11px; font-weight: 700; display: inline-flex;
+  align-items: center; justify-content: center;
+}
+.survey__item.is-done .survey__no { background: var(--select-bg); color: var(--brand-blue); }
+.survey__text { font-size: 14px; line-height: 1.6; }
+.survey__opts { flex: none; width: 330px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.survey__opt {
+  font: inherit; cursor: pointer; padding: 9px 0;
+  background: #fff; border: 1px solid var(--border); color: var(--muted);
+  font-size: 13px; font-weight: 600;
+}
+.survey__opt:hover { background: var(--select-bg); border-color: var(--brand-blue); }
+.survey__opt.is-on { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
+
+.survey__foot {
+  display: flex; align-items: center; justify-content: flex-end; gap: 16px; margin-top: 22px;
+}
+.survey__hint { font-size: 12.5px; color: var(--muted); }
+.survey__submit { flex: none; padding: 11px 26px; }
+
+/* 제출 완료 — 점수 하나를 크게. 등급 문구는 survey.js 의 gradeLabel 이 채운다. */
+.survey__done { text-align: center; padding: 48px 30px; }
+.survey__score { font-size: 44px; font-weight: 700; color: var(--brand-blue); }
+.survey__grade { margin-top: 6px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.survey__done-note { margin: 14px 0 22px; font-size: 13px; color: var(--muted); }
+.survey__done-note.is-ng { color: var(--pdf-tag); }
+
+@media (max-width: 900px) {
+  /* 태블릿 세로 — 문항 글과 보기 줄을 위아래로 쌓는다(가로로는 둘 다 좁아진다). */
+  .survey__who { grid-template-columns: 1fr; }
+  .survey__item { flex-direction: column; align-items: stretch; gap: 10px; }
+  .survey__opts, .survey__scale-head { width: 100%; }
+}

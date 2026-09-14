@@ -26,6 +26,15 @@
         <span class="tile__sub">{{ t.tile_sub }}</span>
       </a>
       {% endfor %}
+      {# 사용성 평가 — 대상(차량/로봇)이 아니라 '이 시스템 전체'에 대한 평가라
+         대상 목록(targets)에 끼우지 않고 별도 타일로 둔다. 교육을 마친 뒤 누르는
+         자리라 색을 달리해(tile--survey) 실습 대상과 구분한다. #}
+      <a class="tile tile--survey" href="/survey">
+        {# 'e-Report' 아이콘은 e 글자라 평가지로 읽히지 않는다 — 문서 아이콘을 쓴다. #}
+        {{ icon("doc", "tile__icon") }}
+        <span class="tile__label">사용성 평가</span>
+        <span class="tile__sub">SUS · 10문항</span>
+      </a>
     </div>
   </div>
 </main>
