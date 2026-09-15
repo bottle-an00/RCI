@@ -152,9 +152,13 @@ TARGETS = [
     {"id": "rc-car", "label": "진단 모사 차량", "status": "진단 모사 차량", "device": "rccar",
      "transport": "CAN", "tile_sub": "CAN · OBD", "icon": "car",
      "model": _RC_MODEL},
+    # tile_img: 대상 선택 화면의 큰 타일에만 쓰는 그림(static/img/). 있으면 인라인
+    # SVG 아이콘(icon) 대신 이것을 그린다 — 아이콘은 currentColor 를 물려받는 선화지만
+    # 이쪽은 그림 파일이라 색을 물려받지 못하므로, 흰 선화로 미리 변환해 두었다.
+    # icon 은 지우지 않는다: 컨텐츠 그리드의 강제구동 타일이 여전히 쓴다(content_icon).
     {"id": "ur-robot", "label": "UR Robot", "status": "UR Robot", "device": "urrobot",
      "transport": "DoIP", "tile_sub": "DoIP · 이더넷", "icon": "robotarm",
-     "model": _UR_MODEL},
+     "tile_img": "ur-robot-arm.png", "model": _UR_MODEL},
 ]
 
 # --------------------------------------------------------------------------- #

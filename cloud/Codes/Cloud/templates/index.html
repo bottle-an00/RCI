@@ -23,7 +23,13 @@
     <div class="tiles">
       {% for t in targets %}
       <a class="tile" href="/{{ t.id }}">
+        {# tile_img 가 있으면 그림으로, 없으면 인라인 SVG 아이콘으로 (main.TARGETS).
+           둘의 표시 높이를 맞춰 두어 타일마다 그림 크기가 들쭉날쭉하지 않다. #}
+        {% if t.tile_img %}
+        <img class="tile__img" src="{{ asset('img/' ~ t.tile_img) }}" alt="">
+        {% else %}
         {{ icon(t.icon, "tile__icon") }}
+        {% endif %}
         <span class="tile__label">{{ t.label }}</span>
         <span class="tile__sub">{{ t.tile_sub }}</span>
       </a>
