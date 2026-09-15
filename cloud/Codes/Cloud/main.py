@@ -1557,6 +1557,18 @@ def content_icon(content, target):
     return content["icon"]
 
 
+def content_img(content, target):
+    """컨텐츠 타일에 아이콘 대신 쓸 그림(static/img/). 없으면 None → 아이콘을 그린다.
+
+    UR 강제구동은 대상 선택 타일과 **같은 로봇팔 그림**을 쓴다 — 같은 대상을 두
+    화면에서 다른 그림으로 그리면 같은 것이라는 확신이 흔들린다. 다만 여기는 흰
+    바탕이라 남색 판을 쓴다(그림은 CSS currentColor 를 물려받지 못한다).
+    """
+    if content["id"] == "force" and target["id"] == "ur-robot":
+        return "ur-robot-arm-navy.png"
+    return None
+
+
 def content_tree(content_id, target):
     """콘텐츠·대상별 세부 항목 트리. 중첩 가능({children}). 깊이는 콘텐츠마다 다름."""
     t = target["id"]
@@ -1987,7 +1999,8 @@ def grid(request: Request, target_id: str):
     target = get_target(target_id)
     sections = [
         {"name": s, "cards": [
-            {**c, "title": content_title(c, target), "icon": content_icon(c, target)}
+            {**c, "title": content_title(c, target), "icon": content_icon(c, target),
+             "img": content_img(c, target)}
             for c in CONTENTS if c["section"] == s
         ]}
         for s in SECTIONS
