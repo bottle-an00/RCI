@@ -4,3 +4,7 @@ CLAUDE.md
 __pycache__/
 *.pyc
 .dev-pids
+
+# tools/fix_ur3_pose.py 가 남기는 원본 백업 — git 이 이미 원본을 들고 있다.
+*.glb.bak
+
