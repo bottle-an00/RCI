@@ -33,6 +33,11 @@
      대상·DID 는 참조하지 않으니 그냥 놀린다. loop 는 부저가 "ON" 상태를 유지하는
      동안(제어 반환 전까지) 계속 울리게 하기 위해서다. #}
   <audio id="view3d-horn-audio" src="{{ asset('audio/horn.wav') }}" preload="auto" loop></audio>
+  {# MP3 강제구동용 시동 차임 — RC카 전용(DRIVE_EFFECTS 의 sound:"startup"). 경적과
+     달리 loop 를 붙이지 않는다: 시동음은 한 번 울리고 끝나는 소리다(제어 반환이
+     늦어도 반복되면 안 된다). 음원은 tools/make_startup_chime.py 가 만든 오리지널
+     합성음이다 — 제조사 실제 시동음은 저작물이라 쓰지 않는다. #}
+  <audio id="view3d-startup-audio" src="{{ asset('audio/startup.wav') }}" preload="auto"></audio>
   {% else %}
   {{ icon("cube", "view3d__icon") }}
   <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대</span>

@@ -228,7 +228,7 @@
    *   pulse  모델이 표현할 수단이 없는 동작(MP3, 현재 RC카 전용) — 패널 배지로
    *          "구동 중"을 알린다. 이게 없으면 응답은 오는데 화면은 아무 반응이
    *          없어 '연동이 안 된다'로 오해된다. sound 를 함께 적으면 그 오디오도
-   *          같이 재생·정지한다(지금은 부저 → 경적음 하나뿐).
+   *          같이 재생·정지한다 — 부저 → 경적(loop), MP3 → 시동 차임(1회).
    */
   var DRIVE_EFFECTS = {
     "rc-car": {
@@ -239,7 +239,7 @@
       "0203": {kind: "loop", anim: "WiperSweep", label: "와이퍼 작동 중"},
       "0207": {kind: "light"},
       "0208": {kind: "pulse", label: "부저 ON", sound: "horn"},
-      "0209": {kind: "pulse", label: "MP3 재생 중"},
+      "0209": {kind: "pulse", label: "MP3 재생 중", sound: "startup"},
     },
     "ur-robot": {
       "0201": {kind: "motion", label: "전체 구동 중"},   // UR3Track — 4개 관절이 함께 움직이는 기본 클립
@@ -349,7 +349,10 @@
   //    제어 반환(00)이 올 때까지 계속 울린다 — 자동재생 정책 때문에 play() 가
   //    실패할 수 있어(권한 없이는 소리가 안 날 수 있다) 조용히 무시한다.
   var driveBadge = document.getElementById("view3d-drive-badge");
-  var SOUNDS = { horn: document.getElementById("view3d-horn-audio") };
+  var SOUNDS = {
+    horn: document.getElementById("view3d-horn-audio"),        // 부저 — loop
+    startup: document.getElementById("view3d-startup-audio"),  // 시동음 — 1회
+  };
   function startPulse(label, sound) {
     if (driveBadge) {
       driveBadge.textContent = label || "구동 중";
