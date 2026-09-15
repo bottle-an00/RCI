@@ -628,7 +628,10 @@ body {
 
 /* 3D 뷰 */
 /* 어두운 공간 + 은은한 중앙 광 → 발광(LED 점등)이 도드라진다. */
-.view3d { position: relative; flex: 1; background: radial-gradient(circle at 50% 42%, #242c3a 0%, #151b26 60%, #0b0e14 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; text-align: center; color: #9aa6b5; }
+/* 배경은 --view3d-bg 로 갈아 끼울 수 있다(static/js/view3d-bg.js). 변수가 없으면
+   기본값인 아래 그라데이션이 그대로 쓰인다 — '기본으로 되돌리기' 가 변수를 지우는
+   일이 되어 따로 색을 들고 있지 않아도 된다. */
+.view3d { position: relative; flex: 1; background: var(--view3d-bg, radial-gradient(circle at 50% 42%, #242c3a 0%, #151b26 60%, #0b0e14 100%)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; text-align: center; color: #9aa6b5; }
 .view3d__model { flex: 1; width: 100%; min-height: 0; background: transparent; --poster-color: transparent; }
 .view3d__icon { width: 56px; height: 56px; color: #9aa6b5; }
 .view3d__cap { font-size: 12px; }
@@ -671,6 +674,43 @@ body {
 .seqstate.is-stop { color: #ff9c93; border-color: rgba(255, 156, 147, 0.4); }
 .seqstate.is-fail::before,
 .seqstate.is-stop::before { content: "✗"; font-size: 11px; }
+
+/* 배경색 고르기 (_model3d.html + static/js/view3d-bg.js) — 강제구동 배지는 왼쪽 위,
+   시퀀스 상태는 왼쪽 아래, 이건 오른쪽 위다. 세 개가 서로 겹치지 않는다. */
+.view3d-bg { position: absolute; top: 10px; right: 10px; z-index: 4; text-align: right; }
+.view3d-bg__btn {
+  font: inherit; font-size: 11px; font-weight: 600; cursor: pointer;
+  color: #9aa6b5; background: rgba(11, 14, 20, 0.72);
+  border: 1px solid rgba(154, 166, 181, 0.32); border-radius: 999px; padding: 4px 10px;
+}
+.view3d-bg__btn:hover { color: #dce8f5; border-color: rgba(220, 232, 245, 0.55); }
+.view3d-bg__pop {
+  position: absolute; top: calc(100% + 6px); right: 0; width: 168px;
+  display: flex; flex-direction: column; gap: 7px; padding: 9px;
+  background: rgba(11, 14, 20, 0.94); border: 1px solid rgba(154, 166, 181, 0.32);
+  border-radius: 6px; text-align: left;
+}
+.view3d-bg__pop[hidden] { display: none; }
+.view3d-bg__label { font-size: 11px; font-weight: 600; color: #9aa6b5; }
+.view3d-bg__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.view3d-bg__sw {
+  height: 26px; cursor: pointer; border-radius: 4px; padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+/* '기본' 칸은 실제 기본 배경을 축소해 보여 준다 — 무엇으로 돌아가는지 알 수 있게. */
+.view3d-bg__sw--default {
+  background: radial-gradient(circle at 50% 42%, #242c3a 0%, #151b26 60%, #0b0e14 100%);
+}
+.view3d-bg__sw:hover { border-color: #fff; }
+.view3d-bg__sw.is-on { box-shadow: 0 0 0 2px #7ee787; border-color: #7ee787; }
+.view3d-bg__custom {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 11px; color: #9aa6b5;
+}
+.view3d-bg__custom input[type="color"] {
+  width: 38px; height: 24px; padding: 0; cursor: pointer;
+  background: none; border: 1px solid rgba(154, 166, 181, 0.32); border-radius: 4px;
+}
 .mini-btn { font-size: 11px; color: var(--muted); background: #f5f7fa; border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
 
 /* 통신 로그 — 좌 통신 / 우 디버그, 늘 나란히 보인다. 실제 UDS 왕복과 연결·모드·

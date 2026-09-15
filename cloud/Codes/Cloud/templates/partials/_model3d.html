@@ -20,6 +20,31 @@
      알리는 유일한 통로다. 조명·관절 구동은 모델 자체가 반응하므로 쓰지 않는다
      (rci-live.js 의 DRIVE_EFFECTS 참고). #}
   <span class="view3d__drive-badge" id="view3d-drive-badge" hidden></span>
+  {# 배경색 고르기 — styles.css 의 .view3d 가 background 를 var(--view3d-bg, 기본
+     그라데이션)으로 읽고, static/js/view3d-bg.js 가 그 변수만 얹거나 지운다. 고른 색은
+     localStorage 에 남는다(화면마다 서버에서 새로 받는 다중 페이지라 남기지 않으면
+     화면을 넘길 때마다 되돌아간다). 배경을 바꿀 수 있게 된 뒤로 회색 배경에서 회색
+     책상이 묻히므로, 책상 상판에는 검정 테두리 띠를 뒀다(tools/add_ur3_desk.py). #}
+  <div class="view3d-bg" data-view3d-bg>
+    <button class="view3d-bg__btn" type="button" data-view3d-bg-toggle
+            aria-expanded="false" title="3D 배경색 변경">배경</button>
+    <div class="view3d-bg__pop" data-view3d-bg-pop hidden>
+      <span class="view3d-bg__label">배경색</span>
+      <div class="view3d-bg__grid">
+      <button class="view3d-bg__sw view3d-bg__sw--default" type="button" data-bg="" title="기본 (그라데이션)" aria-label="기본 (그라데이션)"></button>
+      <button class="view3d-bg__sw" type="button" data-bg="#0b0e14" style="background:#0b0e14" title="거의 검정" aria-label="거의 검정"></button>
+      <button class="view3d-bg__sw" type="button" data-bg="#1b2330" style="background:#1b2330" title="다크 네이비" aria-label="다크 네이비"></button>
+      <button class="view3d-bg__sw" type="button" data-bg="#2e3742" style="background:#2e3742" title="슬레이트" aria-label="슬레이트"></button>
+      <button class="view3d-bg__sw" type="button" data-bg="#5b6675" style="background:#5b6675" title="중간 회색" aria-label="중간 회색"></button>
+      <button class="view3d-bg__sw" type="button" data-bg="#8d97a5" style="background:#8d97a5" title="밝은 회색" aria-label="밝은 회색"></button>
+      <button class="view3d-bg__sw" type="button" data-bg="#e6e9ee" style="background:#e6e9ee" title="연회색" aria-label="연회색"></button>
+      <button class="view3d-bg__sw" type="button" data-bg="#ffffff" style="background:#ffffff" title="흰색" aria-label="흰색"></button>
+      </div>
+      <label class="view3d-bg__custom">직접 고르기
+        <input type="color" data-view3d-bg-custom value="#2e3742">
+      </label>
+    </div>
+  </div>
   {# 시퀀스 진행 상태 — 러너가 지금 무엇을 하고 있는지(static/js/seq-status.js).
      ECU 리프로그래밍 단계들(다운로드 요청·블록 전송·검증·리셋)과 진단 하위 기능의
      읽기 단계들은 모델에 담을 표현이 아예 없다 — 응답은 오는데 화면은 아무 변화가
