@@ -37,6 +37,14 @@
 {{ super() }}
 <script src="{{ asset('js/run-resize.js') }}"></script>
 <script src="{{ asset('js/comic-pager.js') }}"></script>
+{% if not cover and sequence and target.model %}
+{# 3D 모델 뷰 — 기능 설명(_seq_brief.html)의 만화 자리를 탭으로 나눠 쓴다. run.html 과
+   같은 구성이다. 커스텀 엘리먼트 정의(model-viewer)와 탭 전환(view3d-tab.js)이 둘 다
+   있어야 동작한다 — 하나만 빠져도 '3D 모델 뷰' 버튼은 그려지는데 눌러도 아무 일이
+   없다(실제로 그 상태였다). 커버 화면에는 스코프 자체가 없어 싣지 않는다. #}
+<script type="module" src="{{ asset('js/vendor/model-viewer.min.js') }}"></script>
+<script src="{{ asset('js/view3d-tab.js') }}"></script>
+{% endif %}
 {% if not cover %}
 <script src="{{ asset('js/mock-rci.js') }}"></script>
 <script src="{{ asset('js/rci-live.js') }}"></script>
