@@ -644,6 +644,33 @@ body {
 .view3d__drive-badge[hidden] { display: none; }
 .view3d__drive-badge::before { content: "●"; animation: view3d-pulse 0.9s ease-in-out infinite; }
 @keyframes view3d-pulse { 50% { opacity: 0.2; } }
+/* 시퀀스 진행 상태 배지 (_model3d.html + static/js/seq-status.js) — ECU 리프로그래밍·
+   진단 하위 기능은 모델이 반응할 수단이 없어, 이 글이 유일한 시각 신호다. 위
+   강제구동 배지와 같은 규칙이되 자리는 반대쪽 아래다 — 강제구동 중에는 둘이 함께
+   뜬다(예: "블록 전송 2/3 진행 중" + "모터 구동 중"). */
+.seqstate {
+  position: absolute; bottom: 10px; left: 10px; max-width: calc(100% - 20px);
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; pointer-events: none;
+  background: rgba(11, 14, 20, 0.72); border-radius: 999px;
+  padding: 4px 10px 4px 8px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: #9aa6b5; border: 1px solid rgba(154, 166, 181, 0.32);
+}
+.seqstate[hidden] { display: none; }
+.seqstate::before { content: "●"; font-size: 9px; flex: none; }
+/* 진행 중만 점멸한다 — 멈춘 상태가 깜빡이면 아직 도는 줄로 읽힌다. 키프레임은
+   강제구동 배지와 공유한다. */
+.seqstate.is-run { color: #ffcf6b; border-color: rgba(255, 207, 107, 0.4); }
+.seqstate.is-run::before { animation: view3d-pulse 0.9s ease-in-out infinite; }
+.seqstate.is-pass { color: #7ee7a8; border-color: rgba(126, 231, 168, 0.4); }
+.seqstate.is-pass::before { content: "✓"; font-size: 11px; }
+.seqstate.is-done { color: #9ec9ff; border-color: rgba(158, 201, 255, 0.4); }
+.seqstate.is-done::before { content: "■"; font-size: 9px; }
+.seqstate.is-fail,
+.seqstate.is-stop { color: #ff9c93; border-color: rgba(255, 156, 147, 0.4); }
+.seqstate.is-fail::before,
+.seqstate.is-stop::before { content: "✗"; font-size: 11px; }
 .mini-btn { font-size: 11px; color: var(--muted); background: #f5f7fa; border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
 
 /* 통신 로그 — 좌 통신 / 우 디버그, 늘 나란히 보인다. 실제 UDS 왕복과 연결·모드·
@@ -787,6 +814,7 @@ button.stepper__row:hover { background: #eef2f7; }
 /* 만화 파인 래퍼 — 실제 레이아웃에 끼어들지 않는다. 그 안의 각 주제 패널이 이전처럼
    panel__body 의 바로 아래 자식인 것처럼 flex:1 을 그대로 받는다(view3d-tab.js). */
 .view3d-pane { display: contents; }
+
 
 /* =========================================================================
    퀴즈 (Figma 103:2) — 좌 주제 목록 / 우 문항. 이론 교육·실습 준비와 같은 .md 규약

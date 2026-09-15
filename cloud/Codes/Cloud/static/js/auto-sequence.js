@@ -16,7 +16,11 @@
  * 이 파일이 모드를 보는 곳은 **정책** 뿐이다 — 아래 POLICY 표 참조.
  *
  * 의존: rci-live.js (window.RCI, "rci:answer" 이벤트) 뒤에 로드할 것.
- * 방송: "seq:step" — 지금 밟는 단계를 알린다 (seq-brief.js 가 설명 패널을 갈아 낀다).
+ * 방송: "seq:step"  — 지금 밟는 단계를 알린다 (seq-brief.js 가 설명 패널을 갈아 낀다).
+ *       "seq:state" — 러너가 지금 무엇을 하고 있는지(대기·진행·통과·실패·완료)를 알린다
+ *                     (seq-status.js 가 3D 모델 뷰 안에 텍스트로 그린다). ECU·진단 하위
+ *                     기능은 3D 모델이 반응할 수단이 없어 화면에 아무 변화가 없다 —
+ *                     그 공백을 글로 메우는 통로다.
  */
 (function () {
   "use strict";
@@ -110,9 +114,19 @@
     if (state) rows[i].classList.add("is-" + state);
   }
 
-  function paintProgress(done, label) {
+  function paintProgress(done, label, phase) {
     if (barEl) barEl.style.width = Math.round(done / steps.length * 100) + "%";
     if (statusEl) statusEl.textContent = label + " · " + done + " / " + steps.length;
+    // 같은 상태를 화면 다른 곳에서도 그릴 수 있게 그대로 내보낸다. phase 는 라벨과
+    // 따로 싣는다 — "대기 중" 은 '통과하고 대기'(pass)일 수도, '실패했지만 이어갈 수
+    // 있어 대기'(fail)일 수도 있어 문구만으로는 갈라지지 않는다.
+    // index 는 늘 '그 상태가 가리키는 단계' 다 (run=지금 밟는 단계, pass/fail=막 끝난 단계).
+    document.dispatchEvent(new CustomEvent("seq:state", {
+      detail: {
+        phase: phase || "idle", label: label, done: done, total: steps.length,
+        index: idx, step: steps[idx] || null, title: plan.title,
+      },
+    }));
   }
 
   /* 버튼 하나가 세 가지 일을 한다 — 다음 단계 실행 / 실행 중(잠금) / 처음부터 다시.
@@ -160,7 +174,7 @@
     ended = false;
     if (pending) { clearTimeout(pending.timer); pending = null; }
     rows.forEach(function (r) { r.classList.remove("is-now", "is-done", "is-fail"); });
-    paintProgress(0, "대기 중");
+    paintProgress(0, "대기 중", "idle");
     paintBtn();
     log("muted", "○ 시퀀스를 처음으로 되돌렸습니다 · " + plan.title);
     if (window.RCI.keepalive.on()) window.RCI.keepalive.stop("시퀀스 초기화");
@@ -193,7 +207,7 @@
     var st = steps[idx];
     busy = true;
     paintRow(idx, "now");
-    paintProgress(idx, "진행 중");
+    paintProgress(idx, "진행 중", "run");
     paintBtn();
     announce(idx);
 
@@ -241,10 +255,10 @@
     busy = false;
     if (idx >= steps.length - 1) {
       ended = true;
-      paintProgress(steps.length, "완료");
+      paintProgress(steps.length, "완료", "done");
       log("muted", "■ 시퀀스 완료 · " + plan.title);
     } else {
-      paintProgress(idx + 1, "대기 중");
+      paintProgress(idx + 1, "대기 중", "pass");
     }
     paintBtn();
   }
@@ -257,12 +271,12 @@
 
     if (st.critical || policy().stopOnFail || idx >= steps.length - 1) {
       ended = true;
-      paintProgress(Math.max(0, idx), "중단");
+      paintProgress(Math.max(0, idx), "중단", "stop");
       log("muted", "■ 시퀀스 중단 — 단계 " + (idx + 1) + " 에서 끊겼습니다");
       // 뒤 단계(세션 정리)를 밟지 못했으므로 발행만이라도 손수 거둔다.
       if (window.RCI.keepalive.on()) window.RCI.keepalive.stop("시퀀스 중단");
     } else {
-      paintProgress(idx, "대기 중");
+      paintProgress(idx, "대기 중", "fail");
       log("muted", "   ↳ " + policy().label + " 모드라 다음 단계를 이어서 밟아 볼 수 있습니다 "
         + "(RCI(MQTT) 모드였다면 여기서 끊깁니다)");
     }
@@ -334,5 +348,5 @@
 
   paintMode();
   paintBtn();
-  paintProgress(0, "대기 중");
+  paintProgress(0, "대기 중", "idle");
 })();

@@ -116,5 +116,8 @@
 {# 설명 패널 교체는 통신과 무관하다 — live 가 아니어도(브로커가 없어도) 읽을 수 있게
    auto-sequence 바깥에 둔다. #}
 <script src="{{ asset('js/seq-brief.js') }}"></script>
+{# 시퀀스 상태 글 표시. auto-sequence 의 "seq:state" 를 듣기만 하므로 live 여부와
+   무관하게 싣는다 — 방송이 없으면 '대기 중' 에서 움직이지 않는다. #}
+<script src="{{ asset('js/seq-status.js') }}"></script>
 {% endif %}
 {% endblock %}
