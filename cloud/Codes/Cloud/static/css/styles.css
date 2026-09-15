@@ -222,6 +222,9 @@ body {
 }
 .tile:hover { filter: brightness(1.12); }
 .tile__icon { width: 60px; height: 60px; color: #fff; }
+/* 그림으로 들어가는 타일 아이콘(tile_img) — 로봇팔처럼 세로로 긴 그림이라 폭이 아니라
+   높이를 맞춘다. SVG 아이콘(60px)보다 조금 크게 잡아야 선화가 같은 무게로 보인다. */
+.tile__img { height: 84px; width: auto; display: block; }
 .tile__label { font-weight: 700; font-size: 20px; }
 /* 사용성 평가도 .tile 그대로 — 세 타일은 같은 크기·같은 색이다(리뷰 지시).
    flex:1 과 배경색을 공유하므로 별도 규칙이 없다. */
@@ -503,6 +506,9 @@ body {
 }
 .cat-tile:hover { border-color: var(--brand-blue); box-shadow: 0 2px 12px rgba(0,44,95,.10); }
 .cat-tile__icon { width: 68px; height: 68px; color: var(--brand-blue); }
+/* 그림으로 들어가는 컨텐츠 아이콘(content_img) — 세로로 긴 로봇팔이라 높이를 맞춘다.
+   SVG 아이콘(68px)보다 조금 크게 잡아야 선화가 같은 무게로 보인다. */
+.cat-tile__img { height: 84px; width: auto; display: block; }
 .cat-tile__label { font-size: 18px; font-weight: 600; text-align: center; }
 @media (max-width: 1100px) {
   .cat-row { grid-template-columns: repeat(3, 1fr); }

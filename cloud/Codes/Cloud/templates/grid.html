@@ -11,7 +11,13 @@
     <div class="cat-row">
       {% for c in s.cards %}
       <a class="cat-tile" href="/{{ target.id }}/{{ c.id }}">
+        {# img 가 있으면 그림으로 (main.content_img) — UR 강제구동이 대상 선택 화면과
+           같은 로봇팔 그림을 쓴다. 그 밖에는 인라인 SVG 아이콘. #}
+        {% if c.img %}
+        <img class="cat-tile__img" src="{{ asset('img/' ~ c.img) }}" alt="">
+        {% else %}
         {{ icon(c.icon, "cat-tile__icon") }}
+        {% endif %}
         <span class="cat-tile__label">{{ c.title }}</span>
       </a>
       {% endfor %}
