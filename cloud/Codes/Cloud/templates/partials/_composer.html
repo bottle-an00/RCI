@@ -59,6 +59,12 @@
         {% else %}UDS 페이로드 — 블록마다 직접 입력합니다 (DoIP — CAN 층 없음){% endif %}
       </div>
 
+      {# data-block-bytes: 이 칸이 다 채워졌다고 볼 hex 바이트 수(main.py _bytes_of).
+         필러는 여기 없다 — 남은 자리를 받는 칸이라 몇 바이트인지가 다른 칸을 얼마나
+         채웠는지에 따라 바뀐다(can-composer.js fillerTarget, 화면엔 라벨로 표시).
+         can-composer.js 가 이 값으로 '한 칸을 다 쳤다' 를 판단해 다음 칸으로
+         넘어간다(자동 다음 칸 이동) — 개념 하나(칸 하나)를 다 쓰면 바로 다음 개념으로
+         넘어가게 해, 어디까지 썼는지 매번 세지 않아도 되게 한다. #}
       <div class="blocks" data-blocks>
         {% for b in blocks %}
         <label class="block block--{{ b.size }}{% if b.optional %} block--opt{% endif %}{% if b.fixed %} block--fixed{% endif %}"
@@ -66,6 +72,7 @@
           <span class="block__label">{{ b.label }}</span>
           <input class="block__input mono" type="text" data-block-input="{{ b.id }}"
                  value="{{ b.value }}"{% if b.fixed %} readonly{% endif %}
+                 {% if b.bytes %}data-block-bytes="{{ b.bytes }}"{% endif %}
                  placeholder="{{ b.place }}" spellcheck="false"
                  autocomplete="off" autocapitalize="off">
         </label>

@@ -1141,6 +1141,10 @@ button.stepper__row:hover { background: #eef2f7; }
      3px 차이가 났다(실측). line-height 를 고정해 블록 종류와 무관하게 같은 높이가
      되게 한다 — 아래 .block 이 이제 균일한 높이를 갖는 이유다. */
   line-height: 15px;
+  /* 필러 라벨은 can-composer.js updateFillerHint() 가 "필러 · 3바이트 필요" 처럼
+     길이를 덧붙인다 — 창이 좁아 칸이 줄어들면 이 늘어난 글자가 옆 칸을 침범할 수
+     있어 자기 칸 안에서만 말줄임되게 막아 둔다. */
+  overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
 .block__input {
   width: 100%; border: 0; border-bottom: 1px solid var(--border); background: transparent;

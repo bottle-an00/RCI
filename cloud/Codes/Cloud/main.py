@@ -1078,6 +1078,13 @@ def _bytes_place(value):
     return f"{n}바이트" if n else "hex"
 
 
+def _bytes_of(value):
+    """기본값 → 바이트 수(정수). step_blocks 가 블록마다 data-block-bytes 로 내려
+    보내 화면에서 '이 칸을 다 채웠다' 를 정확히 판단하게 한다(can-composer.js
+    autoAdvance) — _bytes_place 의 "n바이트" 문자열을 다시 파싱하지 않기 위해서다."""
+    return len((value or "").split())
+
+
 def step_blocks(spec, addr):
     """단계 규격 → 메시지 작성 입력 블록 목록 (화면 왼→오 순서 = 프레임 순서)."""
     toks = (spec["actions"][0]["tpl"] or "").split()
@@ -1094,23 +1101,26 @@ def step_blocks(spec, addr):
                            value=addr["req"], fixed=True))
         blocks.append(_blk("dlc", "DLC", "", size="xs", kind="dec",
                            value="8", fixed=True))
-        blocks.append(_blk("pci", "PCI · 길이", "1바이트", size="xs"))
+        # bytes=1 — PCI·SID 는 이 화면에서 늘 단일 프레임(1바이트)만 다룬다
+        # (첫 프레임 `1L LL` 2바이트 표기는 이 실습 범위 밖). can-composer.js 가
+        # 이 값으로 '한 바이트를 다 쳤다' 를 판단해 다음 칸으로 넘어간다.
+        blocks.append(_blk("pci", "PCI · 길이", "1바이트", size="xs", bytes=1))
 
     # 첫 토큰은 언제나 SID 리터럴이다 (규격이 서비스 하나를 다루므로).
-    blocks.append(_blk("sid", "SID", "1바이트", size="xs"))
+    blocks.append(_blk("sid", "SID", "1바이트", size="xs", bytes=1))
 
     for t in toks[1:]:
         m = _FIELD_TOKEN.match(t)
         if not m:
             # 템플릿에 남은 고정 hex — 개념 이름이 없으니 값 그대로를 이름으로 쓴다.
-            blocks.append(_blk(f"lit{len(blocks)}", f"고정값 {t}", t))
+            blocks.append(_blk(f"lit{len(blocks)}", f"고정값 {t}", t, bytes=1))
             continue
         f = by_name.get(m.group(1))
         if not f:
             continue
         used.add(f["name"])
         blocks.append(_blk(f["name"], f["label"], _bytes_place(f["default"]),
-                           options=f.get("options"),
+                           options=f.get("options"), bytes=_bytes_of(f["default"]),
                            size="md" if f.get("kind") == "choice" else "sm"))
 
     # 첫 액션에 안 쓰인 필드(예: 보안 접근의 Key — 두 번째 액션에서 쓴다)도 칸은 둔다.
@@ -1119,6 +1129,7 @@ def step_blocks(spec, addr):
             continue
         blocks.append(_blk(f["name"], f["label"], _bytes_place(f["default"]),
                            options=f.get("options"), optional=True,
+                           bytes=_bytes_of(f["default"]),
                            size="md" if f.get("kind") == "choice" else "sm"))
 
     if addr["req"]:

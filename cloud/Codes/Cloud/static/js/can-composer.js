@@ -207,8 +207,12 @@
       if (r.dlc === null) warn("DLC 가 없습니다 — CAN Classic 진단 프레임은 항상 8 입니다");
       else if (r.dlc !== DLC_EXPECTED) warn("DLC " + r.dlc + " — 실차 로그의 진단 프레임은 모두 8 입니다");
 
+      // 8바이트를 다 채우기 전에는 아직 쓰는 중인 것이지 '틀린' 것은 아니라서
+      // warn 으로 둔다(칸을 빨갛게 칠하지 않는다 — 한창 채우는 중에 매 글자마다
+      // 빨개지면 오히려 방해된다). 대신 전송 자체를 막는 건 아래 refresh() 의
+      // completeLen 판정이 따로 맡는다 — '아직 안 끝남' 과 '틀림' 을 구분한다.
       if (r.data.length && r.data.length !== DLC_EXPECTED) {
-        warn("데이터 " + r.data.length + "바이트 — 8칸을 필러까지 모두 채웁니다 (지금 "
+        warn("데이터 " + r.data.length + "바이트 — 8칸을 필러까지 모두 채워야 전송할 수 있습니다 (지금 "
              + (r.data.length < 8 ? (8 - r.data.length) + "칸 비었음" : (r.data.length - 8) + "칸 넘침") + ")");
       }
     }
@@ -345,10 +349,15 @@
     countBox.textContent = "UDS " + ex.uds.filter(isByte).length + "바이트"
       + (CAN_LAYER ? " · 데이터 " + r.data.length + "/8칸" : "");
 
-    // 오류가 하나라도 있으면 전송을 막는다. 경고는 전송을 막지 않는다.
+    // 오류가 하나라도 있으면 전송을 막는다. 경고는 전송을 막지 않는다 — 단,
+    // 8바이트를 다 채우지 않은 것만은 예외로 별도 조건(completeLen)을 둔다.
+    // '아직 안 끝남' 은 verdict 상으로는 warn(칸을 빨갛게 칠하지 않음)이지만,
+    // 실제 CAN 프레임은 8바이트 고정이라 이 상태로 전송 버튼을 누를 수 있게
+    // 두면 안 된다 — 그래서 여기서 따로 한 번 더 막는다.
     var fatal = verdict.some(function (x) { return x.s === "err"; });
+    var completeLen = !CAN_LAYER || r.data.length === DLC_EXPECTED;
     var uds = ex.uds.filter(isByte).join(" ");
-    setSendable(!fatal && uds && dir === "req" ? uds : "");
+    setSendable(!fatal && completeLen && uds && dir === "req" ? uds : "");
   }
 
   function setSendable(raw) {
@@ -414,13 +423,84 @@
 
   if (hintClose) hintClose.addEventListener("click", hideHint);
 
+  /* ---- 입력 도우미 — hex 자동 정리·다음 칸 자동 이동·필러 목표량 안내 ------
+   *
+   * CAN 을 처음 보는 사람에게 이 화면이 어려운 지점은 셋이다: (1) 한 칸에 바이트를
+   * 몇 개 적어야 하는지 모른다, (2) 다 적었으면 다음 칸으로 알아서 넘어가 줘야
+   * 하는데 매번 마우스로 옮겨 눌러야 한다, (3) 필러가 '남는 칸' 이라는 것만 알지
+   * 몇 바이트인지는 계산해야 안다. 셋 다 화면이 대신 해줄 수 있는 계산이다.
+   * ---------------------------------------------------------------------- */
+
+  var FIXED_IDS = {canid: true, dlc: true};   // 채워서 잠근 칸 — 자동 이동 대상이 아니다
+
+  // 사람이 편하게 치도록 hex 만 남기고 대문자화 + 2자마다 띄어쓰기(바이트 단위).
+  // 커서는 편집 중간이어도 일단 끝으로 보낸다 — 앞으로 치는 흐름을 가장 흔한
+  // 경우로 보고 단순하게 했다(중간 수정은 지우고 다시 치는 편이 자연스럽다).
+  function formatHexInput(el) {
+    var raw = el.value.toUpperCase().replace(/[^0-9A-F]/g, "");
+    var grouped = (raw.match(/.{1,2}/g) || []).join(" ");
+    if (grouped !== el.value) el.value = grouped;
+    return raw;   // 공백 없는 순수 hex — 길이 판정에 쓴다
+  }
+
+  // 필러 빼고 지금까지 실제로 채운 바이트 수 — DLC(8) 에서 이만큼을 빼면 필러가
+  // 몇 바이트를 더 가져야 하는지가 나온다. PCI·SID·필드 칸이 다 이 계산에 들어가고,
+  // 아직 안 쓴 선택 칸(예: 보안 접근 02 단계에서만 쓰는 Key)은 비어 있으니 저절로
+  // 빠진다 — '지금 상태 기준' 으로 매번 다시 계산하기 때문이다.
+  function bytesUsedExceptFiller() {
+    var used = 0;
+    Array.prototype.forEach.call(inputs, function (el) {
+      var id = el.dataset.blockInput;
+      if (id === "filler" || FIXED_IDS[id]) return;
+      var raw = el.value.replace(/[^0-9A-F]/gi, "");
+      used += Math.ceil(raw.length / 2);
+    });
+    return used;
+  }
+
+  var fillerInput = root.querySelector('[data-block-input="filler"]');
+  var fillerLabel = fillerInput && fillerInput.closest(".block").querySelector(".block__label");
+  var fillerLabelBase = fillerLabel ? fillerLabel.textContent : "";
+
+  // 필러 칸 라벨에 '지금 몇 바이트가 남았는지' 를 얹는다. placeholder 가 아니라
+  // 라벨을 바꾸는 이유: placeholder 는 값을 치기 시작하면 가려지는데, 채우는
+  // 동안에도 '몇 바이트째' 인지 계속 보여야 한다.
+  function updateFillerHint() {
+    if (!fillerInput || !CAN_LAYER) return;
+    var need = Math.max(0, DLC_EXPECTED - bytesUsedExceptFiller());
+    fillerLabel.textContent = need
+      ? fillerLabelBase + " · " + need + "바이트 필요"
+      : fillerLabelBase;
+  }
+
+  // 이 칸에 필요한 바이트 수를 다 채웠으면 다음 칸으로 초점을 옮긴다. 필러는
+  // 목표가 고정돼 있지 않아(bytesUsedExceptFiller 로 매번 계산) 여기서는 다루지
+  // 않는다 — 필러는 어차피 마지막 칸이라 옮겨갈 곳도 없다.
+  function autoAdvance(el) {
+    var need = parseInt(el.dataset.blockBytes, 10);
+    if (!need) return;
+    var raw = el.value.replace(/[^0-9A-F]/gi, "");
+    if (raw.length < need * 2) return;
+    var all = Array.prototype.filter.call(inputs, function (i) {
+      return !i.readOnly && !i.disabled;
+    });
+    var idx = all.indexOf(el);
+    if (idx >= 0 && idx < all.length - 1) all[idx + 1].focus();
+  }
+
   Array.prototype.forEach.call(inputs, function (el) {
-    el.addEventListener("input", refresh);
+    el.addEventListener("input", function () {
+      if (!FIXED_IDS[el.dataset.blockInput]) formatHexInput(el);
+      refresh();
+      updateFillerHint();
+      autoAdvance(el);
+    });
     el.addEventListener("focus", function () { showHint(el.dataset.blockInput); });
     // 라벨을 눌러도(= 칸 밖을 눌러도) 힌트가 뜨게 — label 이 초점을 넘겨주므로
     // focus 로 충분하지만, 이미 초점이 있는 칸을 다시 누르는 경우를 위해 둔다.
     el.addEventListener("click", function () { showHint(el.dataset.blockInput); });
   });
+  updateFillerHint();
 
   if (clearBtn) {
     clearBtn.addEventListener("click", function () {
@@ -431,6 +511,7 @@
       });
       hideHint();
       refresh();
+      updateFillerHint();
       var first = root.querySelector(
         "[data-block-input]:not([disabled]):not([readonly])");
       if (first) first.focus();
