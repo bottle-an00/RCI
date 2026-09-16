@@ -32,10 +32,6 @@
     Array.prototype.forEach.call(panes, function (p) {
       if (value) p.style.setProperty("--view3d-bg", value);
       else p.style.removeProperty("--view3d-bg");
-      // 기본 배경은 색이 아니라 정비소 장면(.view3d__scene, styles.css)이다.
-      // 색을 고르면 이 클래스가 장면을 덮어 숨기고 고른 색이 대신 드러난다 —
-      // '기본' 스와치(값이 빈 문자열)를 고르면 다시 장면으로 돌아간다.
-      p.classList.toggle("has-custom-bg", !!value);
     });
     Array.prototype.forEach.call(swatches, function (s) {
       s.classList.toggle("is-on", (s.dataset.bg || "") === (value || ""));

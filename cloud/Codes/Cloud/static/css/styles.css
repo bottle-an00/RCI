@@ -668,49 +668,14 @@ body {
 .run-actions { margin-top: auto; display: flex; justify-content: flex-end; }
 
 /* 3D 뷰 */
-/* 기본 배경은 흰 정비소 장면이다(.view3d__scene, DOM으로 그린다 — 광택 바닥에
-   비치는 반사·타일 줄눈까지 표현하려니 단색 하나로는 안 됐다). .view3d 자신의
-   background 는 예전 그대로 어두운 그라데이션을 폴백으로 두지만, 모델이 있는
-   화면에서는 장면이 그 위를 덮어 가려 준다.
-   배경은 --view3d-bg 로 갈아 끼울 수 있다(static/js/view3d-bg.js). 색을 고르면
-   .view3d 에 has-custom-bg 가 붙어 장면을 숨기고 고른 색이 대신 드러난다 —
-   '기본' 으로 되돌리면(변수 제거) has-custom-bg 도 같이 빠져 장면이 돌아온다. */
+/* 어두운 공간 + 은은한 중앙 광 → 발광(LED 점등)이 도드라진다. */
+/* 배경은 --view3d-bg 로 갈아 끼울 수 있다(static/js/view3d-bg.js). 변수가 없으면
+   기본값인 아래 그라데이션이 그대로 쓰인다 — '기본으로 되돌리기' 가 변수를 지우는
+   일이 되어 따로 색을 들고 있지 않아도 된다. */
 .view3d { position: relative; flex: 1; background: var(--view3d-bg, radial-gradient(circle at 50% 42%, #242c3a 0%, #151b26 60%, #0b0e14 100%)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; text-align: center; color: #9aa6b5; }
-/* UR robot 은 GLB 안에 실제 3D 바닥·벽을 넣어 뒀다(tools/add_scene_room.py) —
-   그 흰 방 바깥(카메라가 다 못 채우는 가장자리)에 예전 어두운 그라데이션이
-   그대로 비치면 흰 방과 부딪힌다. 이 대상만 기본값을 방과 같은 톤의 옅은
-   회색으로 바꾼다. */
-.view3d--has-room { background: var(--view3d-bg, #cfd3d9); }
-.view3d__model { position: relative; flex: 1; width: 100%; min-height: 0; background: transparent; --poster-color: transparent; }
+.view3d__model { flex: 1; width: 100%; min-height: 0; background: transparent; --poster-color: transparent; }
 .view3d__icon { width: 56px; height: 56px; color: #9aa6b5; }
 .view3d__cap { font-size: 12px; }
-
-/* 배경 정비소 장면 — 벽(위 62%) + 광택 바닥(아래 38%, 타일 줄눈 + 하이라이트) +
-   뒷벽 중앙의 GIT 로고. model-viewer 는 배경이 투명이라(.view3d__model) 이 자리에
-   먼저 그려 두면 모델 뒤로 그대로 비쳐 보인다(DOM 순서상 model-viewer 보다 앞이라
-   z-index 없이도 뒤에 깔린다). has-custom-bg 가 붙으면(사용자가 색을 고르면) 통째로
-   숨는다 — 그 아래 .view3d 자신의 background(고른 색)가 대신 드러난다. */
-.view3d__scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.view3d.has-custom-bg .view3d__scene { display: none; }
-.view3d__scene-wall {
-  position: absolute; inset: 0 0 38% 0;
-  background: linear-gradient(180deg, #fcfdfe 0%, #eef1f4 100%);
-}
-/* 광택 바닥 — 위쪽일수록 빛을 받아 밝고(하이라이트), 세로 줄눈으로 타일을
-   나눈다. 사진처럼 완전한 반사를 그릴 순 없지만, 밝은 띠 하나로 '광이 나는
-   바닥' 이라는 인상은 충분히 낸다. */
-.view3d__scene-floor {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 38%;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 30%),
-    repeating-linear-gradient(90deg, #d8dce1 0, #d8dce1 1px, transparent 1px, transparent 58px),
-    linear-gradient(180deg, #d3d7dc 0%, #bec3ca 100%);
-  border-top: 1px solid #cdd2d8;
-}
-.view3d__scene-logo {
-  position: absolute; top: 13%; left: 50%; transform: translateX(-50%);
-  width: 15%; min-width: 56px; max-width: 130px; opacity: 0.9;
-}
 /* 강제구동 중 배지 — 모델 자체가 반응하지 못하는 동작(모터·서보·부저·MP3)의
    유일한 시각 신호다. rci-live.js 의 startPulse/stopPulse 가 텍스트와 표시를 맡는다. */
 .view3d__drive-badge {
@@ -773,11 +738,9 @@ body {
   height: 26px; cursor: pointer; border-radius: 4px; padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.28);
 }
-/* '기본' 칸은 실제 기본 배경(.view3d__scene 정비소 장면)을 축소해 보여 준다 —
-   무엇으로 돌아가는지 알 수 있게. 벽은 밝게, 바닥은 살짝 진하게 둬 '흰 벽 +
-   광택 바닥' 조합만 알아보는 정도로 단순화했다. */
+/* '기본' 칸은 실제 기본 배경을 축소해 보여 준다 — 무엇으로 돌아가는지 알 수 있게. */
 .view3d-bg__sw--default {
-  background: linear-gradient(180deg, #fcfdfe 0%, #fcfdfe 55%, #c7ccd3 55%, #c7ccd3 100%);
+  background: radial-gradient(circle at 50% 42%, #242c3a 0%, #151b26 60%, #0b0e14 100%);
 }
 .view3d-bg__sw:hover { border-color: #fff; }
 .view3d-bg__sw.is-on { box-shadow: 0 0 0 2px #7ee787; border-color: #7ee787; }
