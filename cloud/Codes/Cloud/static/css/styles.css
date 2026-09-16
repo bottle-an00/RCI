@@ -1129,18 +1129,26 @@ button.stepper__row:hover { background: #eef2f7; }
   display: flex; flex-direction: column; gap: 3px;
   border: 1px solid var(--border); border-top: 3px solid #c8d0da;
   background: #fff; padding: 5px 7px 6px; cursor: text;
+  /* 경고 아이콘(.block.is-err::after)의 기준점 — 블록 우상단 꼭짓점에 맞춘다. */
+  position: relative;
 }
 .block__label {
-  font-size: 10px; font-weight: 700; color: var(--muted);
+  font-size: 12px; font-weight: 700; color: var(--muted);
   letter-spacing: 0.2px; white-space: nowrap;
+  /* 라벨에 한글(PCI · 길이·세션 유형·필러)과 영문(CAN ID·DLC·SID)이 섞여 있으면
+     같은 font-size 라도 실제 줄 높이가 다르다 — 한글 글리프의 상하 여백(줄간격)이
+     라틴 문자보다 커서, 같은 10px 에서도 한글 라벨은 15px, 영문 라벨은 12px 로
+     3px 차이가 났다(실측). line-height 를 고정해 블록 종류와 무관하게 같은 높이가
+     되게 한다 — 아래 .block 이 이제 균일한 높이를 갖는 이유다. */
+  line-height: 15px;
 }
 .block__input {
   width: 100%; border: 0; border-bottom: 1px solid var(--border); background: transparent;
-  font-size: 14px; font-weight: 600; letter-spacing: 0.5px; color: var(--brand-blue);
+  font-size: 17px; font-weight: 600; letter-spacing: 0.5px; color: var(--brand-blue);
   padding: 3px 2px;
 }
 .block__input:focus { outline: none; border-bottom-color: var(--brand-blue); }
-.block__input::placeholder { color: #b3bcc9; font-weight: 400; font-size: 11px; letter-spacing: 0; }
+.block__input::placeholder { color: #b3bcc9; font-weight: 400; font-size: 13px; letter-spacing: 0; }
 .block__input:disabled { color: #b3bcc9; cursor: not-allowed; }
 /* 힌트를 펼쳐 둔 칸 — 위 설명이 어느 칸의 것인지 여기서도 보인다. */
 .block.is-on { border-color: var(--brand-blue); border-top-color: var(--brand-blue); background: var(--select-bg); }
@@ -1151,10 +1159,33 @@ button.stepper__row:hover { background: #eef2f7; }
 .block--fixed { background: #f2f4f7; cursor: default; }
 .block--fixed .block__input { color: var(--muted); cursor: default; }
 .block--fixed .block__input:focus { border-bottom-color: var(--border); }
-.block--xs { width: 62px; }
-.block--sm { width: 92px; }
-.block--md { width: 128px; }
-.block--lg { width: 132px; }
+/* 폭 — 고정 px 대신 '가중치로 남는 폭을 나눠 갖기' 로 바꿨다. flex-basis:0 이라
+   내용 크기와 무관하게 가중치(옛 고정폭 값을 그대로 썼다)대로 순수 배분되고,
+   min-width 가 그 아래로는 줄지 않을 바닥이다 — 좁아지면 지금처럼 줄바꿈된다.
+   그 결과 블록 행 전체 폭이 항상 아래 '완성된 프레임' 칸(.write__joined, 컨테이너
+   폭 100%)과 정확히 맞아떨어진다 — 전에는 옛 고정폭의 합만큼만 차지하고 남는
+   폭은 그냥 빈 채로 남아, 필러 블록이 끝나는 자리와 완성된 프레임 오른쪽 끝이
+   실측 최대 546px 까지 벌어졌었다. */
+.block--xs { flex: 62 1 0; min-width: 62px; }
+.block--sm { flex: 92 1 0; min-width: 92px; }
+.block--md { flex: 128 1 0; min-width: 128px; }
+.block--lg { flex: 132 1 0; min-width: 132px; }
+
+/* 입력을 잘못 적은 칸 — 판정(can-composer.js validate())이 err 로 잡은 블록만
+   빨강으로 표시한다(warn 은 '확인은 필요하나 틀린 건 아님' 이라 표시하지 않는다).
+   .is-on(힌트 열림)과 같이 걸릴 수 있어 아래(나중 규칙)에 둬 우선한다 — 지금
+   보고 있는 칸이라도 틀렸다는 사실이 우선이다. */
+.block.is-err {
+  background: #fdecec; border-color: #f0b8b4; border-top-color: var(--pdf-tag);
+}
+/* 경고 아이콘 — 블록 우상단 '꼭짓점' 이 아이콘의 중심이 되도록 절반만 겹쳐
+   튀어나오게 둔다(translate 50%,-50%). 느낌표 삼각형은 인라인 SVG. */
+.block.is-err::after {
+  content: "";
+  position: absolute; top: 0; right: 0; transform: translate(50%, -50%);
+  width: 16px; height: 16px; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3 L23 21 H1 Z' fill='%23FBCB4A' stroke='%2314171A' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3Crect x='10.6' y='9.5' width='2.8' height='6.5' rx='1.4' fill='%2314171A'/%3E%3Ccircle cx='12' cy='18.2' r='1.5' fill='%2314171A'/%3E%3C/svg%3E") no-repeat center / contain;
+}
 
 /* 블록을 합친 결과 — 실제로 검증·전송되는 한 줄. 읽기 전용이다. */
 .write__joined {

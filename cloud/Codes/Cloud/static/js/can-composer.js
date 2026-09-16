@@ -61,14 +61,24 @@
 
   /* 블록을 DOM 순서(= 프레임 순서)대로 이어 붙인다. 빈 칸은 건너뛴다 — 보안 접근의
      Key 처럼 그 단계에서 안 쓰는 칸이 있기 때문이다. 여기서 만들어진 한 줄이 아래
-     파서의 유일한 입력이다. */
+     파서의 유일한 입력이다.
+
+     tokenBlocks 는 합친 문자열을 tokenize() 했을 때 나올 토큰과 같은 순서·개수로,
+     그 토큰이 어느 블록에서 왔는지를 나란히 들고 있다(한 블록 값에 바이트가 여럿
+     이면 — 예 필러 "55 55 55 55 55" — 그 블록 id 가 그만큼 반복된다). validate()
+     가 '몇 번째 바이트가 틀렸다' 를 알아냈을 때 이 배열로 되짚어 어느 블록을
+     빨갛게 칠할지 찾는다 — 규칙마다 블록 이름을 하드코딩하지 않고, 실제로 그
+     값을 쳐 넣은 칸을 그대로 가리키기 위해서다. */
   function joinBlocks() {
-    var parts = [];
+    var parts = [], tokenBlocks = [];
     Array.prototype.forEach.call(inputs, function (el) {
       var v = el.value.trim();
-      if (v) parts.push(v);
+      if (!v) return;
+      parts.push(v);
+      var n = v.split(/[\s,]+/).filter(Boolean).length;
+      for (var i = 0; i < n; i++) tokenBlocks.push(el.dataset.blockInput);
     });
-    return parts.join(" ");
+    return {text: parts.join(" "), tokenBlocks: tokenBlocks};
   }
 
   /* ---- 파싱 -------------------------------------------------------------- */
@@ -82,10 +92,10 @@
   function parse(text) {
     var t = tokenize(text);
     if (!t.length) return null;
-    var r = {canId: null, dlc: null, data: t};
+    var r = {canId: null, dlc: null, data: t, consumed: 0};
     if (CAN_LAYER) {
-      if (/^[0-9A-F]{3,8}$/.test(t[0])) { r.canId = t[0]; t = t.slice(1); }
-      if (t.length && /^[0-8]$/.test(t[0])) { r.dlc = parseInt(t[0], 10); t = t.slice(1); }
+      if (/^[0-9A-F]{3,8}$/.test(t[0])) { r.canId = t[0]; t = t.slice(1); r.consumed++; }
+      if (t.length && /^[0-8]$/.test(t[0])) { r.dlc = parseInt(t[0], 10); t = t.slice(1); r.consumed++; }
       r.data = t;
     }
     return r;
@@ -157,19 +167,29 @@
 
   /* ---- 검증 -------------------------------------------------------------- */
 
-  function validate(r, pci, ex, dir, filler) {
+  /* err()·warn()·ok() 의 두 번째 인자(옵션)는 그 판정이 가리키는 블록 id(문자열
+     또는 배열)다 — err 인 것만 아래 renderVerdict 뒤 paintBlockErrors() 가 빨갛게
+     칠한다. warn 은 '확인은 필요하나 틀린 건 아님' 이라 칠하지 않는다.
+     dataBlocks 는 r.data 와 자리가 맞는 블록 id 배열(joinBlocks 의 tokenBlocks 에서
+     CAN ID·DLC 가 소비한 만큼 앞을 잘라낸 것 — refresh() 참고). */
+  function validate(r, pci, ex, dir, filler, dataBlocks) {
     var v = [];
     var ok = function (t) { v.push({s: "ok", t: t}); };
     var warn = function (t) { v.push({s: "warn", t: t}); };
-    var err = function (t) { v.push({s: "err", t: t}); };
+    var err = function (t, b) { v.push({s: "err", t: t, b: b}); };
 
     var lengthBroken = false;      // PCI 길이가 어긋나면 필러 검사를 건너뛴다
-    var bad = r.data.filter(function (t) { return !isByte(t); });
-    if (bad.length) err("바이트가 아닌 토큰: " + bad.join(" ") + " — 2자리 hex 로 적습니다");
+    var badIds = [];
+    var bad = r.data.filter(function (t, i) {
+      if (isByte(t)) return false;
+      if (dataBlocks[i]) badIds.push(dataBlocks[i]);
+      return true;
+    });
+    if (bad.length) err("바이트가 아닌 토큰: " + bad.join(" ") + " — 2자리 hex 로 적습니다", badIds);
 
     if (CAN_LAYER) {
       if (!r.canId) {
-        err("CAN ID 가 없습니다 — 프레임은 식별자로 시작합니다 (요청 " + CAN_REQ + ")");
+        err("CAN ID 가 없습니다 — 프레임은 식별자로 시작합니다 (요청 " + CAN_REQ + ")", "canid");
       } else if (dir === "req") {
         ok("CAN ID " + r.canId + " · 진단기 → 제어기 (응답은 " + CAN_RESP + " 로 돌아온다)");
       } else if (dir === "resp") {
@@ -193,31 +213,35 @@
       }
     }
 
+    // PCI(첫 바이트) 가 어느 블록에서 왔는지 — 아래 PCI 관련 err 가 공통으로 쓴다.
+    var pciId = dataBlocks[0];
+
     // DoIP 는 ISO-TP 를 타지 않아 PCI 층이 아예 없다 — 입력 전체가 UDS 페이로드다.
     if (!CAN_LAYER) {
       if (ex.uds.length) ok("UDS 페이로드 " + ex.uds.length + "바이트 (DoIP — PCI·필러 없음)");
     } else if (!pci) {
-      err("PCI(길이) 바이트를 읽을 수 없습니다");
+      err("PCI(길이) 바이트를 읽을 수 없습니다", pciId);
       return v;
     } else if (pci.kind === "SF") {
       if (pci.len === 0) {
-        err("PCI 00 — 길이 0 은 프레임이 될 수 없습니다");
+        err("PCI 00 — 길이 0 은 프레임이 될 수 없습니다", pciId);
       } else if (pci.len > 7) {
         err("PCI " + r.data[0] + " — 단일 프레임에 담을 수 있는 UDS 는 최대 7바이트입니다. "
             + pci.len + "바이트라면 첫 프레임 `1" + ((pci.len >> 8) & 0xF).toString(16).toUpperCase()
-            + " " + hex2(pci.len & 0xFF) + "` 로 시작해 연속 프레임(2N)으로 이어야 합니다");
+            + " " + hex2(pci.len & 0xFF) + "` 로 시작해 연속 프레임(2N)으로 이어야 합니다", pciId);
       } else {
         ok("PCI " + r.data[0] + " · " + pci.label + " · UDS " + pci.len + "바이트");
         // 7바이트 초과는 위에서 이미 짚었으니, 범위 안일 때만 길이 대조를 한다.
         var problem = checkLength(ex.body, pci.len, filler);
         if (problem) {
-          v.push({s: problem.sev, t: problem.text});
+          // PCI 가 주장하는 길이가 틀렸다는 판정이라 — 고칠 자리는 PCI 칸이다.
+          v.push({s: problem.sev, t: problem.text, b: problem.sev === "err" ? pciId : undefined});
           // 길이가 어긋나면 UDS/필러 경계 자체가 어긋난 것이라 필러 검사는 뜻이 없다.
           if (problem.sev === "err") lengthBroken = true;
         }
       }
     } else if (pci.kind === "FF") {
-      if (pci.len === null) err("첫 프레임은 PCI 가 2바이트(`1L LL`)입니다");
+      if (pci.len === null) err("첫 프레임은 PCI 가 2바이트(`1L LL`)입니다", [dataBlocks[0], dataBlocks[1]]);
       else ok("PCI " + r.data[0] + " " + r.data[1] + " · " + pci.label + " · 전체 " + pci.len
               + "바이트 → 뒤이어 연속 프레임(21, 22 …)이 필요합니다");
     } else if (pci.kind === "CF") {
@@ -226,10 +250,11 @@
       ok("PCI " + r.data[0] + " · " + pci.label + " · 블록크기 "
          + (r.data[1] || "?") + " · 최소간격 " + (r.data[2] || "?") + "ms — 수신측이 보내는 프레임입니다");
     } else {
-      err("PCI " + r.data[0] + " — 상위 니블은 0(단일)·1(첫)·2(연속)·3(흐름제어) 중 하나여야 합니다");
+      err("PCI " + r.data[0] + " — 상위 니블은 0(단일)·1(첫)·2(연속)·3(흐름제어) 중 하나여야 합니다", pciId);
     }
 
-    // 필러
+    // 필러 — warn 이라 빨간 칠은 하지 않는다(필러 어긋남은 대개 UDS 쪽 실수의
+    // 반영이라, PCI/데이터 칸 쪽 err 가 이미 있다면 그쪽이 우선이다).
     if (ex.filler.length && !lengthBroken) {
       var wrong = ex.filler.filter(function (x) { return x !== filler; });
       if (wrong.length) {
@@ -240,8 +265,9 @@
       }
     }
 
-    // SID
+    // SID — ex.uds[0] 은 data 에서 PCI 뒤 첫 바이트이므로 인덱스는 pci.size 다.
     var sid = ex.uds[0];
+    var sidId = pci ? dataBlocks[pci.size] : undefined;
     if (sid && isByte(sid) && (!pci || pci.kind === "SF" || pci.kind === "FF")) {
       if (sid === "7F") {
         var reqSid = ex.uds[1], nrc = ex.uds[2];
@@ -249,11 +275,11 @@
       } else if (dir === "resp" || (REQ_SID[hex2(parseInt(sid, 16) - 0x40)] && dir !== "req")) {
         var origin = hex2(parseInt(sid, 16) - 0x40);
         if (REQ_SID[origin]) ok("긍정 응답 0x" + sid + " ← 요청 0x" + origin + " " + REQ_SID[origin]);
-        else err("응답 SID 0x" + sid + " 에 대응하는 요청 서비스가 없습니다");
+        else err("응답 SID 0x" + sid + " 에 대응하는 요청 서비스가 없습니다", sidId);
       } else if (REQ_SID[sid]) {
         ok("SID 0x" + sid + " " + REQ_SID[sid] + " → 긍정 응답 0x" + hex2(parseInt(sid, 16) + 0x40));
       } else {
-        err("SID 0x" + sid + " 는 알려진 진단 서비스가 아닙니다");
+        err("SID 0x" + sid + " 는 알려진 진단 서비스가 아닙니다", sidId);
       }
     }
 
@@ -272,20 +298,39 @@
     }).join("");
   }
 
+  /* 판정에서 err 로 잡힌 블록만 빨갛게 칠한다(.block.is-err, styles.css) — 우상단
+     경고 아이콘은 순수 CSS(::after)라 여기서는 클래스만 얹고 뗀다. b 는 블록 id
+     하나 또는 배열일 수 있다. */
+  function paintBlockErrors(list) {
+    var bad = {};
+    list.forEach(function (x) {
+      if (x.s !== "err" || !x.b) return;
+      (Array.isArray(x.b) ? x.b : [x.b]).forEach(function (id) { if (id) bad[id] = true; });
+    });
+    Array.prototype.forEach.call(root.querySelectorAll("[data-block]"), function (b) {
+      b.classList.toggle("is-err", !!bad[b.dataset.block]);
+    });
+  }
+
   /* ---- 메인 루프 --------------------------------------------------------- */
 
   var sendable = "";     // 전송 가능한 UDS raw ("" 면 전송 불가)
 
   function refresh() {
-    var text = joinBlocks();
+    var joined = joinBlocks();
+    var text = joined.text;
     joinedBox.textContent = text || "—";
     var r = parse(text);
     if (!r) {
       verdictBox.innerHTML = "";
       countBox.textContent = "";
       setSendable("");
+      paintBlockErrors([]);
       return;
     }
+    // CAN ID·DLC 가 앞에서 소비한 만큼 잘라내 r.data 와 자리를 맞춘다 — validate()
+    // 가 '몇 번째 바이트' 로 찾아낸 것을 '어느 블록' 으로 되짚는 통로다.
+    var dataBlocks = joined.tokenBlocks.slice(r.consumed);
     var pci = CAN_LAYER ? decodePci(r.data) : null;   // DoIP 는 PCI 층이 없다
     var ex = pci ? extract(r.data, pci) : {body: r.data, uds: r.data, filler: []};
     var dir = !CAN_LAYER ? "req"
@@ -293,8 +338,9 @@
             : r.canId === CAN_RESP ? "resp" : "unknown";
     var filler = dir === "resp" ? FILL_RESP : FILL_REQ;
 
-    var verdict = validate(r, pci, ex, dir, filler);
+    var verdict = validate(r, pci, ex, dir, filler, dataBlocks);
     renderVerdict(verdict);
+    paintBlockErrors(verdict);
 
     countBox.textContent = "UDS " + ex.uds.filter(isByte).length + "바이트"
       + (CAN_LAYER ? " · 데이터 " + r.data.length + "/8칸" : "");
