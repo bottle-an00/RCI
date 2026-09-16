@@ -8,18 +8,50 @@
 
    컨텍스트: target, is_composer #}
 {% from "partials/_macros.html" import icon %}
-<div class="view3d{% if is_composer %} view3d--inline{% endif %}"
+<div class="view3d{% if is_composer %} view3d--inline{% endif %}{% if target.id == "ur-robot" %} view3d--has-room{% endif %}"
      {% if not is_composer %}data-view3d-pane="model" hidden{% endif %}>
   {% if target.model %}
+  {% if target.id != "ur-robot" %}
+  {# 배경 정비소 — 흰 벽 + 광택 바닥(줄눈) + GIT 로고. CSS 로 그린 평평한 2D 판이라
+     model-viewer 는 배경이 투명이라(.view3d__model) 이 자리에 먼저 그려 두면 그
+     뒤로 비쳐 보인다. 사용자가 배경색을 고르면(view3d-bg.js) .view3d 에
+     has-custom-bg 가 붙어 이 장면을 덮고, 고른 색이 .view3d 자체의
+     background(--view3d-bg)로 대신 보인다 — '기본' 으로 되돌리면 다시 이 장면이
+     드러난다.
+     UR robot 은 여기서 뺀다 — GLB 안에 실제 3D 바닥·벽·GIT 로고를 넣어 뒀다
+     (tools/add_scene_room.py). 이 2D 판을 그 위에 겹치면 로고가 두 번(평평한
+     워터마크 + 입체 간판) 보이는 중복이 생긴다. RC카는 아직 GLB 에 방이 없어
+     이 2D 판이 계속 필요하다. #}
+  <div class="view3d__scene" aria-hidden="true">
+    <div class="view3d__scene-wall"></div>
+    <div class="view3d__scene-floor"></div>
+    <img class="view3d__scene-logo" src="{{ asset('img/git-logo.png') }}" alt="">
+  </div>
+  {% endif %}
   {# loading="eager" 필수 — 기본값(auto)은 화면에 보여야(교차) 불러오기 시작하는데,
      이 파인은 만화 탭이 기본이라 처음엔 숨겨져 있다. 강제구동 응답이 먼저 와도
      (아직 3D 탭을 눌러보지 않았어도) 모델이 이미 준비돼 있어야 반응할 수 있다. #}
+  {# UR3 GLB 안에 바닥·벽·GIT 로고를 실제 geometry 로 넣었다(tools/add_scene_room.py)
+     — model-viewer 는 기본적으로 씬 전체(로봇+방)를 한눈에 담도록 카메라를 자동으로
+     물러세우는데, 방을 더하면서 바운딩 박스가 커져 로봇이 아주 작게 잡혔다. 그래서
+     이 대상만 카메라 거리·회전 범위를 직접 고정한다 — auto 로 두면 방 크기에 카메라가
+     끌려간다. 회전 범위를 앞쪽 반구로 좁힌 이유는 따로 있다: 벽·로고가 한 겹짜리
+     평면이라 뒤로 돌아가면(카메라가 벽 뒤로 넘어가면) 벽이 사라지고 로고 뒷면이
+     좌우 반전된 채 비쳐 보인다 — 실제로 벽 뒤로 돌아가 볼 이유가 없는 화면이라
+     범위를 막아 그 상태 자체를 못 보게 했다. 다른 대상(RC카)은 아직 방을 넣지
+     않아 이 카메라 고정이 필요 없다(오히려 자기 모델보다 큰 거리로 고정돼 작아
+     보이게 된다) — 그래서 UR robot 에만 건다. #}
   <model-viewer class="view3d__model" loading="eager"
                 src="{{ asset('models/' ~ target.model) }}"
                 alt="{{ target.label }} 3D 모델"
                 camera-controls touch-action="pan-y"
                 environment-image="neutral" exposure="0.55"
-                shadow-intensity="0.6"></model-viewer>
+                shadow-intensity="0.6"
+                {% if target.id == "ur-robot" %}
+                camera-orbit="0deg 78deg 1.8m"
+                min-camera-orbit="-65deg 55deg 1.8m"
+                max-camera-orbit="65deg 100deg 1.8m"
+                {% endif %}></model-viewer>
   {# 강제구동 중 표시 배지 — 모델에 담을 수단이 없는 동작(모터·서보·부저·MP3)을
      알리는 유일한 통로다. 조명·관절 구동은 모델 자체가 반응하므로 쓰지 않는다
      (rci-live.js 의 DRIVE_EFFECTS 참고). #}
@@ -35,7 +67,7 @@
     <div class="view3d-bg__pop" data-view3d-bg-pop hidden>
       <span class="view3d-bg__label">배경색</span>
       <div class="view3d-bg__grid">
-      <button class="view3d-bg__sw view3d-bg__sw--default" type="button" data-bg="" title="기본 (그라데이션)" aria-label="기본 (그라데이션)"></button>
+      <button class="view3d-bg__sw view3d-bg__sw--default" type="button" data-bg="" title="기본 (정비소)" aria-label="기본 (정비소)"></button>
       <button class="view3d-bg__sw" type="button" data-bg="#0b0e14" style="background:#0b0e14" title="거의 검정" aria-label="거의 검정"></button>
       <button class="view3d-bg__sw" type="button" data-bg="#1b2330" style="background:#1b2330" title="다크 네이비" aria-label="다크 네이비"></button>
       <button class="view3d-bg__sw" type="button" data-bg="#2e3742" style="background:#2e3742" title="슬레이트" aria-label="슬레이트"></button>
