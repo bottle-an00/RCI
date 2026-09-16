@@ -37,6 +37,11 @@
   var FILL_RESP = root.dataset.fillResp || "";
   var CAN_LAYER = !!CAN_REQ;          // DoIP 대상은 CAN 층이 없다
   var DLC_EXPECTED = 8;
+  // 이 단계가 실제로 가르치려는 서비스(예: 세션 유지 단계는 3E). _composer.html
+  // 이 이미 심어 두고 있었는데(main.py step.spec.sid) 지금까지 아무도 읽지 않았다
+  // — 그래서 3E 를 적어야 할 자리에 27(보안 접근)을 적어도 '알려진 서비스니까
+  // 맞다' 로 통과했다. SID 검증에서 이 값과 대조한다(validate 참고).
+  var EXPECTED_SID = (root.dataset.sid || "").toUpperCase();
 
   var inputs = root.querySelectorAll("[data-block-input]");
   var joinedBox = root.querySelector("[data-frame-joined]");
@@ -273,7 +278,14 @@
     var sid = ex.uds[0];
     var sidId = pci ? dataBlocks[pci.size] : undefined;
     if (sid && isByte(sid) && (!pci || pci.kind === "SF" || pci.kind === "FF")) {
-      if (sid === "7F") {
+      // 이 단계가 기대하는 서비스와 다르면 그 자리에서 바로 막는다 — 아래
+      // REQ_SID 대조는 '입력이 아무 진단 서비스로든 읽히는가' 만 보기 때문에,
+      // 엉뚱하지만 알려진 SID(예: 세션 유지(3E) 단계에 보안 접근(27)을 적음)를
+      // 적으면 이 검사가 없을 때는 '알려진 서비스니까 맞다' 로 통과해 버렸다.
+      if (EXPECTED_SID && dir === "req" && sid !== EXPECTED_SID) {
+        err("이 단계는 SID 0x" + EXPECTED_SID + " 를 연습합니다 — 지금은 0x" + sid
+            + (REQ_SID[sid] ? " (" + REQ_SID[sid] + ")" : "") + " 를 적었습니다", sidId);
+      } else if (sid === "7F") {
         var reqSid = ex.uds[1], nrc = ex.uds[2];
         ok("부정 응답 · 요청 SID 0x" + (reqSid || "??") + " 거부 · NRC 0x" + (nrc || "??"));
       } else if (dir === "resp" || (REQ_SID[hex2(parseInt(sid, 16) - 0x40)] && dir !== "req")) {
@@ -286,6 +298,27 @@
         err("SID 0x" + sid + " 는 알려진 진단 서비스가 아닙니다", sidId);
       }
     }
+
+    // 정해진 값 중 하나여야 하는 칸(세션 유형·제어 옵션·제어 대상 DID 등, 힌트의
+    // '골라 쓸 수 있는 값' 표가 있는 칸) — '이 값이어야 한다' 가 아니라 '이 값들
+    // 중 하나여야 한다' 로 느슨하게 본다. 강제구동의 제어 대상 DID 처럼 정답이
+    // 여럿인 칸도 있기 때문이다(팬이든 모터든 목록에 있는 제어기면 다 맞다).
+    // 목록은 서버가 이미 내려준 힌트(HINTS[id].options)를 그대로 쓴다 — 같은
+    // 표를 검증에도 쓰는 것이라 목록이 둘로 갈릴 일이 없다.
+    Array.prototype.forEach.call(inputs, function (el) {
+      var id = el.dataset.blockInput;
+      var h = HINTS[id];
+      var opts = h && h.options;
+      if (!opts || !opts.length) return;
+      var v = el.value.trim().toUpperCase().replace(/\s+/g, " ");
+      if (!v) return;
+      var known = opts.some(function (o) {
+        return (o.v || "").toUpperCase().replace(/\s+/g, " ") === v;
+      });
+      if (!known) {
+        err(h.title + " — 옆 힌트의 '골라 쓸 수 있는 값' 표에 없는 값입니다: " + v, id);
+      }
+    });
 
     return v;
   }
