@@ -565,8 +565,12 @@ body {
   background: #e6e9ee;
   align-items: stretch;
 }
+/* 좌·우 패널은 핸들로 폭을 조절한다(static/js/run-resize.js). 줄일 수 있는 한계를
+   여기 min/max-width 로 선언하고 JS 가 그 값을 읽어 간다 — 한계의 근거가 레이아웃
+   이므로 숫자도 레이아웃 쪽에 두고, 드래그·복원·CSS 가 같은 값을 쓰게 한다. */
 .run__left {
   width: 280px; flex: none;
+  min-width: 180px; max-width: 640px;
   background: #fff; border: 1px solid var(--border);
   overflow-y: auto;
 }
@@ -574,14 +578,28 @@ body {
 /* 우 컬럼 — 메시지 작성 화면에서는 통신 로그 하나뿐이다(예전엔 3D 모델 뷰와 같이
    썼는데, 3D 가 만화 탭으로 옮겨가며 이 컬럼을 로그가 그대로 물려받는다). 진단·
    강제구동 화면에서는 시퀀스 진행만 담고, 로그는 .run__body 아래로 내려간다. */
-.run__right { width: 340px; flex: none; display: flex; flex-direction: column; gap: 16px; }
+/* 우 컬럼의 하한이 좌측(180px)보다 큰 이유: 시퀀스 행에는 '단계 이름 + 페이로드' 두
+   칸이 들어가고, 실패한 단계를 로그와 맞춰 보려면 페이로드가 잘리지 않아야 한다.
+   폭별 실측(모터 60% 강제구동, 8단계):
+     340px 행 30px · 잘림 없음      300px 행 50px · 잘림 없음   ← 하한
+     280px 페이로드 1/8 잘림        240px 2/8 잘림
+     180px 행 210px · 이름 3/8 잘림
+   300px 이 '아무것도 잘리지 않는 가장 좁은 폭' 이라 여기를 바닥으로 잡았다. 덤으로
+   이 구간에서는 주의문·안내문이 두 줄(34px)로 유지되므로, 아래 .run__split 의 세로
+   바닥(330px) 계산 전제가 허용 폭 전 구간에서 그대로 성립한다. */
+.run__right { width: 340px; flex: none; min-width: 300px; max-width: 640px; display: flex; flex-direction: column; gap: 16px; }
 .run__log { flex: 1; min-height: 0; }   /* min-height:0 이 없으면 로그가 넘쳐 옆 패널을 밀어낸다 */
 
 /* 진단·강제구동 전용 — 위(가운데 기능 설명 | 우측 시퀀스 진행) + 아래 통신 로그를
    가운데+우측 전체 폭으로 깐다. 로그가 3D 모델 뷰가 있던 자리(우측)까지 이어지되,
    그 컬럼으로 옮겨가는 게 아니라 폭 전체를 가로지르는 별도의 아래 칸으로 둔다. */
 .run__body { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 16px; }
-.run__split { flex: 2; min-height: 0; display: flex; gap: 8px; }
+/* 세로로도 바닥이 필요하다. 시퀀스 패널에서 줄어들 수 있는 것은 단계 목록뿐이고
+   (그 위아래의 주의문·진행바·안내문·실행 버튼은 줄지 않는다), 실측하면 그 고정
+   부분만으로 이미 230px 를 쓴다 — 창이 그보다 짧아지면 '다음 시퀀스 실행' 버튼이
+   패널 밖으로 밀려 안 보인다. 여기에 단계 두 줄(94px)을 더한 330px 을 바닥으로 두고,
+   부족한 높이는 아래 통신 로그가 양보한다(.run__log 는 min-height:0). */
+.run__split { flex: 2; min-height: 330px; display: flex; gap: 8px; }
 
 /* 실행 화면 전용 — 뷰포트에 고정하고, 스크롤은 각 패널 내부에서 처리한다.
    flex 자식은 기본 min-height 가 auto(=내용 크기)라서, 사슬 전체에 min-height:0
@@ -819,7 +837,13 @@ input.composer__input:focus { outline: none; border-color: var(--brand-blue); }
 /* 자동 시퀀스 (partials/_sequence.html + static/js/auto-sequence.js)
    단계 목록은 ECU 리프로그래밍처럼 12단계까지 길어진다 — 패널을 밀어내지 않도록
    이 영역만 스크롤한다(.log-body 와 같은 규약). */
-.seq__body { padding: 12px 14px; gap: 10px; }
+/* min-height:0 이 핵심이다. flex 자식의 기본 min-height 는 auto(=내용의 min-content)
+   라서, 이것이 없으면 body 가 '단계 목록 전체 높이' 를 최소 높이로 들고 버틴다. 그러면
+   패널이 짧아져도 body 가 줄지 않고 아래로 넘쳐, 맨 끝의 실행 버튼이 패널 밖으로 밀려
+   보이지 않았다. .seq__steps 에 min-height:0 이 있어도 소용없다 — 그건 부모가 줄일 때
+   자신이 양보하는 규칙이고, 부모의 최소 높이 계산에서 제 기여분을 빼주지는 않는다.
+   (.run__log 가 같은 이유로 min-height:0 을 달고 있다.) */
+.seq__body { padding: 12px 14px; gap: 10px; min-height: 0; }
 .seq__steps {
   flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   display: flex; flex-direction: column; gap: 8px;
