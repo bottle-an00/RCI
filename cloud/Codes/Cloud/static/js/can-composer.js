@@ -300,18 +300,32 @@
     }
 
     // 정해진 값 중 하나여야 하는 칸(세션 유형·제어 옵션·제어 대상 DID 등, 힌트의
-    // '골라 쓸 수 있는 값' 표가 있는 칸) — '이 값이어야 한다' 가 아니라 '이 값들
-    // 중 하나여야 한다' 로 느슨하게 본다. 강제구동의 제어 대상 DID 처럼 정답이
-    // 여럿인 칸도 있기 때문이다(팬이든 모터든 목록에 있는 제어기면 다 맞다).
+    // '골라 쓸 수 있는 값' 표가 있는 칸) — 기본은 '이 값이어야 한다' 가 아니라
+    // '이 값들 중 하나여야 한다' 로 느슨하게 본다. 강제구동의 제어 대상 DID 처럼
+    // 정답이 여럿인 칸도 있기 때문이다(팬이든 모터든 목록에 있는 제어기면 다 맞다).
     // 목록은 서버가 이미 내려준 힌트(HINTS[id].options)를 그대로 쓴다 — 같은
     // 표를 검증에도 쓰는 것이라 목록이 둘로 갈릴 일이 없다.
+    //
+    // 다만 세션 유형처럼 '문법적으로는 셋 다 맞지만 이 실습에서는 하나만 맞다' 는
+    // 칸도 있다 — 01/02/03 모두 정상적인 CAN 프레임이지만, 뒤 단계(강제구동·쓰기)가
+    // 확장 세션(03)에서만 통과하므로 01 을 그냥 통과시키면 나중에 가서야(NRC 0x22)
+    // 이유를 알 수 없이 막힌다. 이런 칸은 data-block-required 로 정답 하나를 못 박아
+    // 두고(main.py _choice required=), 여기서는 목록 대조 대신 그 값과 정확히
+    // 같은지만 본다.
     Array.prototype.forEach.call(inputs, function (el) {
       var id = el.dataset.blockInput;
       var h = HINTS[id];
       var opts = h && h.options;
-      if (!opts || !opts.length) return;
+      var required = el.dataset.blockRequired;
+      if (!required && (!opts || !opts.length)) return;
       var v = el.value.trim().toUpperCase().replace(/\s+/g, " ");
       if (!v) return;
+      if (required) {
+        if (v !== required.toUpperCase()) {
+          err(h.title + " — 이 실습은 0x" + required + " 이어야 합니다(지금 0x" + v + ")", id);
+        }
+        return;
+      }
       var known = opts.some(function (o) {
         return (o.v || "").toUpperCase().replace(/\s+/g, " ") === v;
       });

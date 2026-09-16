@@ -596,8 +596,15 @@ _WRITE_DIDS = {
 _SEED_LEN = {"rc-car": 2, "ur-robot": 4}
 
 
-def _choice(name, label, opts, default):
-    return {"name": name, "label": label, "kind": "choice", "options": opts, "default": default}
+def _choice(name, label, opts, default, required=None):
+    """required 는 '이 값들 중 하나면 다 맞다' 가 아니라 '정확히 이 값이어야 한다' 로
+    좁힐 필요가 있는 필드에만 준다(can-composer.js 가 정확히 일치하는지 본다) —
+    예: 세션 유형은 01/02/03 이 다 문법적으로는 맞는 CAN 프레임이지만, 이 실습들의
+    뒤 단계(강제구동·쓰기)가 확장 세션(03)에서만 통과하므로 03 으로 고정한다."""
+    f = {"name": name, "label": label, "kind": "choice", "options": opts, "default": default}
+    if required is not None:
+        f["required"] = required
+    return f
 
 
 def _hex(name, label, default, hint=""):
@@ -615,7 +622,7 @@ def _st_open():
         "fields": [_choice("session", "세션 유형", [
             {"v": "01", "t": "기본 01 Default"},
             {"v": "02", "t": "프로그래밍 02 Programming"},
-            {"v": "03", "t": "확장 03 Extended"}], "03")],
+            {"v": "03", "t": "확장 03 Extended"}], "03", required="03")],
         "actions": [_act("세션 오픈 전송 →", "10 {session}", "50 {session} 00 32 01 F4")],
         "hint": "강제구동(0x2F)·쓰기(0x2E)는 확장 세션(03)에서만 허용된다. "
                 "응답 뒤 4바이트는 타이밍 파라미터 — P2 = 0x0032 = 50ms, P2* = 0x01F4 × 10ms = 5000ms.",
@@ -1121,6 +1128,7 @@ def step_blocks(spec, addr):
         used.add(f["name"])
         blocks.append(_blk(f["name"], f["label"], _bytes_place(f["default"]),
                            options=f.get("options"), bytes=_bytes_of(f["default"]),
+                           required=f.get("required"),
                            size="md" if f.get("kind") == "choice" else "sm"))
 
     # 첫 액션에 안 쓰인 필드(예: 보안 접근의 Key — 두 번째 액션에서 쓴다)도 칸은 둔다.
@@ -1130,6 +1138,7 @@ def step_blocks(spec, addr):
         blocks.append(_blk(f["name"], f["label"], _bytes_place(f["default"]),
                            options=f.get("options"), optional=True,
                            bytes=_bytes_of(f["default"]),
+                           required=f.get("required"),
                            size="md" if f.get("kind") == "choice" else "sm"))
 
     if addr["req"]:

@@ -64,7 +64,13 @@
          채웠는지에 따라 바뀐다(can-composer.js fillerTarget, 화면엔 라벨로 표시).
          can-composer.js 가 이 값으로 '한 칸을 다 쳤다' 를 판단해 다음 칸으로
          넘어간다(자동 다음 칸 이동) — 개념 하나(칸 하나)를 다 쓰면 바로 다음 개념으로
-         넘어가게 해, 어디까지 썼는지 매번 세지 않아도 되게 한다. #}
+         넘어가게 해, 어디까지 썼는지 매번 세지 않아도 되게 한다.
+
+         data-block-required: '이 값들 중 하나면 다 맞다'(옵션 목록)가 아니라
+         '정확히 이 값이어야 한다' 로 좁힌 칸(main.py _choice required=). 세션
+         유형이 대표적이다 — 01/02/03 다 문법적으로는 맞는 CAN 프레임이지만, 이
+         실습들의 뒤 단계(강제구동·쓰기)가 확장 세션(03)에서만 통과하므로 03 이
+         아니면 can-composer.js 가 빨갛게 잡는다. #}
       <div class="blocks" data-blocks>
         {% for b in blocks %}
         <label class="block block--{{ b.size }}{% if b.optional %} block--opt{% endif %}{% if b.fixed %} block--fixed{% endif %}"
@@ -73,6 +79,7 @@
           <input class="block__input mono" type="text" data-block-input="{{ b.id }}"
                  value="{{ b.value }}"{% if b.fixed %} readonly{% endif %}
                  {% if b.bytes %}data-block-bytes="{{ b.bytes }}"{% endif %}
+                 {% if b.required %}data-block-required="{{ b.required }}"{% endif %}
                  placeholder="{{ b.place }}" spellcheck="false"
                  autocomplete="off" autocapitalize="off">
         </label>

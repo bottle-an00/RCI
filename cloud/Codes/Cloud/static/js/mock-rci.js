@@ -63,6 +63,15 @@
   // 0x14 로 소거된 device. 세션 오픈(0x10)마다 초기화 — 실습을 반복할 수 있게.
   var cleared = {};
 
+  // 마지막으로 연 세션의 서브펑션("01" 기본 / "02" 프로그래밍 / "03" 확장). 없으면(.
+  // 기본값 "01") — 실차 ECU 도 전원을 켜면 기본 세션에서 시작한다.
+  //
+  // 왜 필요한가: 화면 힌트(main.py _st_open)는 이미 "강제구동(0x2F)·쓰기(0x2E)는
+  // 확장 세션(03)에서만 허용된다"고 가르치는데, 예전엔 이 목이 그 규칙을 지키지
+  // 않았다 — 10 01(기본 세션)을 연 채로 2F/2E 를 보내도 그냥 통과했다. mock_rci.py
+  // 와 같은 표를 들고 있어야 하므로 그쪽과 나란히 고친다.
+  var session = {};
+
   function up(bytes) {
     return bytes.map(function (b) { return ("0" + b.toString(16).toUpperCase()).slice(-2); });
   }
@@ -82,10 +91,14 @@
 
     if (sid === 0x10) {                                    // DiagnosticSessionControl
       delete cleared[device];                              // 새 세션 = 실습 초기화
+      session[device] = u[1] || "01";
       return "50 " + (u[1] || "01") + " 00 32 01 F4";      // P2=50ms, P2*=5000ms
     }
     if (sid === 0x3E) return "7E 00";                      // TesterPresent
-    if (sid === 0x11) return "51 " + (u[1] || "01");        // ECUReset (가상)
+    if (sid === 0x11) {                                     // ECUReset (가상) — 리셋 뒤 기본 세션
+      session[device] = "01";
+      return "51 " + (u[1] || "01");
+    }
     if (sid === 0x27) {                                     // SecurityAccess
       var sub = u[1] || "01";
       if (sub === "01") return "67 01 " + SECURITY[device].seed;
@@ -99,12 +112,16 @@
       var data = dids[u[1] + u[2]];
       return data ? "62 " + u[1] + " " + u[2] + " " + data : "7F 22 31";
     }
-    if (sid === 0x2E) {                                     // WriteDataByIdentifier
+    if (sid === 0x2E) {                                     // WriteDataByIdentifier — 확장 세션(03)만
       if (u.length < 3) return "7F 2E 13";
+      if ((session[device] || "01") !== "03") return "7F 2E 22";  // conditionsNotCorrect
       if (u[1] + u[2] === "F195") return "7F 2E 31";        // 쓰기 불가 항목
       return "6E " + u[1] + " " + u[2];
     }
-    if (sid === 0x2F) return "6F " + u.slice(1).join(" ");   // 요청 echo
+    if (sid === 0x2F) {                                      // InputOutputControlByIdentifier — 확장 세션(03)만
+      if ((session[device] || "01") !== "03") return "7F 2F 22";  // conditionsNotCorrect
+      return "6F " + u.slice(1).join(" ");                   // 요청 echo
+    }
     if (sid === 0x31) return "71 " + u.slice(1).join(" ");   // 접수/결과 (단순화)
     if (sid === 0x19) {                                     // ReadDTCInformation
       var records = cleared[device] ? "" : (DTC[device] || "");

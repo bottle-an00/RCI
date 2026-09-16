@@ -110,6 +110,16 @@ DTC = {
 # 세션 오픈(0x10)마다 초기화해서 실습을 반복할 수 있게 한다.
 _cleared: set[str] = set()
 
+# 마지막으로 연 세션의 서브펑션("01" 기본 / "02" 프로그래밍 / "03" 확장). 시작값은
+# 없음(.get 의 기본값 "01") — 실차 ECU 도 전원을 켜면 기본 세션에서 시작한다.
+#
+# 왜 필요한가: 화면의 힌트(_st_open, main.py)는 이미 "강제구동(0x2F)·쓰기(0x2E)는
+# 확장 세션(03)에서만 허용된다"고 가르치는데, 예전엔 이 목이 그 규칙을 지키지
+# 않았다 — 10 01(기본 세션)을 연 채로 2F/2E 를 보내도 그냥 통과했다. 그래서
+# 학습자가 세션 유형을 잘못 골라도 아무 결과 차이가 없어, 가르치는 내용과 실제
+# 동작이 어긋났다. 여기서 실제로 기억해 뒀다가 아래 2F/2E 에서 확인한다.
+_session: dict[str, str] = {}
+
 
 def build_response(device: str, raw: str) -> str:
     """UDS 요청 raw(공백 hex) → 응답 raw hex. 서비스별로 분기한다."""
@@ -127,10 +137,12 @@ def build_response(device: str, raw: str) -> str:
     if sid == 0x10:  # DiagnosticSessionControl
         sf = up[1] if len(up) > 1 else "01"
         _cleared.discard(device)               # 새 세션 = 실습 초기화 (DTC 되살림)
+        _session[device] = sf
         return f"50 {sf} 00 32 01 F4"          # P2=50ms, P2*=5000ms
     if sid == 0x3E:  # TesterPresent
         return "7E 00"
-    if sid == 0x11:  # ECUReset (가상 더미)
+    if sid == 0x11:  # ECUReset (가상 더미) — 실차도 리셋 뒤엔 기본 세션으로 돌아간다.
+        _session[device] = "01"
         return f"51 {up[1] if len(up) > 1 else '01'}"
     if sid == 0x27:  # SecurityAccess
         sub = up[1] if len(up) > 1 else "01"
@@ -146,13 +158,17 @@ def build_response(device: str, raw: str) -> str:
         did = up[1] + up[2]
         data = dids.get(did)
         return f"62 {up[1]} {up[2]} {data}" if data else "7F 22 31"
-    if sid == 0x2E:  # WriteDataByIdentifier
+    if sid == 0x2E:  # WriteDataByIdentifier — 확장 세션(03)에서만 허용된다.
         if len(up) < 3:
             return "7F 2E 13"
+        if _session.get(device, "01") != "03":
+            return "7F 2E 22"                   # conditionsNotCorrect — 세션이 안 맞다
         if up[1] + up[2] == "F195":
             return "7F 2E 31"                   # 쓰기 불가 항목
         return f"6E {up[1]} {up[2]}"
-    if sid == 0x2F:  # InputOutputControlByIdentifier
+    if sid == 0x2F:  # InputOutputControlByIdentifier — 확장 세션(03)에서만 허용된다.
+        if _session.get(device, "01") != "03":
+            return "7F 2F 22"                   # conditionsNotCorrect — 세션이 안 맞다
         return "6F " + " ".join(up[1:])         # 요청 echo
     if sid == 0x31:  # RoutineControl
         return "71 " + " ".join(up[1:])         # 접수/결과 (단순화)
