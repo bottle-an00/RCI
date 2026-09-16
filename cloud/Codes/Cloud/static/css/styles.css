@@ -357,12 +357,18 @@ body {
 .md__group .material__level { margin-left: 8px; }
 .md__list .tree__row.material { padding-left: 34px; }
 /* 과목 안의 난이도 단(기초·심화) — 과목 헤더보다 한 단 들여쓰고 한 톤 옅게 해서
-   같은 굵은 회색 띠가 두 줄 겹쳐 보이지 않게 한다. 그 아래 자료는 두 단. */
-.md__group--level {
-  padding-left: 30px; background: #fafbfc; font-size: 13px; color: var(--muted);
+   같은 굵은 회색 띠가 두 줄 겹쳐 보이지 않게 한다. 그 아래 자료는 두 단.
+
+   선택자에 .md__list 를 덧붙인 이유: 이 줄이 물려받는 .tree__group 이 파일 뒤쪽
+   (접이식 트리 절)에 있고 특이도가 같아서, 클래스 하나짜리로 쓰면 padding·background
+   ·font-size·color 가 전부 그쪽에 덮인다 — 난이도 단이 과목 머리와 똑같이 보였다.
+   한 단 올려 선언 순서와 무관하게 이기게 한다. 바로 아래 자료 행 규칙들도 같은 이유로
+   .md__list 를 앞에 두고 있다. */
+.md__list .md__group--level {
+  padding-left: 34px; background: #fafbfc; font-size: 13px; color: var(--muted);
 }
 .md__group--level .md__group-title { color: var(--ink); }
-.md__list .tree__children .tree__children .tree__row.material { padding-left: 48px; }
+.md__list .tree__children .tree__children .tree__row.material { padding-left: 52px; }
 
 .viewer { flex: 1; }
 .viewer__head {
