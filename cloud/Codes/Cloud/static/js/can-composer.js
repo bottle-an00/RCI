@@ -1,15 +1,21 @@
-/* 메시지 작성 — 사용자가 타이핑한 CAN 프레임을 뜯어보고 검증하고 전송한다.
+/* 메시지 작성 — 사용자가 블록마다 쳐 넣은 CAN 프레임을 뜯어보고 검증하고 전송한다.
  *
  * 방향이 중요하다. 이 화면은 프레임을 **만들어 주지 않는다**. 사람이 쓴 것을 읽는다:
  *
- *   입력  000007E0  8  02  10  03  55 55 55 55 55
- *          │        │  │   └UDS┘  └── 필러 ──┘
- *          └CAN ID  │  └ PCI(ISO-TP 길이)
+ *   블록  [CAN ID][DLC][PCI][SID][서브펑션·DID][데이터][필러]
+ *         000007E0  8   02   10      03          —    55 55 55 55 55
+ *          │        │   │    └─── UDS ───┘        └──── 필러 ────┘
+ *          └CAN ID  │   └ PCI(ISO-TP 길이)
  *                   └ DLC
- *   출력  층별 색 분해 + 검증 결과 + (UDS 만) 전송
+ *   출력  합친 한 줄 + 층별 색 분해 + 검증 결과 + (UDS 만) 전송
  *
- * 검증이 이 화면의 교육 가치다. 직접 쓰면 틀리게 되고, 틀린 지점을 짚어주는 것이
- * 자동 조립기가 줄 수 없는 것이다. 특히 자주 틀리는 것:
+ * 입력칸을 쪼갠 이유는 교육이다. 한 칸에 통째로 치게 하면 '어디까지가 무엇인지' 를
+ * 모른 채 문자열을 베끼게 된다. 칸 하나가 곧 개념 하나이고, 칸을 누르면 그 개념의
+ * 힌트가 위(3D 모델 뷰와 작성 블록 사이)에 뜬다 — 힌트 문구는 서버가 내려준
+ * <script id="block-hints"> (원천은 data/can_hints.json) 에 있다.
+ *
+ * 쪼갠 것은 입력뿐이고, 합친 뒤의 파싱·검증은 예전 그대로다. 검증이 이 화면의 교육
+ * 가치이기 때문이다. 특히 자주 틀리는 것:
  *   · PCI 길이 바이트에 DLC(8)를 적음 — PCI 는 UDS 바이트 수다
  *   · 필러를 방향과 반대로 씀 (요청 0x55 / 응답 0xAA)
  *   · UDS 가 8바이트를 넘는데 PCI 를 `0L` 로 둠 (첫 프레임 `1L LL` 이어야 함)
@@ -32,8 +38,9 @@
   var CAN_LAYER = !!CAN_REQ;          // DoIP 대상은 CAN 층이 없다
   var DLC_EXPECTED = 8;
 
-  var input = document.getElementById("frame-input");
-  var parseBox = document.getElementById("frame-parse");
+  var inputs = root.querySelectorAll("[data-block-input]");
+  var joinedBox = root.querySelector("[data-frame-joined]");
+  var clearBtn = root.querySelector(".js-blocks-clear");
   var verdictBox = document.getElementById("frame-verdict");
   var countBox = document.getElementById("frame-count");
   var sendBtn = root.querySelector(".js-send-frame");
@@ -49,6 +56,20 @@
     "2F": "InputOutputControlByIdentifier", "31": "RoutineControl",
     "3E": "TesterPresent", "85": "ControlDTCSetting",
   };
+
+  /* ---- 블록 → 한 줄 ------------------------------------------------------ */
+
+  /* 블록을 DOM 순서(= 프레임 순서)대로 이어 붙인다. 빈 칸은 건너뛴다 — 보안 접근의
+     Key 처럼 그 단계에서 안 쓰는 칸이 있기 때문이다. 여기서 만들어진 한 줄이 아래
+     파서의 유일한 입력이다. */
+  function joinBlocks() {
+    var parts = [];
+    Array.prototype.forEach.call(inputs, function (el) {
+      var v = el.value.trim();
+      if (v) parts.push(v);
+    });
+    return parts.join(" ");
+  }
 
   /* ---- 파싱 -------------------------------------------------------------- */
 
@@ -239,36 +260,11 @@
     return v;
   }
 
-  /* ---- 렌더 -------------------------------------------------------------- */
-
-  function cell(text, kind) {
-    return '<span class="frame__cell frame__cell--' + kind + '">' + text + "</span>";
-  }
-
-  function renderFrame(r, pci, ex) {
-    var row = "";
-    if (CAN_LAYER) {
-      row += '<span class="frame__tag">' + (pci ? pci.tag : "??") + "</span>";
-      row += cell(r.canId || "없음", r.canId ? "id" : "err");
-      row += cell(r.dlc === null ? "?" : r.dlc, r.dlc === DLC_EXPECTED ? "dlc" : "err");
-    }
-    if (pci) {
-      for (var i = 0; i < pci.size; i++) row += cell(r.data[i] || "??", "pci");
-    }
-    ex.uds.forEach(function (b, i) {
-      // 연속 프레임(CF)은 이어지는 데이터라 SID 가 없다. DoIP 는 PCI 가 없어 첫 바이트가 SID.
-      var isSid = i === 0 && (!CAN_LAYER || (pci && (pci.kind === "SF" || pci.kind === "FF")));
-      row += cell(b, !isByte(b) ? "err" : (isSid ? "sid" : "data"));
-    });
-    ex.filler.forEach(function (b) { row += cell(b, "fill"); });
-    parseBox.innerHTML = '<div class="frame__row">' + row + "</div>"
-      + '<div class="frame__legend">'
-      + (CAN_LAYER ? '<span><em class="lg-id">CAN ID</em></span><span><em class="lg-dlc">DLC</em></span>'
-                   + '<span><em class="lg-pci">PCI</em></span>' : "")
-      + '<span><em class="lg-sid">SID</em></span><span><em class="lg-data">데이터</em></span>'
-      + (CAN_LAYER ? '<span><em class="lg-fill">필러</em></span>' : "")
-      + "<span>· 전송되는 것은 SID+데이터 뿐</span></div>";
-  }
+  /* ---- 렌더 --------------------------------------------------------------
+   * 도식(바이트 칸 그림)은 두지 않는다. 같은 내용을 블록 입력칸이 이미 그리고
+   * 있어 한 화면에 같은 그림이 둘이었고, 그만큼 검증 글이 아래로 밀려났다.
+   * 남기는 것은 '지금 쓴 것이 맞는가' 를 말로 짚어 주는 검증 결과뿐이다.
+   * ---------------------------------------------------------------------- */
 
   function renderVerdict(list) {
     verdictBox.innerHTML = list.map(function (x) {
@@ -281,9 +277,10 @@
   var sendable = "";     // 전송 가능한 UDS raw ("" 면 전송 불가)
 
   function refresh() {
-    var r = parse(input.value);
+    var text = joinBlocks();
+    joinedBox.textContent = text || "—";
+    var r = parse(text);
     if (!r) {
-      parseBox.innerHTML = "";
       verdictBox.innerHTML = "";
       countBox.textContent = "";
       setSendable("");
@@ -296,7 +293,6 @@
             : r.canId === CAN_RESP ? "resp" : "unknown";
     var filler = dir === "resp" ? FILL_RESP : FILL_REQ;
 
-    renderFrame(r, pci, ex);
     var verdict = validate(r, pci, ex, dir, filler);
     renderVerdict(verdict);
 
@@ -312,6 +308,87 @@
   function setSendable(raw) {
     sendable = raw;
     paintSend();
+  }
+
+  /* ---- 블록 힌트 ---------------------------------------------------------
+   * 칸을 누르면(또는 초점이 가면) 그 칸이 무엇인지 위에 띄운다. 문구는 서버가
+   * data/can_hints.json 을 블록 목록에 맞춰 풀어 내려준 것이다 — 여기서는 고르기만
+   * 한다. 고를 값이 정해진 블록은 그 목록도 함께 편다(참고 자료 탭까지 가지 않게).
+   * ---------------------------------------------------------------------- */
+  var HINTS = (function () {
+    var el = document.getElementById("block-hints");
+    try { return el ? JSON.parse(el.textContent) : {}; } catch (e) { return {}; }
+  })();
+
+  var hintBox = root.querySelector("[data-block-hint]");
+  var hintEmpty = root.querySelector("[data-bhint-empty]");
+  var hintCard = root.querySelector("[data-bhint-card]");
+  var hintTitle = root.querySelector("[data-bhint-title]");
+  var hintBody = root.querySelector("[data-bhint-body]");
+  var hintTips = root.querySelector("[data-bhint-tips]");
+  var hintOpts = root.querySelector("[data-bhint-opts]");
+  var hintClose = root.querySelector("[data-bhint-close]");
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c];
+    });
+  }
+
+  function showHint(id) {
+    var h = HINTS[id];
+    if (!h) return;
+    hintTitle.textContent = h.title;
+    hintBody.textContent = h.body;
+    hintTips.innerHTML = (h.tips || []).map(function (t) {
+      return "<li>" + esc(t) + "</li>";
+    }).join("");
+    var opts = h.options || [];
+    hintOpts.hidden = !opts.length;
+    hintOpts.innerHTML = opts.length
+      ? "<caption>골라 쓸 수 있는 값</caption>" + opts.map(function (o) {
+          return '<tr><th class="mono">' + esc(o.v) + "</th><td>" + esc(o.t) + "</td></tr>";
+        }).join("")
+      : "";
+    hintEmpty.hidden = true;
+    hintCard.hidden = false;
+    // 지금 어느 칸의 설명인지 — 칸 쪽에도 표시를 남긴다.
+    Array.prototype.forEach.call(root.querySelectorAll("[data-block]"), function (b) {
+      b.classList.toggle("is-on", b.dataset.block === id);
+    });
+  }
+
+  function hideHint() {
+    hintCard.hidden = true;
+    hintEmpty.hidden = false;
+    Array.prototype.forEach.call(root.querySelectorAll("[data-block]"), function (b) {
+      b.classList.remove("is-on");
+    });
+  }
+
+  if (hintClose) hintClose.addEventListener("click", hideHint);
+
+  Array.prototype.forEach.call(inputs, function (el) {
+    el.addEventListener("input", refresh);
+    el.addEventListener("focus", function () { showHint(el.dataset.blockInput); });
+    // 라벨을 눌러도(= 칸 밖을 눌러도) 힌트가 뜨게 — label 이 초점을 넘겨주므로
+    // focus 로 충분하지만, 이미 초점이 있는 칸을 다시 누르는 경우를 위해 둔다.
+    el.addEventListener("click", function () { showHint(el.dataset.blockInput); });
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function () {
+      // 채워서 잠근 칸(CAN ID·DLC)은 남긴다 — 고를 여지가 없는 값이라 지워 봐야
+      // 다시 채워 넣을 방법이 없다.
+      Array.prototype.forEach.call(inputs, function (el) {
+        if (!el.readOnly) el.value = "";
+      });
+      hideHint();
+      refresh();
+      var first = root.querySelector(
+        "[data-block-input]:not([disabled]):not([readonly])");
+      if (first) first.focus();
+    });
   }
 
   /* ---- 자동 반복 전송 (세션 유지 단계) -----------------------------------
@@ -347,7 +424,6 @@
     if (ka().on()) ka().stop();
     else if (sendable) ka().start(sendable, KA_PERIOD);
   });
-  input.addEventListener("input", refresh);
   // 다른 곳(로그 머리의 중지 버튼)에서 발행이 꺼져도 버튼 문구가 따라간다.
   document.addEventListener("rci:keepalive", paintSend);
 

@@ -5,7 +5,7 @@
    넘길 때마다 서버에 다시 묻지 않기 위해서다.
 
    컨텍스트: sequence.briefs · sequence.steps[].topic (main.with_briefs) · target #}
-{% from "partials/_macros.html" import view3d_switch %}
+{% from "partials/_macros.html" import view3d_switch, comic_zoom %}
 <div class="seqbrief">
 
   <div class="panel panel--emph seqbrief__col">
@@ -46,16 +46,8 @@
               </div>
               {% endfor %}
             </div>
-            {# 확대/축소는 하나의 아이콘 버튼을 토글한다 — 두 아이콘을 data 속성에
-               담아 두고 JS(comic-pager.js)가 상태에 맞게 바꿔 끼운다. #}
-            <div class="comic-pager__zoom">
-              <button class="comic-pager__iconbtn" type="button" data-comic-zoom
-                      data-icon-expand="&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 3H4v5M15 3h5v5M9 21H4v-5M15 21h5v-5&quot;/&gt;&lt;/svg&gt;"
-                      data-icon-collapse="&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5&quot;/&gt;&lt;/svg&gt;"
-                      aria-label="확대" title="확대">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4v5M15 3h5v5M9 21H4v-5M15 21h5v-5"/></svg>
-              </button>
-            </div>
+            {# 확대 — 화면 전체 오버레이. 버튼·ESC·백드롭 클릭으로 닫는다. #}
+            {{ comic_zoom() }}
           </div>
         </div>
         {% endfor %}

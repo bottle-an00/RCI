@@ -130,12 +130,22 @@ def asset(path: str) -> str:
 
 templates.env.globals["asset"] = asset
 
+# 그림으로 들어가는 아이콘 이름 (static/img/icons/*.png).
+#
+# 새로 받은 선화 PNG 를 tools/make_icon_art.py 가 배경 투명 · 선 굵기 통일로 변환해 둔
+# 것들이다. 손으로 그린 인라인 SVG(templates/icons/*.svg)와 이름 공간을 공유하고,
+# 같은 이름이면 그림이 이긴다 — 템플릿의 icon_any() 가 이 집합을 보고 고른다.
+# 색은 그림이 아니라 CSS 가 칠한다(마스크로 쓰기 때문에) 그래서 SVG 아이콘과 똑같이
+# 파란 타일에서는 흰 선, 흰 카드에서는 남색 선이 된다.
+ICON_ART = {"theory", "prep-car", "diag-car", "force-car", "ecu-cycle", "rc-car"}
+templates.env.globals["icon_art_names"] = ICON_ART
+
 
 # --------------------------------------------------------------------------- #
 # 데이터 (§8) — 추후 DB/백엔드 연동 시 이 계층만 교체.
 # --------------------------------------------------------------------------- #
 
-# 대상. tile_sub=타일 보조문구, status=상단 상태표시 라벨, transport=전송수단.
+# 대상. status=상단 상태표시 라벨, transport=전송수단.
 # device = MQTT 토픽 접미사 (minigit/req/{device}), 사양서 계약.
 # model = 3D 뷰어 .glb 파일명(static/models/).
 #   rc-car   아이오닉5 차량 모델을 대역으로 쓴다 (RC카 모델 준비 전까지).
@@ -150,14 +160,14 @@ TARGETS = [
     # 표시 명칭은 "진단 모사 차량"(리뷰 피드백 §1). URL 슬러그 id="rc-car" 와 MQTT
     # device="rccar" 는 계약이라 그대로 둔다 — 바꾸면 라우트·토픽이 깨진다.
     {"id": "rc-car", "label": "진단 모사 차량", "status": "진단 모사 차량", "device": "rccar",
-     "transport": "CAN", "tile_sub": "CAN · OBD", "icon": "car",
+     "transport": "CAN", "icon": "rc-car",
      "model": _RC_MODEL},
     # tile_img: 대상 선택 화면의 큰 타일에만 쓰는 그림(static/img/). 있으면 인라인
     # SVG 아이콘(icon) 대신 이것을 그린다 — 아이콘은 currentColor 를 물려받는 선화지만
     # 이쪽은 그림 파일이라 색을 물려받지 못하므로, 흰 선화로 미리 변환해 두었다.
     # icon 은 지우지 않는다: 컨텐츠 그리드의 강제구동 타일이 여전히 쓴다(content_icon).
     {"id": "ur-robot", "label": "UR Robot", "status": "UR Robot", "device": "urrobot",
-     "transport": "DoIP", "tile_sub": "DoIP · 이더넷", "icon": "robotarm",
+     "transport": "DoIP", "icon": "robotarm",
      "tile_img": "ur-robot-arm.png", "model": _UR_MODEL},
 ]
 
@@ -250,15 +260,25 @@ QUIZ_TOPICS = _load_quiz_topics()
 # 컨텐츠 그리드 정의. 섹션 2개 × 콘텐츠. view = Step3 화면 유형.
 SECTIONS = ["학습·준비", "진단·실습"]
 CONTENTS = [
-    {"id": "theory", "section": "학습·준비", "title": "이론 교육", "icon": "doc", "view": "theory"},
-    {"id": "prep", "section": "학습·준비", "title": "실습 준비", "icon": "prep", "view": "detail"},
+    # icon 이 ICON_ART 에 있는 이름이면 새로 받은 그림 아이콘으로, 없으면 인라인 SVG 로
+    # 그려진다(템플릿 icon_any). theory·ecu 는 그림을, quiz·message 는 아직 SVG 를 쓴다.
+    {"id": "theory", "section": "학습·준비", "title": "이론 교육", "icon": "theory", "view": "theory"},
+    {"id": "prep", "section": "학습·준비", "title": "실습 준비", "icon": "prep-car", "view": "detail"},
     {"id": "quiz", "section": "학습·준비", "title": "퀴즈", "icon": "quiz", "view": "quiz"},
-    {"id": "diag", "section": "진단·실습", "title": "진단", "icon": "sensor", "view": "run"},
-    {"id": "force", "section": "진단·실습", "title": "강제구동", "icon": "force", "view": "run"},
-    {"id": "ecu", "section": "진단·실습", "title": "ECU 업그레이드", "icon": "ecu", "view": "ecu"},
+    {"id": "diag", "section": "진단·실습", "title": "진단", "icon": "diag-car", "view": "run"},
+    {"id": "force", "section": "진단·실습", "title": "강제구동", "icon": "force-car", "view": "run"},
+    {"id": "ecu", "section": "진단·실습", "title": "ECU 업그레이드", "icon": "ecu-cycle", "view": "ecu"},
     {"id": "message", "section": "진단·실습", "title": "메시지 작성", "icon": "compose",
      "view": "run", "composer": True},
 ]
+
+# 차가 그려진 그림 아이콘 → UR 로봇 화면에서 쓸 대체 SVG.
+#
+# 새로 받은 아이콘 중 실습 준비·진단·강제구동은 그림 안에 자동차가 들어 있다. 대상이
+# UR 로봇인 화면에 그대로 쓰면 '지금 무엇을 다루는 중인가' 를 잘못 알려준다 — 그래서
+# UR 에서는 대상을 가리지 않는 기존 SVG 로 되돌린다. 이론 교육(문서)·ECU 업그레이드
+# (화살표)는 대상이 드러나지 않으므로 둘 다 그림을 쓴다.
+_CAR_ICON_ALT = {"prep-car": "prep", "diag-car": "sensor", "force-car": "robotarm"}
 
 
 # --------------------------------------------------------------------------- #
@@ -619,8 +639,12 @@ def _st_tp():
 def _st_close():
     return {
         "sid": "10", "service": "DiagnosticSessionControl",
-        "fields": [],
-        "actions": [_act("기본 세션 복귀 →", "10 01", "50 01 00 32 01 F4")],
+        # 값이 하나뿐이어도 필드로 둔다 — 메시지 작성 화면이 블록(최소 의미 단위)을
+        # 액션 템플릿의 토큰에서 만들기 때문이다(step_blocks). 리터럴로 두면
+        # '무엇을 적는 칸인가' 를 부를 이름이 없다.
+        "fields": [_choice("session", "세션 유형", [
+            {"v": "01", "t": "기본 01 Default"}], "01")],
+        "actions": [_act("기본 세션 복귀 →", "10 {session}", "50 01 00 32 01 F4")],
         "hint": "실습을 끝낼 때는 기본 세션으로 되돌린다. 강제구동을 켜둔 채 종료하면 "
                 "제어권이 ECU 로 돌아가지 않은 상태가 될 수 있다.",
         "ref": "요청 SID 0x10 · 서브펑션 0x01 Default",
@@ -632,10 +656,15 @@ def _st_sec(target):
     zeros = " ".join(["00"] * n)
     return {
         "sid": "27", "service": "SecurityAccess", "seedkey": True,
-        "fields": [_hex("key", f"Key ({n}바이트)", zeros,
-                        "Seed 응답이 오면 자동 계산되어 채워진다")],
+        "fields": [
+            _choice("level", "서브펑션 (요청 단계)", [
+                {"v": "01", "t": "01 Seed 요청"},
+                {"v": "02", "t": "02 Key 전송"}], "01"),
+            _hex("key", f"Key ({n}바이트)", zeros,
+                 "Seed 응답이 오면 그 값으로 계산해 적는다 (02 단계에서만)"),
+        ],
         "actions": [
-            _act("① Seed 요청 →", "27 01", "67 01 " + " ".join(["<Seed>"] * n)),
+            _act("① Seed 요청 →", "27 {level}", "67 01 " + " ".join(["<Seed>"] * n)),
             _act("② Key 전송 →", "27 02 {key}", "67 02", primary=False),
         ],
         "hint": "Seed 를 받아 Key 를 계산해 되돌려야 잠금이 풀린다. Key 가 틀리면 NRC 0x35 "
@@ -689,10 +718,15 @@ def _st_force(target):
         "fields": [
             _choice("did", "제어 대상 DID", _did_opts(_CTRL_DIDS[target["id"]]), "02 07"
                     if target["id"] == "rc-car" else "02 01"),
+            _choice("opt", "제어 옵션", [
+                {"v": "00", "t": "00 제어권 반환"},
+                {"v": "01", "t": "01 기본값 리셋"},
+                {"v": "02", "t": "02 현재값 고정"},
+                {"v": "03", "t": "03 단기 조정"}], "03"),
             _hex("value", "강제값", "01", "옵션 0x03 일 때만 쓰인다"),
         ],
         "actions": [
-            _act("강제 구동 (03 단기조정) →", "2F {did} 03 {value}", "6F {did} 03 {value}"),
+            _act("강제 구동 (03 단기조정) →", "2F {did} {opt} {value}", "6F {did} 03 {value}"),
             _act("제어 반환 (00) →", "2F {did} 00", "6F {did} 00", primary=False),
         ],
         "hint": "제어 옵션 — 00 제어권 반환 · 01 기본값 리셋 · 02 현재값 고정 · 03 단기 조정. "
@@ -1007,6 +1041,130 @@ def step_examples(spec, addr):
             "resp": resp,
             "resp_frame": frame_text(resp, addr, resp=True) if "<" not in resp else resp,
         })
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# 메시지 작성 블록 (CAN ID · DLC · PCI · SID · 서브펑션/DID · 데이터 · 필러)
+#
+# 프레임 한 줄을 통째로 타이핑하게 하면, 배우는 사람은 '어디까지가 무엇인지' 를 모른 채
+# 문자열을 베낀다. 그래서 입력칸을 **최소 의미 단위**로 쪼갠다 — 칸 하나가 곧 개념
+# 하나이고, 칸을 누르면 그 개념의 힌트가 위에 뜬다(data/can_hints.json).
+#
+# 블록 목록은 손으로 또 적지 않는다. 단계 규격(spec)의 **첫 액션 템플릿**이 이미
+# "2F {did} {opt} {value}" 처럼 의미 단위로 쪼개져 있으므로 그 토큰을 그대로 블록으로
+# 옮긴다. 앞뒤로 CAN 층(CAN ID · DLC · PCI)과 필러를 두르면 프레임 한 줄이 된다.
+# (DoIP 대상은 CAN 층이 없어 UDS 블록만 남는다 — MSG_ADDR 의 req 가 None.)
+#
+# 정답은 블록에 담지 않는다. placeholder 는 '몇 바이트인지' 만 알려주고, 무엇을 적을지는
+# 힌트와 [참고 자료] 탭이 알려준다 — 베껴 넣기가 아니라 고르고 세어 보게 하려는 것이다.
+# --------------------------------------------------------------------------- #
+
+_FIELD_TOKEN = re.compile(r"^\{(\w+)\}$")
+
+
+def _blk(bid, label, place, **kw):
+    b = {"id": bid, "label": label, "place": place, "kind": "hex",
+         "size": "sm", "options": None, "optional": False,
+         # value 가 있고 fixed 면 채워서 잠근 칸이다 (읽기 전용 — 힌트는 볼 수 있다).
+         "value": "", "fixed": False}
+    b.update(kw)
+    return b
+
+
+def _bytes_place(value):
+    """기본값 → "n바이트" 안내. 값 자체는 알려주지 않는다(정답을 흘리지 않기 위해)."""
+    n = len((value or "").split())
+    return f"{n}바이트" if n else "hex"
+
+
+def step_blocks(spec, addr):
+    """단계 규격 → 메시지 작성 입력 블록 목록 (화면 왼→오 순서 = 프레임 순서)."""
+    toks = (spec["actions"][0]["tpl"] or "").split()
+    by_name = {f["name"]: f for f in spec["fields"]}
+    used = set()
+    blocks = []
+
+    if addr["req"]:
+        # CAN ID 와 DLC 는 배우는 사람이 고를 여지가 없는 값이다 — 진단기→ECU 주소는
+        # 대상 장비가 정해 놓았고, 이 실습의 프레임은 모두 8바이트다. 매번 옮겨 적게
+        # 하면 오타만 늘 뿐 배우는 것이 없어 채워서 잠근다. 다만 눌러서 힌트는 볼 수
+        # 있게 둔다(읽기 전용일 뿐 초점은 간다) — 무엇인지는 알아야 하기 때문이다.
+        blocks.append(_blk("canid", "CAN ID", "", size="lg",
+                           value=addr["req"], fixed=True))
+        blocks.append(_blk("dlc", "DLC", "", size="xs", kind="dec",
+                           value="8", fixed=True))
+        blocks.append(_blk("pci", "PCI · 길이", "1바이트", size="xs"))
+
+    # 첫 토큰은 언제나 SID 리터럴이다 (규격이 서비스 하나를 다루므로).
+    blocks.append(_blk("sid", "SID", "1바이트", size="xs"))
+
+    for t in toks[1:]:
+        m = _FIELD_TOKEN.match(t)
+        if not m:
+            # 템플릿에 남은 고정 hex — 개념 이름이 없으니 값 그대로를 이름으로 쓴다.
+            blocks.append(_blk(f"lit{len(blocks)}", f"고정값 {t}", t))
+            continue
+        f = by_name.get(m.group(1))
+        if not f:
+            continue
+        used.add(f["name"])
+        blocks.append(_blk(f["name"], f["label"], _bytes_place(f["default"]),
+                           options=f.get("options"),
+                           size="md" if f.get("kind") == "choice" else "sm"))
+
+    # 첫 액션에 안 쓰인 필드(예: 보안 접근의 Key — 두 번째 액션에서 쓴다)도 칸은 둔다.
+    for f in spec["fields"]:
+        if f["name"] in used:
+            continue
+        blocks.append(_blk(f["name"], f["label"], _bytes_place(f["default"]),
+                           options=f.get("options"), optional=True,
+                           size="md" if f.get("kind") == "choice" else "sm"))
+
+    if addr["req"]:
+        blocks.append(_blk("filler", "필러", "남는 칸", size="md"))
+    return blocks
+
+
+def _load_can_hints():
+    """블록별 힌트 (data/can_hints.json).
+
+    힌트를 코드가 아니라 데이터로 두는 이유는 교육 문구가 코드보다 자주 바뀌기
+    때문이다 — 문구 수정에 서버 코드를 건드리지 않는다.
+
+    스키마
+      blocks[블록id]        CAN ID·DLC·PCI·SID·필러 등 프레임 뼈대 블록
+      fields[필드명]        단계 규격의 필드(세션 유형·DID·마스크 …)
+      fields[필드명@SID]    같은 이름이라도 서비스가 다르면 뜻이 다르다 (did@22 / did@2F)
+      sid[SID]              SID 블록에 덧씌우는 서비스별 설명
+    각 힌트 = {title, body, tips[]}
+    """
+    with (BASE_DIR / "data" / "can_hints.json").open(encoding="utf-8") as fp:
+        return json.load(fp)
+
+
+CAN_HINTS = _load_can_hints()
+
+
+def block_hints(blocks, spec):
+    """블록 목록 → {블록id: 힌트}. 못 찾은 블록은 규격의 공통 힌트로 메운다."""
+    sid = spec["sid"]
+    out = {}
+    for b in blocks:
+        hint = (CAN_HINTS["fields"].get(f"{b['id']}@{sid}")
+                or CAN_HINTS["fields"].get(b["id"])
+                or CAN_HINTS["blocks"].get(b["id"]))
+        if b["id"] == "sid":
+            hint = dict(hint or {}, **CAN_HINTS["sid"].get(sid, {}))
+        if not hint:
+            hint = {"title": b["label"], "body": spec["hint"], "tips": []}
+        out[b["id"]] = {
+            "title": hint.get("title") or b["label"],
+            "body": hint.get("body", ""),
+            "tips": hint.get("tips", []),
+            # 고를 수 있는 값이 정해진 블록은 그 목록을 힌트에 함께 편다.
+            "options": b.get("options") or [],
+        }
     return out
 
 
@@ -1551,10 +1709,16 @@ def content_title(content, target):
 
 
 def content_icon(content, target):
-    """강제구동은 대상별로 아이콘이 다르다 (RC=자동차 / UR=로봇팔)."""
-    if content["id"] == "force" and target["id"] == "ur-robot":
-        return "robotarm"
-    return content["icon"]
+    """컨텐츠 아이콘 이름. 대상이 UR 로봇이면 자동차 그림을 피해 간다.
+
+    새로 받은 그림 아이콘 중 실습 준비·진단·강제구동은 그림 안에 자동차가 들어 있다.
+    UR 로봇 화면에 그대로 걸면 '지금 무엇을 다루는 중인가' 를 잘못 알려주므로, 대상을
+    가리지 않는 기존 SVG 로 되돌린다(_CAR_ICON_ALT).
+    """
+    name = content["icon"]
+    if target["id"] == "ur-robot":
+        return _CAR_ICON_ALT.get(name, name)
+    return name
 
 
 def content_img(content, target):
@@ -1590,7 +1754,7 @@ def content_tree(content_id, target):
                  {"id": "rc-wiper", "title": "와이퍼"},
                  {"id": "rc-led", "title": "LED"},
                  {"id": "rc-buzzer", "title": "부저"},
-                 {"id": "rc-mp3", "title": "MP3 가상 사운드"}]
+                 {"id": "rc-mp3", "title": "가상 엔진 사운드"}]
                 if t == "rc-car" else
                 [{"id": "ur-joint-drive", "title": "조인트 자세·위치·각도·속도"},
                  {"id": "ur-joint-base", "title": "베이스 회전"},
@@ -2134,9 +2298,14 @@ def content_view(request: Request, target_id: str, content_id: str,
                     # (통과 여부는 서버가 모른다. 브라우저가 응답을 보고 판단한다 —
                     #  static/js/step-progress.js)
                     nxt = sc["steps"][idx]["id"] if idx < total else None
+                    blocks = step_blocks(step["spec"], addr)
                     ctx.update({"scenario": sc, "step": step, "step_no": idx, "step_total": total,
                                 "addr": addr, "examples": step_examples(step["spec"], addr),
                                 "layers": MSG_LAYERS, "nrc": MSG_NRC, "negative": MSG_NEGATIVE,
+                                # 작성 칸은 의미 단위 블록으로 쪼개 그린다. 블록별 힌트는
+                                # data/can_hints.json 이 원천 (partials/_composer.html).
+                                "blocks": blocks,
+                                "block_hints": block_hints(blocks, step["spec"]),
                                 # 세션 유지(3E) 반복 발행은 **코스 하나** 안에서만 이어진다.
                                 # 같은 코스의 다음 단계로 넘어가는 재로딩은 살아남지만,
                                 # 다른 세부 항목(예: 센서 리딩 → 강제 구동)으로 옮기면

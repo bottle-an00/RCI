@@ -1,9 +1,29 @@
-{# 메시지 작성 — 사용자가 CAN 프레임을 직접 타이핑하는 화면.
-   위: 입력창 + 전송 + 층 분해 + 검증 결과 (주역, 동작은 static/js/can-composer.js)
-   아래: 읽기 전용 참고 자료 (조역 — 무엇을 쓸 수 있는지 알려주기만 한다)
+{# 메시지 작성 — 사용자가 CAN 프레임을 직접 쳐 넣는 화면. 위에서 아래로 넷이다.
+     ① 3D 모델 뷰      지금 쓴 메시지가 무엇을 움직이는지 보는 자리 (붙박이 · 탭 아님)
+     ② 작성 블록       CAN ID · DLC · PCI · SID · 서브펑션/DID · 데이터 · 필러 칸
+                       + 전송 버튼   (동작은 static/js/can-composer.js)
+     ③ 채점            지금 쓴 것이 맞는지 틀렸는지 글로 짚어 준다
+     ④ 힌트            블록을 누르면 그 블록의 설명이 여기 뜬다 (data/can_hints.json)
 
-   컨텍스트: scenario, step, step_no, step_total, addr, examples, layers, nrc, negative
-   addr.req 가 없으면(DoIP) CAN 층이 없어 UDS 페이로드만 다룬다. #}
+   순서가 '쓰고 → 채점 → 힌트' 인 이유: 손대는 자리(②)와 그 판정(③)이 붙어 있어야
+   무엇 때문에 틀렸는지 눈으로 잇는다. 힌트는 펼쳤다 접었다 하며 길이가 크게 달라서
+   위에 두면 열 때마다 아래가 통째로 밀려 내려간다 — 그래서 맨 아래다.
+
+   입력칸을 하나로 두지 않고 쪼갠 이유: 프레임 한 줄을 통째로 치게 하면 배우는 사람은
+   '어디까지가 무엇인지' 를 모른 채 문자열을 베낀다. 칸 하나가 곧 개념 하나이고,
+   누르면 그 개념의 힌트가 ④ 에 뜬다. 합쳐서 한 줄로 만든 뒤의 파싱·검증·전송은
+   예전과 같다 — 검증이 이 화면의 교육 가치이기 때문이다.
+
+   CAN ID·DLC 는 채워서 잠근다(readonly). 대상 장비가 정해 놓은 주소와 늘 8인 칸 수라
+   고를 여지가 없고, 매번 옮겨 적게 하면 오타만 는다 — 눌러서 힌트는 볼 수 있다.
+
+   검증 결과 아래에 있던 바이트 칸 도식은 뺐다. 같은 그림을 위 작성 블록이 이미
+   그리고 있어 한 화면에 같은 것이 둘이었다.
+
+   참고 자료(예시 프레임·DID 목록·NRC)는 옆 탭으로 나갔다 (_reference.html).
+
+   컨텍스트: scenario, step, step_no, step_total, addr, blocks, block_hints
+   addr.req 가 없으면(DoIP) CAN 층이 없어 UDS 블록만 남는다. #}
 {% set spec = step.spec %}
 {% from "partials/_macros.html" import stage_switch %}
 <div class="panel panel--emph panel--grow composer" data-composer
@@ -25,25 +45,52 @@
 
   <div class="panel__body composer__body">
 
-    {# ───────── 작성 영역 ───────── #}
+    {# ───────── ① 3D 모델 뷰 (상단 붙박이) ───────── #}
+    {% if target.model %}
+    <div class="composer__view3d">
+      {% include "partials/_model3d.html" %}
+    </div>
+    {% endif %}
+
+    {# ───────── ② 작성 블록 ───────── #}
     <div class="write">
       <div class="write__label">
-        {% if addr.req %}CAN 프레임 직접 입력 — CAN ID · DLC · PCI · UDS · 필러 순
-        {% else %}UDS 페이로드 직접 입력 (DoIP — CAN 층 없음){% endif %}
+        {% if addr.req %}CAN 프레임 — 왼쪽부터 보내는 순서입니다. CAN ID·DLC 는 고를 여지가 없어 채워 두었습니다
+        {% else %}UDS 페이로드 — 블록마다 직접 입력합니다 (DoIP — CAN 층 없음){% endif %}
       </div>
-      <textarea class="write__input mono" id="frame-input" rows="2" spellcheck="false"
-                autocomplete="off" autocapitalize="off"
-                placeholder="{% if addr.req %}{{ addr.req }}  8  02  10  03  55 55 55 55 55{% else %}10 03{% endif %}"></textarea>
+
+      <div class="blocks" data-blocks>
+        {% for b in blocks %}
+        <label class="block block--{{ b.size }}{% if b.optional %} block--opt{% endif %}{% if b.fixed %} block--fixed{% endif %}"
+               data-block="{{ b.id }}">
+          <span class="block__label">{{ b.label }}</span>
+          <input class="block__input mono" type="text" data-block-input="{{ b.id }}"
+                 value="{{ b.value }}"{% if b.fixed %} readonly{% endif %}
+                 placeholder="{{ b.place }}" spellcheck="false"
+                 autocomplete="off" autocapitalize="off">
+        </label>
+        {% endfor %}
+      </div>
+
+      {# 블록을 합친 결과 — 실제로 검증·전송되는 한 줄. 읽기 전용이다. #}
+      <div class="write__joined">
+        <span class="write__joined-label">완성된 프레임</span>
+        <span class="write__joined-text mono" data-frame-joined>—</span>
+      </div>
+
       {# 잠긴 단계 안내 자리 — step-progress.js 가 채운다. #}
       <div class="gate" id="step-gate" hidden></div>
 
       <div class="write__bar">
         <span class="write__count" id="frame-count"></span>
+        <button class="btn js-blocks-clear" type="button">모두 지우기</button>
         <button class="btn btn--primary js-send-frame" disabled>전송 →</button>
       </div>
 
-      {# 입력을 뜯어본 결과. 생성이 아니라 해석이다. #}
-      <div class="frame" id="frame-parse"></div>
+      {# ───────── ③ 채점 — 입력을 뜯어본 결과를 글로만 짚어 준다 ─────────
+         바이트 칸 도식은 두지 않는다: 같은 그림을 위 작성 블록이 이미 그리고 있었다.
+         작성 칸 바로 아래에 둔다 — 고친 곳과 판정이 멀면 무엇 때문에 틀렸는지
+         눈으로 잇기 어렵다. #}
       <ul class="verdict" id="frame-verdict"></ul>
 
       {% if spec.keepalive %}
@@ -55,59 +102,27 @@
       {% endif %}
     </div>
 
-    {# ───────── 참고 자료 ───────── #}
-    <div class="ref">
-      <div class="ref__head">작성 참고 자료 · {{ step.title }}</div>
-
-      <div class="svc">
-        <span class="svc__sid">SID 0x{{ spec.sid }}</span>
-        <span class="svc__name">{{ spec.service }}</span>
-        <span class="svc__arrow">→ 긍정 응답 0x{{ '%02X' % (spec.sid|int(base=16) + 0x40) }} · 부정 응답 {{ negative }}</span>
+    {# ───────── ④ 힌트 — 고른 블록의 설명 ─────────
+       내용은 static/js/can-composer.js 가 아래 block-hints JSON 에서 꺼내 채운다.
+       맨 아래인 이유: 힌트는 펼쳤다 접었다 하는 데다 블록마다 길이가 크게 달라서,
+       위에 두면 힌트를 열 때마다 작성 칸과 채점이 통째로 밀려 내려간다. 아래로
+       내리면 지금 손대는 자리가 제 위치에 머문다. #}
+    <div class="bhint" data-block-hint>
+      <div class="bhint__empty" data-bhint-empty>
+        위 <b>작성 블록</b>을 누르면 그 칸에 무엇을 적는지 여기에 설명이 나옵니다.
       </div>
-      <div class="run-hint">{{ spec.hint }}</div>
-
-      {# 이 단계에서 골라 쓸 수 있는 값들 — 표로만 보여주고 클릭 동작은 없다. #}
-      {% for f in spec.fields %}
-      <table class="ref__table">
-        <caption>{{ f.label }}</caption>
-        {% if f.kind == "choice" %}
-        {% for o in f.options %}
-        <tr><th class="mono">{{ o.v }}</th><td>{{ o.t }}</td></tr>
-        {% endfor %}
-        {% else %}
-        <tr><th class="mono">{{ f.default }}</th><td>{{ f.hint or "기본값" }}</td></tr>
-        {% endif %}
-      </table>
-      {% endfor %}
-
-      {# 본보기 프레임. 손으로 옮겨 적어 보는 대상이다. #}
-      <table class="ref__table ref__table--wide">
-        <caption>예시 프레임</caption>
-        {% for ex in examples %}
-        <tr><th>{{ ex.label }}<br><span class="ref__dir">요청</span></th>
-            <td class="mono">{{ ex.frame }}</td></tr>
-        <tr><th><span class="ref__dir">예상 응답</span></th>
-            <td class="mono ref__resp">{{ ex.resp_frame }}</td></tr>
-        {% endfor %}
-      </table>
-
-      <table class="ref__table ref__table--wide">
-        <caption>프레임 층</caption>
-        {% for name, desc, ex in layers %}
-        <tr><th>{{ name }}</th>
-            <td>{{ desc }}<br><span class="mono ref__ex">{{ ex.replace('{req}', addr.req or '—').replace('{resp}', addr.resp or '—') }}</span></td></tr>
-        {% endfor %}
-      </table>
-
-      <table class="ref__table ref__table--wide">
-        <caption>자주 나오는 NRC (부정 응답 코드)</caption>
-        {% for code, name, desc, seen in nrc %}
-        <tr><th class="mono">{{ code }}</th>
-            <td>{{ name }} — {{ desc }}{% if seen %} <span class="ref__seen">{{ seen }}</span>{% endif %}</td></tr>
-        {% endfor %}
-      </table>
-
-      <div class="frame-ref">{{ spec.ref }}</div>
+      <div class="bhint__card" data-bhint-card hidden>
+        <div class="bhint__head">
+          <span class="bhint__title" data-bhint-title></span>
+          <button class="bhint__close" type="button" data-bhint-close aria-label="힌트 닫기">✕</button>
+        </div>
+        <p class="bhint__body" data-bhint-body></p>
+        <ul class="bhint__tips" data-bhint-tips></ul>
+        <table class="bhint__opts" data-bhint-opts hidden></table>
+      </div>
     </div>
   </div>
 </div>
+{# 블록별 힌트. 서버가 data/can_hints.json 을 블록 목록에 맞춰 풀어 둔 것이다
+   (main.py block_hints) — 문구 수정은 그 JSON 만 고치면 된다. #}
+<script type="application/json" id="block-hints">{{ block_hints|tojson }}</script>

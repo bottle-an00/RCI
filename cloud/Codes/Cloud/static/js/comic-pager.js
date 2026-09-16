@@ -62,57 +62,57 @@
     if (zoomBtn) initZoom(root, zoomBtn);
   }
 
-  /* 확대 — 페이저를 통째로 화면에 고정해, 기능 설명·시퀀스 기능 설명이 차지하던
-   * 영역(.seqbrief) 크기·자리에 맞춘다. 창 크기가 바뀌면 그 영역도 바뀌므로
-   * resize 때마다 다시 잰다.
+  /* 확대 — 만화를 화면 거의 전체로 키운다.
+   *
+   * 예전에는 '기능 설명' 패널이 차지하던 사각형에 맞췄는데, 그러면 원래 크기와
+   * 별 차이가 없어 확대의 뜻이 없었다. 지금은 뒤를 어둡게 덮고(백드롭) 브라우저
+   * 창 전체를 쓴다 — 크기는 CSS(.comic-pager.is-expanded) 가 vw/vh 로 잡으므로
+   * 창이 바뀌어도 다시 잴 일이 없다.
+   *
+   * 닫는 길은 셋이다: 같은 자리의 아이콘 버튼 · ESC · 백드롭 클릭.
    */
   function initZoom(root, btn) {
-    var onResize = null;
     var iconExpand = btn.getAttribute("data-icon-expand");
     var iconCollapse = btn.getAttribute("data-icon-collapse");
+    var backdrop = null;
+    var onKey = null;
 
     btn.addEventListener("click", function () {
       if (root.classList.contains("is-expanded")) collapse();
       else expand();
     });
 
-    function targetRect() {
-      var brief = root.closest(".seqbrief");
-      if (!brief) return null;
-      var r = brief.getBoundingClientRect();
-      return { top: r.top, left: r.left, width: r.width, height: r.height };
-    }
-
-    function applyRect(r) {
-      root.style.top = r.top + "px";
-      root.style.left = r.left + "px";
-      root.style.width = r.width + "px";
-      root.style.height = r.height + "px";
-    }
-
     function expand() {
-      var r = targetRect();
-      if (!r) return;
       root.classList.add("is-expanded");
-      applyRect(r);
-      onResize = function () {
-        var rr = targetRect();
-        if (rr) applyRect(rr);
+      backdrop = document.createElement("div");
+      backdrop.className = "comic-backdrop";
+      backdrop.addEventListener("click", collapse);
+      document.body.appendChild(backdrop);
+      // ESC — 확대 중일 때만 듣는다(다른 화면의 ESC 동작을 가로채지 않기 위해).
+      onKey = function (e) {
+        if (e.key === "Escape" || e.key === "Esc") { e.stopPropagation(); collapse(); }
       };
-      window.addEventListener("resize", onResize);
-      if (iconCollapse) btn.innerHTML = iconCollapse;
-      btn.setAttribute("aria-label", "축소");
-      btn.setAttribute("title", "축소");
+      document.addEventListener("keydown", onKey, true);
+      paint(true);
+      // 키보드로도 바로 닫을 수 있게 — 포커스를 닫기(축소) 버튼에 둔다.
+      try { btn.focus(); } catch (e) { /* 무시 */ }
     }
 
     function collapse() {
+      if (!root.classList.contains("is-expanded")) return;
       root.classList.remove("is-expanded");
-      root.removeAttribute("style");
-      if (onResize) window.removeEventListener("resize", onResize);
-      onResize = null;
-      if (iconExpand) btn.innerHTML = iconExpand;
-      btn.setAttribute("aria-label", "확대");
-      btn.setAttribute("title", "확대");
+      if (backdrop && backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+      backdrop = null;
+      if (onKey) document.removeEventListener("keydown", onKey, true);
+      onKey = null;
+      paint(false);
+    }
+
+    function paint(on) {
+      if (on && iconCollapse) btn.innerHTML = iconCollapse;
+      if (!on && iconExpand) btn.innerHTML = iconExpand;
+      btn.setAttribute("aria-label", on ? "축소 (ESC)" : "확대");
+      btn.setAttribute("title", on ? "축소 (ESC)" : "확대");
     }
   }
 })();

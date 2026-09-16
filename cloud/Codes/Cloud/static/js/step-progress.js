@@ -103,7 +103,8 @@
   var gate = document.getElementById("step-gate");
   var bar = composer.querySelector(".write__bar");
   var sendBtn = composer.querySelector(".js-send-frame");
-  var input = document.getElementById("frame-input");
+  // 작성 칸은 의미 단위 블록으로 쪼개져 있다 (partials/_composer.html).
+  var inputs = composer.querySelectorAll("[data-block-input]");
 
   /* 잠긴 단계로 직접 들어온 경우 — 입력을 막고 지금 할 단계를 알려준다. */
   if (state[stepId] === "locked") {
@@ -115,8 +116,12 @@
     gate.className = "gate gate--locked";
     gate.innerHTML = "앞 단계를 먼저 통과해야 열립니다."
       + (openId ? ' <a href="?item=' + encodeURIComponent(openId) + '">지금 할 단계로 이동 →</a>' : "");
-    input.disabled = true;
-    input.placeholder = "";
+    Array.prototype.forEach.call(inputs, function (el) {
+      el.disabled = true;
+      el.placeholder = "";
+    });
+    var clearBtn = composer.querySelector(".js-blocks-clear");
+    if (clearBtn) clearBtn.disabled = true;
     sendBtn.disabled = true;
     return;
   }

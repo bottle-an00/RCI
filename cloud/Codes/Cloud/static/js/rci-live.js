@@ -351,7 +351,7 @@
   var driveBadge = document.getElementById("view3d-drive-badge");
   var SOUNDS = {
     horn: document.getElementById("view3d-horn-audio"),        // 부저 — loop
-    startup: document.getElementById("view3d-startup-audio"),  // 시동음 — 1회
+    startup: document.getElementById("view3d-startup-audio"),  // 가상 주행음 — 1회
   };
   function startPulse(label, sound) {
     if (driveBadge) {
@@ -364,7 +364,9 @@
   function stopPulse(sound) {
     if (driveBadge) driveBadge.hidden = true;
     var audio = SOUNDS[sound];
-    if (audio) { audio.pause(); audio.currentTime = 0; }
+    // loop 인 소리(부저)만 끈다. 한 번 울리고 끝나는 소리(가상 주행음)는 제어 반환이
+    // 빨리 오면 재생 도중에 잘려 버린다 — 시작만 걸어 두고 끝은 소리에게 맡긴다.
+    if (audio && audio.loop) { audio.pause(); audio.currentTime = 0; }
   }
 
   // -- loop: "켜져 있는 동안 계속" 반복되는 애니메이션 — 바퀴 회전(WheelSpin,

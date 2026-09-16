@@ -1,5 +1,5 @@
 {% extends "base_shell.html" %}
-{% from "partials/_macros.html" import icon %}
+{% from "partials/_macros.html" import icon_any %}
 {% block title %}RCI · 컨텐츠 선택 ({{ target.label }}){% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@
         {% if c.img %}
         <img class="cat-tile__img" src="{{ asset('img/' ~ c.img) }}" alt="">
         {% else %}
-        {{ icon(c.icon, "cat-tile__icon") }}
+        {{ icon_any(c.icon, "cat-tile__icon") }}
         {% endif %}
         <span class="cat-tile__label">{{ c.title }}</span>
       </a>

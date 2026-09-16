@@ -60,6 +60,16 @@ body {
 .icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
 .icon svg { display: block; width: 100%; height: 100%; }
 
+/* 그림 아이콘 — PNG 선화를 '마스크'로 쓴다.
+   받아 온 선화는 검은 선으로 고정돼 있어 그대로 깔면 파란 타일 위에서 까맣게 남고,
+   SVG 아이콘들과 색이 따로 논다. 그림을 색이 아니라 '칠할 모양'으로만 쓰면
+   background 의 currentColor 가 실제 색이 되어 SVG 와 똑같이 문맥을 따라간다. */
+.icon--art {
+  background-color: currentColor;
+  -webkit-mask: var(--icon-art) center / contain no-repeat;
+  mask: var(--icon-art) center / contain no-repeat;
+}
+
 /* =========================================================================
    메인 (S1 · GDS-Smart 완전동일, Figma 28:2)
    ========================================================================= */
@@ -222,6 +232,11 @@ body {
 }
 .tile:hover { filter: brightness(1.12); }
 .tile__icon { width: 60px; height: 60px; color: #fff; }
+/* 그림 아이콘이 들어간 대상 타일 — 가로로 긴 차량 일러스트라 정사각 상자에 contain
+   으로 담으면 세로가 눌려 옆 타일들보다 한참 작아 보인다. 상자를 그림 비율에 가깝게
+   눕혀(가로 132 · 세로 84) 로봇팔 그림(tile__img 84px)과 면적으로 맞춘다.
+   컨텐츠 그리드(cat-tile)에 들어가는 그림들은 모두 납작한 기호라 이 보정이 필요 없다. */
+.tile__icon.icon--art { width: 132px; height: 84px; }
 /* 그림으로 들어가는 타일 아이콘(tile_img) — 로봇팔처럼 세로로 긴 그림이라 폭이 아니라
    높이를 맞춘다. SVG 아이콘(60px)보다 조금 크게 잡아야 선화가 같은 무게로 보인다. */
 .tile__img { height: 84px; width: auto; display: block; }
@@ -574,7 +589,7 @@ body {
   background: #fff; border: 1px solid var(--border);
   overflow-y: auto;
 }
-.run__center { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.run__center { flex: 1; min-width: 420px; display: flex; flex-direction: column; gap: 16px; }
 /* 우 컬럼 — 메시지 작성 화면에서는 통신 로그 하나뿐이다(예전엔 3D 모델 뷰와 같이
    썼는데, 3D 가 만화 탭으로 옮겨가며 이 컬럼을 로그가 그대로 물려받는다). 진단·
    강제구동 화면에서는 시퀀스 진행만 담고, 로그는 .run__body 아래로 내려간다. */
@@ -593,7 +608,9 @@ body {
 /* 진단·강제구동 전용 — 위(가운데 기능 설명 | 우측 시퀀스 진행) + 아래 통신 로그를
    가운데+우측 전체 폭으로 깐다. 로그가 3D 모델 뷰가 있던 자리(우측)까지 이어지되,
    그 컬럼으로 옮겨가는 게 아니라 폭 전체를 가로지르는 별도의 아래 칸으로 둔다. */
-.run__body { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 16px; }
+/* min-width 는 안쪽 .run__split 이 깨지지 않는 선 — 가운데(560) + 핸들·간격(22) +
+   우 시퀀스(300). flex 는 자식의 최소 폭을 부모로 올려주지 않으므로 여기 적어 둔다. */
+.run__body { flex: 1; min-width: 882px; min-height: 0; display: flex; flex-direction: column; gap: 16px; }
 /* 세로로도 바닥이 필요하다. 시퀀스 패널에서 줄어들 수 있는 것은 단계 목록뿐이고
    (그 위아래의 주의문·진행바·안내문·실행 버튼은 줄지 않는다), 실측하면 그 고정
    부분만으로 이미 230px 를 쓴다 — 창이 그보다 짧아지면 '다음 시퀀스 실행' 버튼이
@@ -771,9 +788,6 @@ input.composer__input:focus { outline: none; border-color: var(--brand-blue); }
    target-first 통합 크롬 + Step 화면 (Figma 확정 반영)
    ========================================================================= */
 
-/* 대상 타일 보조문구 (Step1) */
-.tile__sub { font-size: 13px; color: #a9c2e0; }
-
 /* 브레드크럼 서브바 (흰색, 상단바와 통일) */
 .crumbbar {
   display: flex; align-items: center; justify-content: space-between;
@@ -874,10 +888,13 @@ button.stepper__row:hover { background: #eef2f7; }
 /* 진단·강제구동·ECU 화면의 가운데 — 2분할(그림·3D 모델 뷰 | 글) 하나뿐이다.
    배우는 사람이 먼저 봐야 하는 것은 '지금 무엇을 왜 하는가' 라서 설명이 가운데
    전체를 차지하고, 단계 목록·통신 로그는 우 컬럼에서 진행만 알린다. */
-.run__center--seq { gap: 12px; }
+/* 가운데를 좁히다 보면 두 컬럼(만화 | 글)이 먼저 깨진다 — 컬럼마다 최소 폭을 두고,
+   그 합을 가운데의 최소 폭으로 삼아 좌·우 핸들이 더 밀지 못하게 한다
+   (static/js/run-resize.js 가 이 min-width 를 읽어 드래그 상한을 정한다). */
+.run__center--seq { gap: 12px; min-width: 560px; }
 .app--fixed .run__center--seq .seqbrief { min-height: 0; }
 .seqbrief { flex: 1; min-height: 0; display: flex; gap: 12px; }
-.seqbrief__col { flex: 1; min-width: 0; }
+.seqbrief__col { flex: 1; min-width: 260px; }
 .seqbrief__body { padding: 12px 16px; gap: 12px; overflow-y: auto; min-height: 0; }
 .seqbrief__pane { display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; }
 .seqbrief__lede { margin: 0; font-size: 13px; line-height: 1.75; color: #3d4a57; }
@@ -1053,25 +1070,105 @@ button.stepper__row:hover { background: #eef2f7; }
 }
 
 /* =========================================================================
-   메시지 작성 — 입력창(주역) + 읽기 전용 참고 자료(조역)
+   메시지 작성 — 3D 모델 뷰(상단) + 블록 힌트 + 의미 단위 블록 입력
    프레임 셀(.frame__*)은 위 블록의 것을 그대로 쓴다. 다만 역할이 반대다:
    자동 조립 결과가 아니라 **사용자가 쓴 것을 뜯어본 결과**를 그린다.
    ========================================================================= */
 
-/* 참고 자료가 길어 스크롤이 필요하다. flex 자식이라 min-height:0 이 있어야 줄어든다. */
+/* 세로가 모자라면 이 안에서 스크롤한다. flex 자식이라 min-height:0 이 있어야 줄어든다. */
 .composer__body { overflow-y: auto; min-height: 0; }
+
+/* ── 3D 모델 뷰 (탭이 아니라 작성 화면 안 붙박이) ── */
+/* 작성 블록이 주역이므로 3D 는 높이를 정해 위쪽 띠로만 쓴다 — flex:1 로 두면 남는
+   세로를 모두 먹어 블록이 화면 밖으로 밀린다. */
+.composer__view3d { flex: none; display: flex; }
+.view3d--inline { flex: 1; min-height: 240px; height: 34vh; max-height: 420px; padding: 10px; }
+
+/* ── 블록 힌트 — 고른 블록이 무엇인지 작성 블록·채점 아래에 편다 ── */
+.bhint { flex: none; }
+.bhint__empty {
+  font-size: 12px; color: var(--muted);
+  border: 1px dashed var(--border); padding: 9px 12px;
+}
+.bhint__card {
+  border: 1.5px solid var(--brand-blue); border-left-width: 4px;
+  background: var(--select-bg); padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.bhint__card[hidden] { display: none; }
+.bhint__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.bhint__title { font-size: 13px; font-weight: 700; color: var(--brand-blue); }
+.bhint__close {
+  flex: none; border: 0; background: none; cursor: pointer;
+  font-size: 12px; color: var(--muted); padding: 0 2px;
+}
+.bhint__close:hover { color: var(--ink); }
+.bhint__body { margin: 0; font-size: 12.5px; line-height: 1.7; color: #3d4a57; }
+.bhint__tips { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 3px; }
+.bhint__tips li { font-size: 11.5px; line-height: 1.6; color: var(--muted); }
+.bhint__tips:empty { display: none; }
+.bhint__opts { width: 100%; border-collapse: collapse; font-size: 11px; background: #fff; }
+.bhint__opts[hidden] { display: none; }
+.bhint__opts caption {
+  text-align: left; font-size: 10px; font-weight: 700; color: var(--muted);
+  padding: 4px 0 3px; letter-spacing: 0.4px;
+}
+.bhint__opts th, .bhint__opts td {
+  border: 1px solid var(--border); padding: 4px 7px; text-align: left; vertical-align: top;
+}
+.bhint__opts th { width: 72px; color: var(--brand-blue); font-weight: 600; }
 
 .write { display: flex; flex-direction: column; gap: 8px; }
 .write__label { font-size: 12px; font-weight: 600; color: var(--ink); }
-.write__input {
-  font-family: ui-monospace, "Consolas", monospace; font-size: 15px; font-weight: 600;
-  letter-spacing: 0.5px; color: var(--brand-blue); background: #f7f9fb;
-  border: 1.5px solid var(--border); padding: 10px 12px; resize: vertical; line-height: 1.6;
+
+/* ── 작성 블록 — 칸 하나가 곧 개념 하나다 ── */
+/* 프레임 순서대로 가로로 흐르고, 좁아지면 줄이 바뀐다. 줄바꿈이 일어나도 순서는
+   왼→오·위→아래로 유지되므로 '보내는 순서' 라는 읽기가 깨지지 않는다. */
+.blocks { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px; }
+.block {
+  display: flex; flex-direction: column; gap: 3px;
+  border: 1px solid var(--border); border-top: 3px solid #c8d0da;
+  background: #fff; padding: 5px 7px 6px; cursor: text;
 }
-.write__input:focus { outline: none; border-color: var(--brand-blue); background: #fff; }
-.write__input::placeholder { color: #b3bcc9; font-weight: 400; letter-spacing: 0.5px; }
-.write__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.write__count { font-size: 11px; color: var(--muted); }
+.block__label {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  letter-spacing: 0.2px; white-space: nowrap;
+}
+.block__input {
+  width: 100%; border: 0; border-bottom: 1px solid var(--border); background: transparent;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.5px; color: var(--brand-blue);
+  padding: 3px 2px;
+}
+.block__input:focus { outline: none; border-bottom-color: var(--brand-blue); }
+.block__input::placeholder { color: #b3bcc9; font-weight: 400; font-size: 11px; letter-spacing: 0; }
+.block__input:disabled { color: #b3bcc9; cursor: not-allowed; }
+/* 힌트를 펼쳐 둔 칸 — 위 설명이 어느 칸의 것인지 여기서도 보인다. */
+.block.is-on { border-color: var(--brand-blue); border-top-color: var(--brand-blue); background: var(--select-bg); }
+/* 이 단계에서 꼭 필요하진 않은 칸(예: 보안 접근의 Key 는 02 단계에서만 쓴다). */
+.block--opt { border-style: dashed; }
+/* 채워서 잠근 칸(CAN ID·DLC) — 고를 여지가 없는 값이라 미리 넣어 두고 읽기만 한다.
+   눌러서 힌트는 볼 수 있어야 하므로 disabled 가 아니라 readonly 다. */
+.block--fixed { background: #f2f4f7; cursor: default; }
+.block--fixed .block__input { color: var(--muted); cursor: default; }
+.block--fixed .block__input:focus { border-bottom-color: var(--border); }
+.block--xs { width: 62px; }
+.block--sm { width: 92px; }
+.block--md { width: 128px; }
+.block--lg { width: 132px; }
+
+/* 블록을 합친 결과 — 실제로 검증·전송되는 한 줄. 읽기 전용이다. */
+.write__joined {
+  display: flex; align-items: baseline; gap: 10px;
+  background: #f5f7fa; border: 1px solid var(--border); padding: 7px 10px;
+}
+.write__joined-label { flex: none; font-size: 10px; font-weight: 700; color: var(--muted); }
+.write__joined-text {
+  font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: 0.5px;
+  word-break: break-all;
+}
+
+.write__bar { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.write__count { font-size: 11px; color: var(--muted); margin-right: auto; }
 .write__bar .btn { flex: none; }
 
 /* 검증 결과 — 통과/경고/오류를 색과 기호로 구분한다. */
@@ -1087,10 +1184,11 @@ button.stepper__row:hover { background: #eef2f7; }
 .verdict__item b { font-weight: 600; }
 .frame__cell--err { background: #fdecec; color: var(--pdf-tag); border-color: #f0b8b4; }
 
-/* 참고 자료 — 입력창과 시각적으로 확실히 분리한다(주역/조역). */
+/* 참고 자료 — 이제는 독립 탭이다(_reference.html). 예전처럼 작성 칸 아래 붙는
+   조역이 아니라 이 탭의 본문 전체라, 위 경계선 없이 패널 그대로 쓴다. */
+.refpanel__body { overflow-y: auto; min-height: 0; }
 .ref {
   display: flex; flex-direction: column; gap: 10px;
-  border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px;
 }
 .ref__head { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.4px; }
 .ref__table { width: 100%; border-collapse: collapse; font-size: 11px; }
@@ -1324,15 +1422,28 @@ body.is-modal { overflow: hidden; }
 .seqbrief .comic-pager__slide .comic__frame { flex: 1; min-width: 0; min-height: 0; width: 100%; }
 .seqbrief .comic-pager .comic__img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
 
-/* 확대 — 페이저를 화면에 고정해 기능 설명 · 시퀀스 기능 설명 · 통신 로그가 차지하던
-   영역 크기에 정확히 맞춘다(js: 좌표 계산). 축소를 누르면 인라인 스타일을 지우고
-   원래 자리로 돌아간다. */
+/* 확대 — 만화를 브라우저 창 거의 전체로 키운다. 뒤는 백드롭으로 덮는다.
+   크기를 vw/vh 로 잡아 창이 바뀌어도 JS 가 다시 잴 일이 없다(comic-pager.js 는
+   클래스와 백드롭만 맡는다). 닫기는 아이콘 버튼 · ESC · 백드롭 클릭 셋 다 된다. */
+.comic-backdrop { position: fixed; inset: 0; z-index: 59; background: rgba(12, 18, 26, 0.72); }
 .comic-pager.is-expanded {
-  position: fixed; z-index: 60;
+  position: fixed; inset: 2vh 2vw; z-index: 60; margin: 0;
+  display: flex; flex-direction: column; gap: 12px;
   background: #fff; border: 1px solid var(--border); border-radius: 4px;
   box-shadow: 0 18px 48px rgba(17, 27, 38, .28);
-  padding: 14px 16px;
+  padding: 14px 18px 16px;
 }
+/* 확대 중에는 그림이 남는 세로 공간을 전부 쓴다 — .seqbrief 안이든 아니든 같다. */
+.comic-pager.is-expanded .comic-pager__frame { flex: 1; min-width: 0; min-height: 0; display: flex; }
+.comic-pager.is-expanded .comic-pager__slide.is-active { flex: 1; min-width: 0; min-height: 0; display: flex; width: 100%; }
+.comic-pager.is-expanded .comic-pager__slide .comic__frame { flex: 1; min-width: 0; min-height: 0; width: 100%; }
+.comic-pager.is-expanded .comic__img {
+  width: auto; height: auto; max-width: 100%; max-height: 100%;
+  object-fit: contain; margin: 0 auto;
+}
+/* 축소 상태에서 60% 로 줄여 둔 이전/다음을 확대 중에는 원래 크기로 되돌린다. */
+.comic-pager.is-expanded .comic-pager__nav .btn { padding: 10px 16px; font-size: 12px; }
+.comic-pager.is-expanded .comic-pager__zoom { order: -1; }
 
 /* ── 글 ── */
 .brief__text { display: flex; flex-direction: column; gap: 10px; }

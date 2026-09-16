@@ -1,3 +1,8 @@
 # 이론 교육 저작 도구(import_doc.py) 전용 의존성 — 웹앱 런타임에는 필요 없다.
 # Confluence '.doc'(MHTML) 내보내기를 md + 이미지로 변환할 때만 쓴다.
 markdownify>=1.2      # HTML → markdown (beautifulsoup4 를 함께 끌어온다)
+
+# 아이콘 선화 변환 도구(make_icon_art.py) 전용 — 받아 온 PNG 를 배경 투명 · 선 굵기
+# 통일한 알파 마스크로 굽는다. 결과물(static/img/icons/*.png)은 커밋되어 있으므로
+# 원본 그림이 바뀌지 않는 한 이 패키지 없이도 앱은 돈다.
+Pillow>=10

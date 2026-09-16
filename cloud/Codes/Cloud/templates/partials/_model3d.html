@@ -1,11 +1,15 @@
-{# 3D 모델 뷰 — 만화와 자리를 나눠 쓴다(view3d-tab.js 가 [data-view3d-pane] 을 토글).
-   배경·이론(_briefing.html)·기능 설명(_seq_brief.html) 양쪽에서 include 한다.
+{# 3D 모델 뷰.
+   · 진단·강제구동·ECU(기능 설명, _seq_brief.html) — 만화와 자리를 탭으로 나눠 쓴다
+     (view3d-tab.js 가 [data-view3d-pane] 을 토글. 기본이 만화라 hidden 으로 시작한다).
+   · 메시지 작성(_composer.html) — 탭이 아니라 작성 화면 안 상단의 붙박이다. 그래서
+     이쪽에는 파인 표시를 붙이지 않는다(붙이면 view3d-tab.js 가 없어 영영 숨겨진다).
    auto-rotate 없음 — 유휴 상태에서는 멈춰 있고, camera-controls 의 드래그 회전만
    남긴다. 강제구동 응답에 따른 반응은 static/js/rci-live.js(DRIVE_EFFECTS).
 
-   컨텍스트: target #}
+   컨텍스트: target, is_composer #}
 {% from "partials/_macros.html" import icon %}
-<div class="view3d" data-view3d-pane="model" hidden>
+<div class="view3d{% if is_composer %} view3d--inline{% endif %}"
+     {% if not is_composer %}data-view3d-pane="model" hidden{% endif %}>
   {% if target.model %}
   {# loading="eager" 필수 — 기본값(auto)은 화면에 보여야(교차) 불러오기 시작하는데,
      이 파인은 만화 탭이 기본이라 처음엔 숨겨져 있다. 강제구동 응답이 먼저 와도
@@ -58,11 +62,13 @@
      대상·DID 는 참조하지 않으니 그냥 놀린다. loop 는 부저가 "ON" 상태를 유지하는
      동안(제어 반환 전까지) 계속 울리게 하기 위해서다. #}
   <audio id="view3d-horn-audio" src="{{ asset('audio/horn.wav') }}" preload="auto" loop></audio>
-  {# MP3 강제구동용 시동 차임 — RC카 전용(DRIVE_EFFECTS 의 sound:"startup"). 경적과
-     달리 loop 를 붙이지 않는다: 시동음은 한 번 울리고 끝나는 소리다(제어 반환이
-     늦어도 반복되면 안 된다). 음원은 tools/make_startup_chime.py 가 만든 오리지널
-     합성음이다 — 제조사 실제 시동음은 저작물이라 쓰지 않는다. #}
-  <audio id="view3d-startup-audio" src="{{ asset('audio/startup.wav') }}" preload="auto"></audio>
+  {# MP3 강제구동용 가상 주행음 — RC카 전용(DRIVE_EFFECTS 의 sound:"startup"). 경적과
+     달리 loop 를 붙이지 않는다: 시동/주행음은 한 번 울리고 끝나는 소리다(제어 반환이
+     늦어도 반복되면 안 된다). 음원은 교육 담당자가 직접 넣어 준 EV6 가상 사운드다 —
+     제조사 음원일 수 있으니 외부 배포본에 그대로 실을 때는 확인이 필요하다.
+     교체가 필요하면 tools/make_startup_chime.py 가 만드는 audio/startup.wav 가
+     저작권 걱정 없는 오리지널 합성음 대안으로 남아 있다. #}
+  <audio id="view3d-startup-audio" src="{{ asset('audio/ev6-virtual-sound.mp3') }}" preload="auto"></audio>
   {% else %}
   {{ icon("cube", "view3d__icon") }}
   <span class="view3d__cap">3D 모델 뷰 · 드래그 회전 · 휠 확대</span>

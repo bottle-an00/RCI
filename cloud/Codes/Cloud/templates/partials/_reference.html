@@ -1,0 +1,78 @@
+{# 참고 자료 — 무엇을 쓸 수 있는지 알려주기만 하는 읽기 전용 자료.
+   [만화 · 참고 자료 · 메시지 작성] 세 화면 중 하나(static/js/stage-switch.js).
+
+   예전에는 메시지 작성 칸 **아래**에 깔려 있었다. 그러면 값을 확인하려고 스크롤할
+   때마다 작성하던 자리를 잃고, 3D 모델 뷰가 작성 화면으로 들어온 뒤로는 세로가 더
+   빠듯해졌다. 그래서 독립된 탭으로 뺀다 — 작성 화면은 작성에만 쓴다.
+
+   컨텍스트: step, spec(=step.spec), examples, layers, nrc, negative, addr #}
+{% set spec = step.spec %}
+{% from "partials/_macros.html" import stage_switch %}
+<div class="panel panel--emph panel--grow refpanel" data-stage-panel="ref">
+
+  <div class="panel__head panel__head--brand panel__head--stage">
+    <span class="panel__title">작성 참고 자료</span>
+    <span class="panel__meta panel__meta--light">{{ scenario.title }} · {{ step.title }} ({{ step_no }}/{{ step_total }})</span>
+    {{ stage_switch("ref") }}
+  </div>
+
+  <div class="panel__body refpanel__body">
+    <div class="ref">
+      <div class="ref__head">{{ step.title }}</div>
+
+      <div class="svc">
+        <span class="svc__sid">SID 0x{{ spec.sid }}</span>
+        <span class="svc__name">{{ spec.service }}</span>
+        <span class="svc__arrow">→ 긍정 응답 0x{{ '%02X' % (spec.sid|int(base=16) + 0x40) }} · 부정 응답 {{ negative }}</span>
+      </div>
+      <div class="run-hint">{{ spec.hint }}</div>
+
+      {# 이 단계에서 골라 쓸 수 있는 값들 — 표로만 보여주고 클릭 동작은 없다. #}
+      {% for f in spec.fields %}
+      <table class="ref__table">
+        <caption>{{ f.label }}</caption>
+        {% if f.kind == "choice" %}
+        {% for o in f.options %}
+        <tr><th class="mono">{{ o.v }}</th><td>{{ o.t }}</td></tr>
+        {% endfor %}
+        {% else %}
+        <tr><th class="mono">{{ f.default }}</th><td>{{ f.hint or "기본값" }}</td></tr>
+        {% endif %}
+      </table>
+      {% endfor %}
+
+      {# 본보기 프레임. 손으로 옮겨 적어 보는 대상이다. #}
+      <table class="ref__table ref__table--wide">
+        <caption>예시 프레임</caption>
+        {% for ex in examples %}
+        <tr><th>{{ ex.label }}<br><span class="ref__dir">요청</span></th>
+            <td class="mono">{{ ex.frame }}</td></tr>
+        <tr><th><span class="ref__dir">예상 응답</span></th>
+            <td class="mono ref__resp">{{ ex.resp_frame }}</td></tr>
+        {% endfor %}
+      </table>
+
+      <table class="ref__table ref__table--wide">
+        <caption>프레임 층</caption>
+        {% for name, desc, ex in layers %}
+        <tr><th>{{ name }}</th>
+            <td>{{ desc }}<br><span class="mono ref__ex">{{ ex.replace('{req}', addr.req or '—').replace('{resp}', addr.resp or '—') }}</span></td></tr>
+        {% endfor %}
+      </table>
+
+      <table class="ref__table ref__table--wide">
+        <caption>자주 나오는 NRC (부정 응답 코드)</caption>
+        {% for code, name, desc, seen in nrc %}
+        <tr><th class="mono">{{ code }}</th>
+            <td>{{ name }} — {{ desc }}{% if seen %} <span class="ref__seen">{{ seen }}</span>{% endif %}</td></tr>
+        {% endfor %}
+      </table>
+
+      <div class="frame-ref">{{ spec.ref }}</div>
+    </div>
+
+    <div class="brief__go">
+      <button class="btn btn--primary" type="button" data-stage-view="compose">메시지 작성으로 →</button>
+    </div>
+  </div>
+</div>

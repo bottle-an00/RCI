@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "partials/_macros.html" import icon %}
+{% from "partials/_macros.html" import icon, icon_any %}
 {% block title %}RCI · 대상 선택{% endblock %}
 
 {% block body %}
@@ -28,10 +28,9 @@
         {% if t.tile_img %}
         <img class="tile__img" src="{{ asset('img/' ~ t.tile_img) }}" alt="">
         {% else %}
-        {{ icon(t.icon, "tile__icon") }}
+        {{ icon_any(t.icon, "tile__icon") }}
         {% endif %}
         <span class="tile__label">{{ t.label }}</span>
-        <span class="tile__sub">{{ t.tile_sub }}</span>
       </a>
       {% endfor %}
       {# 사용성 평가 — 대상(차량/로봇)이 아니라 '이 시스템 전체'에 대한 평가라
@@ -41,7 +40,6 @@
         {# 'e-Report' 아이콘은 e 글자라 평가지로 읽히지 않는다 — 문서 아이콘을 쓴다. #}
         {{ icon("doc", "tile__icon") }}
         <span class="tile__label">사용성 평가</span>
-        <span class="tile__sub">SUS · 10문항</span>
       </a>
     </div>
   </div>
