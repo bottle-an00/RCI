@@ -215,14 +215,21 @@
         }
       }
     } else if (pci.kind === "FF") {
+      // 이 실습은 UDS 가 늘 7바이트 이하라(main.py step_blocks 주석) 첫 프레임이
+      // 나올 일이 없다 — 나왔다면 PCI 상위 니블을 잘못 짚은 것이라 오류로 잡는다.
       if (pci.len === null) err("첫 프레임은 PCI 가 2바이트(`1L LL`)입니다", [dataBlocks[0], dataBlocks[1]]);
-      else ok("PCI " + r.data[0] + " " + r.data[1] + " · " + pci.label + " · 전체 " + pci.len
-              + "바이트 → 뒤이어 연속 프레임(21, 22 …)이 필요합니다");
+      else err("PCI " + r.data[0] + " " + r.data[1] + " · " + pci.label + " — 이 실습의 UDS 는 7바이트를 "
+               + "넘지 않아 첫 프레임(멀티프레임 시작)을 쓸 일이 없습니다. 단일 프레임(0N)으로 적으세요",
+               [dataBlocks[0], dataBlocks[1]]);
+      lengthBroken = true;
     } else if (pci.kind === "CF") {
-      ok("PCI " + r.data[0] + " · " + pci.label + " — 앞선 첫 프레임의 이어지는 데이터입니다");
+      err("PCI " + r.data[0] + " · " + pci.label + " — 이 실습에서는 앞선 첫 프레임을 보낸 적이 없어 "
+          + "연속 프레임을 쓸 수 없습니다. 단일 프레임(0N)으로 적으세요", pciId);
+      lengthBroken = true;
     } else if (pci.kind === "FC") {
-      ok("PCI " + r.data[0] + " · " + pci.label + " · 블록크기 "
-         + (r.data[1] || "?") + " · 최소간격 " + (r.data[2] || "?") + "ms — 수신측이 보내는 프레임입니다");
+      err("PCI " + r.data[0] + " · " + pci.label + " — 흐름 제어는 수신측(ECU)이 보내는 프레임입니다. "
+          + "요청은 단일 프레임(0N)으로 적으세요", pciId);
+      lengthBroken = true;
     } else {
       err("PCI " + r.data[0] + " — 상위 니블은 0(단일)·1(첫)·2(연속)·3(흐름제어) 중 하나여야 합니다", pciId);
     }
