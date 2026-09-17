@@ -121,46 +121,6 @@
     return {kind: "?", tag: "??", label: "알 수 없는 PCI", len: null, size: 1};
   }
 
-  /* PCI 가 주장하는 길이와, 뒤에서 필러를 걷어내 얻은 길이가 어긋나는지 본다.
-   *
-   * 단일 프레임에서 PCI 길이 바이트는 'UDS 가 몇 바이트인가'다. 그런데 입력만 보면
-   * 어디까지가 UDS 이고 어디부터가 필러인지 두 가지로 읽을 수 있다 — PCI 를 믿는
-   * 방법과, 뒤쪽 필러를 걷어내 역산하는 방법. 둘이 어긋나는 지점이 사용자가 틀린
-   * 지점이다.
-   *
-   * 세 경우를 심각도로 나눈다:
-   *   body < pciLen        오류. PCI 가 없는 바이트를 가리킨다 (프레임이 잘림).
-   *   역산 > pciLen        오류. 필러가 아닌 바이트가 PCI 범위 밖에 있다 → PCI 가 작다.
-   *   역산 < pciLen        경고. PCI 가 필러까지 UDS 로 세고 있다. 다만 UDS 데이터의
-   *                        마지막 바이트가 우연히 필러와 같은 값일 수 있어(예 `2E F1 A0 55`)
-   *                        단정하지 않고 경고로 둔다.
-   *
-   * @param  {string[]} body    PCI 뒤의 바이트 전부 (UDS + 필러)
-   * @param  {number}   pciLen  PCI 가 주장하는 UDS 길이
-   * @param  {string}   filler  이 방향에서 기대되는 필러 값 ("55" 또는 "AA")
-   * @return {?{sev: string, text: string}}  어긋나면 심각도와 설명, 맞으면 null
-   */
-  function checkLength(body, pciLen, filler) {
-    if (body.length < pciLen) {
-      return {sev: "err", text: "PCI 는 UDS " + pciLen + "바이트라고 하는데 뒤에 "
-        + body.length + "바이트만 있습니다 — 프레임이 잘렸거나 PCI 길이가 너무 큽니다"};
-    }
-    // 뒤에서 필러가 연속으로 나오는 만큼 걷어내 '실제로 쓴 길이'를 역산한다.
-    var real = body.length;
-    while (real > 0 && body[real - 1] === filler) real--;
-    if (real === pciLen) return null;
-
-    if (real > pciLen) {
-      return {sev: "err", text: "PCI 는 UDS " + pciLen + "바이트라고 하는데 필러(0x" + filler
-        + ") 앞까지 " + real + "바이트가 쓰여 있습니다 — PCI 를 " + hex2(real)
-        + " 로 고치거나, " + pciLen + "바이트 뒤는 필러로 채우세요"};
-    }
-    return {sev: "warn", text: "PCI 는 UDS " + pciLen + "바이트라고 하는데 필러(0x" + filler
-      + ") 앞까지는 " + real + "바이트뿐입니다 — PCI 는 DLC(8)가 아니라 UDS 바이트 수입니다"
-      + " (여기선 " + hex2(real) + "). 데이터 마지막 값이 정말 0x" + filler
-      + " 라면 이 경고는 무시해도 됩니다"};
-  }
-
   // PCI 뒤를 UDS 와 필러로 나눈다. 단일 프레임만 필러 개념이 있다.
   function extract(data, pci) {
     var body = data.slice(pci.size);
@@ -239,14 +199,19 @@
             + pci.len + "바이트라면 첫 프레임 `1" + ((pci.len >> 8) & 0xF).toString(16).toUpperCase()
             + " " + hex2(pci.len & 0xFF) + "` 로 시작해 연속 프레임(2N)으로 이어야 합니다", pciId);
       } else {
-        ok("PCI " + r.data[0] + " · " + pci.label + " · UDS " + pci.len + "바이트");
-        // 7바이트 초과는 위에서 이미 짚었으니, 범위 안일 때만 길이 대조를 한다.
-        var problem = checkLength(ex.body, pci.len, filler);
-        if (problem) {
-          // PCI 가 주장하는 길이가 틀렸다는 판정이라 — 고칠 자리는 PCI 칸이다.
-          v.push({s: problem.sev, t: problem.text, b: problem.sev === "err" ? pciId : undefined});
-          // 길이가 어긋나면 UDS/필러 경계 자체가 어긋난 것이라 필러 검사는 뜻이 없다.
-          if (problem.sev === "err") lengthBroken = true;
+        // real 은 값을 짐작하지 않는다 — 필러를 뺀 나머지 칸에 실제로 몇 바이트가
+        // 쳐 있는지를 칸 자체에서 센다(bytesUsedExceptFiller, PCI 자신의 1바이트는
+        // 뺀다). 이 실습에서 실제로 보내는 만큼만 세므로, 강제구동 제어반환처럼
+        // 옵션에 따라 안 쓰는 칸(강제값)이 있어도 맞게 나온다. 다 채우기 전에는
+        // 계속 늘어나는 중이라 매번 대조하면 방해가 되므로, 8칸이 다 찼을 때만 본다
+        // (필러 칸의 '필요' 안내도 이 값 기준이라, 다 채우면 항상 8이 된다).
+        var real = bytesUsedExceptFiller() - pci.size;
+        if (r.data.length === DLC_EXPECTED && real !== pci.len) {
+          err("PCI " + r.data[0] + " — 실제로 적은 UDS 는 " + real + "바이트인데 PCI 는 "
+              + pci.len + "바이트라고 적었습니다 (PCI 를 " + hex2(real) + " 로 고치세요)", pciId);
+          lengthBroken = true;
+        } else {
+          ok("PCI " + r.data[0] + " · " + pci.label + " · UDS " + pci.len + "바이트");
         }
       }
     } else if (pci.kind === "FF") {
