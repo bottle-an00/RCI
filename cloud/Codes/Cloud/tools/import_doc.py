@@ -115,8 +115,8 @@ def parse_file_meta(path, folder_difficulty):
 def convert_one(doc_path, out_dir, doc_id, title, difficulty, order, group, group_order):
     """단일 .doc(MHTML) → out_dir/<doc_id>.md (+ out_dir/assets/<doc_id>/ 이미지)."""
     html, images = parse_mhtml(doc_path)
-    rels = save_images(images, doc_id, base_dir=out_dir)
-    body = to_markdown(rewrite_and_extract(html, rels))
+    by_key = save_images(images, doc_id, base_dir=out_dir)
+    body = to_markdown(rewrite_and_extract(html, by_key))
     fm = [f"title: {title}"]
     if group:
         fm.append(f"group: {group}")
@@ -126,7 +126,7 @@ def convert_one(doc_path, out_dir, doc_id, title, difficulty, order, group, grou
     fm.append(f"order: {order}")
     out = out_dir / f"{doc_id}.md"
     out.write_text("---\n" + "\n".join(fm) + "\n---\n\n" + body, encoding="utf-8")
-    return out, len(rels)
+    return out, len(images)
 
 
 def process_folder(folder):
@@ -160,12 +160,25 @@ def process_dir(root):
     print(f"\n총 {total}개 자료 변환 완료.")
 
 
-def parse_mhtml(path):
-    """MHTML(.doc) 을 (html: str, images: [bytes]) 로 가른다.
+def _loc_key(value):
+    """Content-Location / img src → 매칭에 쓸 basename 키.
 
-    이미지는 '파트 순서 그대로' 담는다 — Confluence 내보내기는 img src(서버 URL)와
-    파트의 Content-Location(file:///C:/<해시>)이 서로 맞지 않아 이름으로는 못 잇는다.
-    대신 본문의 N번째 <img> 가 N번째 이미지 파트에 대응한다(문서 순서 일치).
+    파트는 `file:///C:/<해시>`, 본문 img 는 `<해시>` 로 같은 이름을 쓴다. 경로·쿼리·
+    프래그먼트를 떼고 소문자 basename 만 남겨 둘을 같은 기준으로 비교한다.
+    """
+    if not value:
+        return ""
+    v = value.split("?", 1)[0].split("#", 1)[0].rstrip("/")
+    return v.replace("\\", "/").rsplit("/", 1)[-1].strip().lower()
+
+
+def parse_mhtml(path):
+    """MHTML(.doc) 을 (html: str, images: [(key, bytes)]) 로 가른다.
+
+    key 는 파트의 Content-Location basename(보통 `file:///C:/<해시>` 의 <해시>) 이다.
+    Confluence 내보내기는 본문 <img src> 에 **같은 해시**를 쓰므로 이걸로 정확히 잇는다.
+    파트 순서와 본문 등장 순서는 일치하지 않으므로(첨부 순으로 나온다) 순서로 이으면
+    안 된다 — 그림이 조용히 뒤바뀐다.
     """
     with path.open("rb") as fp:
         msg = email.message_from_binary_file(fp, policy=policy.default)
@@ -177,24 +190,29 @@ def parse_mhtml(path):
         elif ctype.startswith("image/") or ctype == "application/octet-stream":
             data = part.get_payload(decode=True)
             if data and _img_ext(data):                       # 매직바이트로 진짜 이미지만
-                images.append(data)
+                images.append((_loc_key(part.get("Content-Location", "")), data))
     if html is None:
         raise SystemExit(f"HTML 본문을 찾지 못했습니다(정상 MHTML 이 아님): {path.name}")
     return html, images
 
 
 def save_images(images, doc_id, base_dir=THEORY_DIR):
-    """이미지 파트들을 <base_dir>/assets/<id>/ 에 순서대로 저장하고 상대경로 리스트(순서 유지)를 돌려준다."""
+    """이미지 파트를 <base_dir>/assets/<id>/ 에 저장하고 {key: 상대경로} 를 돌려준다.
+
+    파일명은 파트 순서(img01, img02 …) 그대로다 — 본문 배치는 key 매칭이 정하므로
+    파일명 순서에 의미를 싣지 않는다.
+    """
     if not images:
-        return []
+        return {}
     asset_dir = base_dir / "assets" / doc_id
     asset_dir.mkdir(parents=True, exist_ok=True)
-    rels = []
-    for i, data in enumerate(images, start=1):
+    by_key = {}
+    for i, (key, data) in enumerate(images, start=1):
         fname = f"img{i:02d}.{_img_ext(data)}"
         (asset_dir / fname).write_bytes(data)
-        rels.append(f"assets/{doc_id}/{fname}")
-    return rels
+        if key:
+            by_key[key] = f"assets/{doc_id}/{fname}"
+    return by_key
 
 
 def _promote_heading_images(soup):
@@ -216,21 +234,40 @@ def _promote_heading_images(soup):
             heading.decompose()
 
 
-def rewrite_and_extract(html, rels):
-    """본문 노드를 골라, N번째 <img> 의 src 를 N번째 이미지 경로로 바꾼 HTML 을 돌려준다.
+def rewrite_and_extract(html, by_key):
+    """본문 노드를 골라, 각 <img> 의 src 를 **같은 키의** 저장 경로로 바꾼 HTML 을 돌려준다.
 
     Confluence 내보내기는 본문을 #main-content 에 담는다 — 있으면 그것만, 없으면 body.
-    파트보다 <img> 가 많으면(짝 없는 UI 아이콘 등) 남는 것은 제거한다.
+    키가 by_key 에 없는 <img> 는 내장 파트가 없는 것(위키에 붙은 원격 이미지, UI 아이콘
+    따위)이라 따로 처리한다 — _handle_unmatched_img 참고.
     """
     soup = BeautifulSoup(html, "html.parser")
-    for i, img in enumerate(soup.find_all("img")):
-        if i < len(rels):
-            img["src"] = rels[i]
+    for img in soup.find_all("img"):
+        rel = by_key.get(_loc_key(img.get("src", "")))
+        if rel:
+            img["src"] = rel
         else:
-            img.decompose()
+            _handle_unmatched_img(img)
     _promote_heading_images(soup)
     node = soup.select_one("#main-content") or soup.body or soup
     return str(node)
+
+
+def _handle_unmatched_img(img):
+    """내장 파트가 없는 <img> 를 어떻게 할지 정한다.
+
+    예: 위키 본문이 외부 사이트 그림을 http(s) 주소로 직접 걸어둔 경우
+    (`https://ars.els-cdn.com/…/f13-09.jpg`). 파일이 문서 안에 없으므로
+    로컬 자산으로 저장할 수 없다.
+    """
+    src = (img.get("src") or "").strip()
+    if src.lower().startswith(("http://", "https://")):
+        # 운영 환경이 온라인이므로 원격 주소 그대로 두면 렌더된다. 지우면 교육자료에서
+        # 그림 한 장이 말없이 사라지고, 그 빈자리를 뒤 이미지가 메우며 배치가 밀린다.
+        img["alt"] = img.get("alt") or "외부 이미지"
+        return
+    # 내장 파트도 원격 주소도 아니면 위키 UI 아이콘(말머리·이모지) 이다 — 본문이 아니다.
+    img.decompose()
 
 
 def to_markdown(html):
@@ -257,8 +294,8 @@ def main():
 
     doc_id, title, difficulty = derive_meta(path, args)
     html, images = parse_mhtml(path)
-    rels = save_images(images, doc_id)
-    body = to_markdown(rewrite_and_extract(html, rels))
+    by_key = save_images(images, doc_id)
+    body = to_markdown(rewrite_and_extract(html, by_key))
 
     fm = [f"title: {title}"]
     if difficulty:
@@ -267,7 +304,7 @@ def main():
     out = THEORY_DIR / f"{doc_id}.md"
     out.write_text("---\n" + "\n".join(fm) + "\n---\n\n" + body, encoding="utf-8")
 
-    print(f"✔ {out.relative_to(THEORY_DIR.parent.parent)}  (제목='{title}', 난이도='{difficulty or '-'}', 이미지 {len(rels)}개)")
+    print(f"✔ {out.relative_to(THEORY_DIR.parent.parent)}  (제목='{title}', 난이도='{difficulty or '-'}', 이미지 {len(images)}개)")
 
 
 if __name__ == "__main__":
