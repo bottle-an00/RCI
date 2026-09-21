@@ -31,7 +31,7 @@ order: 4
 
 ## **4.2 이더넷 (프레임 구조)**
 
-![](https://gims.gitauto.com:8090/conf/download/attachments/287154697/image-2026-8-19_15-29-42-1.png?version=1&modificationDate=1787285208276&api=v2)
+<!-- 사내 Confluence 원본에서도 깨져 있던 그림 — 교체 필요: https://gims.gitauto.com:8090/conf/download/attachments/287154697/image-2026-8-19_15-29-42-1.png?version=1&modificationDate=1787285208276&api=v2 -->
 
 | **필드** | **크기** | **설명** |
 | --- | --- | --- |

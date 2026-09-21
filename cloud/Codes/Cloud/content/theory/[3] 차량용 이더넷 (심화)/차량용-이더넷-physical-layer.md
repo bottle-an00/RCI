@@ -36,7 +36,7 @@ order: 5
 
 ### **5.1.2 차량용 이더넷 Physical Layer 표준: 100BASE-T1**
 
-**![](https://gims.gitauto.com:8090/conf/download/thumbnails/287154699/image-2026-8-19_15-31-39-1.png?version=1&modificationDate=1787285255042&api=v2)**
+<!-- 사내 Confluence 원본에서도 깨져 있던 그림 — 교체 필요: https://gims.gitauto.com:8090/conf/download/thumbnails/287154699/image-2026-8-19_15-31-39-1.png?version=1&modificationDate=1787285255042&api=v2 -->
 
 - **일반 이더넷(100BASE-TX)은 4가닥 선이 필요해 차량엔 무겁고 비쌈**
 - **차량용 이더넷(100BASE-T1)은 2가닥(1쌍) 선으로 해결 → 차량 최적화**
@@ -93,7 +93,7 @@ order: 5
 
 ### **5.3.2 물리 계층 보호 구조 (OPEN Alliance 권장 회로)**
 
-**![](https://gims.gitauto.com:8090/conf/download/attachments/287154699/image-2026-8-20_9-3-48.png?version=1&modificationDate=1787285255089&api=v2)**
+<!-- 사내 Confluence 원본에서도 깨져 있던 그림 — 교체 필요: https://gims.gitauto.com:8090/conf/download/attachments/287154699/image-2026-8-20_9-3-48.png?version=1&modificationDate=1787285255089&api=v2 -->
 
 | **구성요소** | **역할** |
 | --- | --- |
