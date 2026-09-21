@@ -36,7 +36,7 @@ order: 5
 
 ### **5.1.2 차량용 이더넷 Physical Layer 표준: 100BASE-T1**
 
-**![](assets/차량용-이더넷-physical-layer/img02.png)**
+**![](https://gims.gitauto.com:8090/conf/download/thumbnails/287154699/image-2026-8-19_15-31-39-1.png?version=1&modificationDate=1787285255042&api=v2)**
 
 - **일반 이더넷(100BASE-TX)은 4가닥 선이 필요해 차량엔 무겁고 비쌈**
 - **차량용 이더넷(100BASE-T1)은 2가닥(1쌍) 선으로 해결 → 차량 최적화**
@@ -49,8 +49,12 @@ order: 5
   - **마스터: 심볼 타이밍 기준 제공**
   - **슬레이브: 마스터에 동기화**
 
+**![전이중 통신 방식](https://velog.velcdn.com/images%2Fminj9_6%2Fpost%2Fd78cc319-5563-4bb8-b510-9800cb48570f%2Fimage.png)**
+
 ```
-![전이중 통신 방식](assets/차량용-이더넷-physical-layer/img01.png) 전이중 통신 방식: 컴퓨터(ECU)와 컴퓨터(ECU)를 직접 연결. 동시에 전송해도 충돌 없음
+전이중 통신 방식: 컴퓨터(ECU)와 컴퓨터(ECU)를 직접 연결. 동시에 전송해도 충돌 없음
+
+**![](https://velog.velcdn.com/images%2Fminj9_6%2Fpost%2Fe46c4fbb-0f36-47fa-946b-7e755ed2c4b0%2Fimage.png)**
 ```
 
 ```
@@ -88,6 +92,8 @@ order: 5
 - **즉, 차량용 이더넷의 물리 계층은 "신호를 전기적으로 표현하는 방식"뿐 아니라, "보호 회로 토폴로지"까지 포함해서 설계된다는 점이 일반 이더넷과의 중요한 차이임**
 
 ### **5.3.2 물리 계층 보호 구조 (OPEN Alliance 권장 회로)**
+
+**![](https://gims.gitauto.com:8090/conf/download/attachments/287154699/image-2026-8-20_9-3-48.png?version=1&modificationDate=1787285255089&api=v2)**
 
 | **구성요소** | **역할** |
 | --- | --- |
@@ -140,6 +146,8 @@ order: 5
 - **별도의 Gateway 없이 스위치 기반 Ethernet 메시지 전달 가능**
 - **10Mbps 전송 속도로 인한 전력 소모 낮음**
 
+**![](assets/차량용-이더넷-physical-layer/img02.png)**
+
 ### **5.4.1 PLCA(Physical Layer Collision Avoidance) 동작 방식**
 
 **멀티 드랍(하나의 선에 여러 노드가 직접 연결)은 CAN처럼 여러 노드가 매체를 공유하는 구조이므로, 충돌 회피를 위한 별도 메커니즘이 필요하다.**
@@ -147,6 +155,8 @@ order: 5
 - **네트워크의 한 노드가 코디네이터(Coordinator) 역할을 맡아, 각 노드에게 순서대로 전송 기회(TO, Transmit Opportunity)를 부여하는 라운드 로빈(Round-robin) 방식으로 동작한다.**
 - **코디네이터가 `BEACON` 신호로 라운드 시작을 알리면, 각 노드는 자신에게 할당된 순서(ID)가 될 때까지 대기했다가, 자기 차례에만 전송을 시도한다.**
 - **이 방식은 CAN의 "우선순위 기반 중재(ID가 낮을수록 우선)"와는 다르게, 순서를 미리 정해놓고 돌아가며 전송 기회를 준다는 점에서 CAN보다는 토큰 패싱 방식에 가깝다.**
+
+**![](assets/차량용-이더넷-physical-layer/img01.png)**
 
 ```
 

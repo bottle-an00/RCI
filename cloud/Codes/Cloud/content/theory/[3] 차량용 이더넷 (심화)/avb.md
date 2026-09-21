@@ -13,8 +13,9 @@ order: 6
 **6.1 AVB(Audio Video Bridging)란?**
 
 - **오디오, 비디오 등 멀티미디어 스트림 데이터의 품질을 보장하며 동시에 원활한 전송을 위한 기술 표준  
+
+**![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgU6LDmBsJ3torLfDnjaWdF5WlcNLxV4MK1GqtVAcRTq8P9Wdz59wHVqYWoebzHwaGnC7crn3yha3AQD5XALRD1V833L6fUYlI7dyIa_-I-e_jKTkRWNUL1-Zq7qDLw5tarHPxo95aq8Fs/s400/avb.jpg)**
     
-  ![](assets/avb/img01.png)**
 
 ### **Ethernet AVB 프로토콜**
 
@@ -55,7 +56,7 @@ order: 6
 - **VLAN 태그가 추가된 표준 Ethernet 프레임**
 - **EtherType: 0x88B5**
 
-**![](assets/avb/img02.png)**
+<!-- 원본 외부 이미지 유실(만료·차단) — 교체 필요: https://www.researchgate.net/publication/358307819/figure/fig2/AS:1119426422284289@1643903465547/EEE-1722-packet-format-Source-14.ppm -->
 
 ### **6.2.1 IEEE 1722 프레임 구조 상세**
 
@@ -132,8 +133,9 @@ order: 6
 
 **MMRP, MVRP, MSRP는 각각 독립적인 역할을 갖지만, 실제로 하나의 스트림이 설정될 때는 함께 연동되어 동작한다.**
 
+**![](assets/avb/img01.png)**
+
 ```
-![](assets/avb/img03.png)
 ```
 
 | **프로토콜** | **등록하는 것** | **(4장) 관련 개념과의 연결** |
@@ -184,6 +186,8 @@ order: 6
 - **AVB는 스트림을 긴급도에 따라 SR Class A(더 낮은 지연 허용치, 예: 오디오)와 SR Class B(상대적으로 여유 있는 지연 허용치, 예: 비디오)로 구분한다.**
 - **각 Class 큐는 독립적인 Credit을 가지며, 동작 원리는 다음과 같다.**
 
+**![](assets/avb/img02.png)**
+
 ```
 
 ```
@@ -210,6 +214,8 @@ order: 6
 - **802.1BA는 이 통일된 기본값·프로파일을 제공함으로써, "AVB 인증을 받은 장비끼리는 별도 설정 없이 바로 연결해도 동작한다"는 것을 보장한다.**
 
 ### **6.6.2 AVB 네트워크 구성 요소 종합**
+
+**![](assets/avb/img03.png)**
 
 ```
 

@@ -17,7 +17,7 @@ order: 4
 
 ### **4.1.1 CRC 계산 원리 (개념)**
 
-![](assets/data-link-layer/img01.png)
+![](https://blog.skby.net/wp-content/uploads/2019/03/1-51.png)
 
 - **송신측은 전송할 데이터를 미리 정해진 생성 다항식(Generator Polynomial)으로 나눈 나머지를 계산하여, 이 나머지 값을 프레임 끝(FCS, Frame Check Sequence)에 붙여 전송한다.**
 - **수신측은 수신한 전체 프레임(데이터+FCS)을 동일한 생성 다항식으로 나누고, 나머지가 0이면 정상, 0이 아니면 오류로 판단하여 해당 프레임을 폐기(discard)한다.**
@@ -30,6 +30,8 @@ order: 4
 ---
 
 ## **4.2 이더넷 (프레임 구조)**
+
+![](https://gims.gitauto.com:8090/conf/download/attachments/287154697/image-2026-8-19_15-29-42-1.png?version=1&modificationDate=1787285208276&api=v2)
 
 | **필드** | **크기** | **설명** |
 | --- | --- | --- |
@@ -86,6 +88,8 @@ order: 4
 2. **전달(Forwarding/Filtering): 프레임의 목적지 MAC 주소가 테이블에 있으면, 해당 포트로만 프레임을 전달(Forwarding)한다. 테이블에 없으면 알고 있는 포트를 제외한 모든 포트로 전달(Flooding)한다.**
 3. **에이징(Aging): 일정 시간(기본값 통상 300초) 이상 갱신되지 않은 MAC 주소 항목은 테이블에서 자동 삭제된다.**
 
+![](assets/data-link-layer/img01.png)
+
 ```
 
 ```
@@ -119,6 +123,8 @@ order: 4
 | **PCP (Priority Code Point)** | **3 bit** | **802.1p 우선순위 값 (0~7) — 4.4.2절 참고** |
 | **DEI (Drop Eligible Indicator)** | **1 bit** | **혼잡 시 우선적으로 폐기 가능한 프레임인지 표시** |
 | **VID (VLAN Identifier)** | **12 bit** | **VLAN 번호 (0~4094, 총 4095개 VLAN 구성 가능)** |
+
+<!-- 원본 외부 이미지 유실(만료·차단) — 교체 필요: https://blog.kakaocdn.net/dna/bEOL05/btrAzbmAJdJ/AAAAAAAAAAAAAAAAAAAAAOCh1c-Ka9A1cXNcGfO7xLlpglM0l1cSfTOy_ZNK3Oi0/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1788188399&allow_ip=&allow_referer=&signature=l2oFE4zImLjPZoDRKAYmbjC%2BTwE%3D -->
 
 ```
 

@@ -147,6 +147,8 @@ order: 8
 
 **지금까지 다룬 (3)~(8)장의 내용을 하나로 합쳐 보면, 실제 SOME/IP 데이터 하나가 물리적으로 전송될 때 아래와 같은 캡슐화 구조를 가진다 (3.7절 Encapsulation 참고).**
 
+![](https://media.licdn.com/dms/image/v2/D4E12AQFiQOK9hYgXXA/article-inline_image-shrink_1000_1488/article-inline_image-shrink_1000_1488/0/1658011896209?e=2147483647&v=beta&t=nGCdS-USpQ3BYiGnXf5n6uscaLW09md9Ha1UYbnJLTo)
+
 | **계층** | **결정하는 것** |
 | --- | --- |
 | **Ethernet(2계층)** | **어느 물리적 링크로 보낼지, PCP로 우선순위(4장)를 표시** |
