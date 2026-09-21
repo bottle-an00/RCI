@@ -53,9 +53,9 @@ order: 5
 
 ```
 전이중 통신 방식: 컴퓨터(ECU)와 컴퓨터(ECU)를 직접 연결. 동시에 전송해도 충돌 없음
+```
 
 **![](https://velog.velcdn.com/images%2Fminj9_6%2Fpost%2Fe46c4fbb-0f36-47fa-946b-7e755ed2c4b0%2Fimage.png)**
-```
 
 ```
  반이중 통신 방식: 컴퓨터와(ECU)와 컴퓨터(ECU)가 허브에 연결된 구조. 동시에 전송하면 충돌 발생
