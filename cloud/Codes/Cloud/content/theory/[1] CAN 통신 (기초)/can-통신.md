@@ -45,7 +45,6 @@ order: 10
      
    **![](assets/can-통신/img08.png)**  
      
-   **![](assets/can-통신/img03.png)**
 
 > **예시 - ABS(Anti-Lock Brake System) 브레이크를 밟았을 때 바퀴가 잠기지 않도록, 휠 속도 센서가 바퀴 회전 속도를 ECU에 전달하면 ECU가 잠김 여부를 판단해서 유압장치를 제어합니다.**
 
