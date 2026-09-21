@@ -12,14 +12,14 @@ order: 6
 
 **6.1 등장 배경**
 
-![](assets/can-fd/img01.png)
+![](assets/can-fd/img02.png)
 
 1. **차량 ECU 증가로 인한 통신량 증가**
 2. **한정된 시간에 전송해야 할 데이터 증가**
 
 ## **6.2 데이터 구간 속도 증가 (BRS)**
 
-![](assets/can-fd/img02.png)
+![](assets/can-fd/img03.png)
 
 - **BRS(Bit Rate Switch): 구간별 속도 전환 기능**
   - **BRS = 0 (dominant): 속도 유지**
@@ -52,7 +52,7 @@ order: 6
 
 ## **6.5 CAN FD Data Frame 구조 (Standard Format)**
 
-**![](assets/can-fd/img03.png)**
+**![](assets/can-fd/img01.png)**
 
 | **신규/변경 필드** | **의미** |
 | --- | --- |

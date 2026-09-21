@@ -12,13 +12,13 @@ order: 2
 
 **2.1 CAN이란?**
 
-![](assets/can-통신-소개/img01.png)
+![](assets/can-통신-소개/img02.png)
 
 - **CAN(Controller Area Network): ECU들이 서로 통신하기 위해 설계된 표준 통신 규격**
 
 ## **2.2 CAN 노드 구성 (노드 = ECU)**
 
-![](assets/can-통신-소개/img02.png)
+![](assets/can-통신-소개/img01.png)
 
 | **구성요소** | **역할** |
 | --- | --- |

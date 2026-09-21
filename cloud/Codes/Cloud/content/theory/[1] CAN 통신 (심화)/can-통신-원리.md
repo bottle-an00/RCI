@@ -12,7 +12,7 @@ order: 3
 
 **3.1 멀티마스터 프로토콜**
 
-![](assets/can-통신-원리/img01.png)
+![](assets/can-통신-원리/img04.png)
 
 - **버스가 사용되지 않을 때(idle)는 어느 노드든 데이터를 네트워크에 송신 가능**
 
@@ -35,7 +35,7 @@ order: 3
 
 ## **3.3 CSMA / CSMA-CA**
 
-![](assets/can-통신-원리/img03.png)![](assets/can-통신-원리/img04.png)
+![](assets/can-통신-원리/img03.png)![](assets/can-통신-원리/img01.png)
 
 - **CS(Carrier Sense): 버스 상태를 먼저 감지**
 - **MA(Multiple Access): 여러 ECU가 하나의 버스를 사용**

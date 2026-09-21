@@ -12,14 +12,14 @@ order: 1
 
 **1.1 ECU란?**
 
-![](assets/ecu-소개/img01.png)
+![](assets/ecu-소개/img04.png)
 
 - **ECU(Electronic Control Unit, 전자 제어 장치): 차량의 엔진을 비롯한 다양한 전자 시스템을 제어하는 장치**
 - **ECU는 센서에서 정보를 받아 미리 설계된 기준으로 판단하고, 액추에이터로 명령을 전송한다.**
 
   - **흐름: `센서 입력 → ECU 처리(판단) → 액추에이터 응답`**
 
-  **`![](assets/ecu-소개/img02.png)`**
+  **`![](assets/ecu-소개/img01.png)`**
 
 > **왜 ECU가 이렇게 많아졌나?**  
 >   
@@ -29,7 +29,7 @@ order: 1
 
 ## **1.2 예시 - ABS (Anti-Lock Brake System)**
 
-![](assets/ecu-소개/img03.png)![](assets/ecu-소개/img04.png)
+![](assets/ecu-소개/img03.png)![](assets/ecu-소개/img02.png)
 
 - **브레이크 페달을 밟았을 때 바퀴 잠김을 방지하기 위해 브레이크 캘리퍼 압력을 제어하는 시스템**
 - **ECU 역할: 휠 속도 센서로 바퀴 회전 속도를 전달받아 잠김 여부를 판단 → 유압장치 제어**

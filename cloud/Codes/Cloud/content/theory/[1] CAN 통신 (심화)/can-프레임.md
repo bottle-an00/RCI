@@ -23,7 +23,7 @@ order: 4
 
 ## **4.2 CAN Data Frame 구조 (Standard Format, 11bit)**
 
-**![](assets/can-프레임/img01.png)**
+**![](assets/can-프레임/img02.png)**
 
 | **약어** | **의미** |
 | --- | --- |
@@ -70,7 +70,7 @@ order: 4
 
 **Extended Format 구조**
 
-**![](assets/can-프레임/img02.png)**
+**![](assets/can-프레임/img01.png)**
 
 - **확장 포맷은 최대 약 5억 3천 6백만 개의 식별자를 제공하며, SAE J1939(상용차용), NMEA 2000(선박), ISO 11783(농기계) 등의 기반 규격이다.**
 - **J1939 ID 구조: `Priority(3bit) + EDP(1bit) + DP(1bit) + PDU Format(8bit) + PDU Specific(8bit) + Source Address(8bit)`**

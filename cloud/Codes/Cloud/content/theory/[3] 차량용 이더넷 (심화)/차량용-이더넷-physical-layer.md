@@ -36,7 +36,7 @@ order: 5
 
 ### **5.1.2 차량용 이더넷 Physical Layer 표준: 100BASE-T1**
 
-**![](assets/차량용-이더넷-physical-layer/img01.png)**
+**![](assets/차량용-이더넷-physical-layer/img02.png)**
 
 - **일반 이더넷(100BASE-TX)은 4가닥 선이 필요해 차량엔 무겁고 비쌈**
 - **차량용 이더넷(100BASE-T1)은 2가닥(1쌍) 선으로 해결 → 차량 최적화**
@@ -50,7 +50,7 @@ order: 5
   - **슬레이브: 마스터에 동기화**
 
 ```
-![전이중 통신 방식](assets/차량용-이더넷-physical-layer/img02.png) 전이중 통신 방식: 컴퓨터(ECU)와 컴퓨터(ECU)를 직접 연결. 동시에 전송해도 충돌 없음
+![전이중 통신 방식](assets/차량용-이더넷-physical-layer/img01.png) 전이중 통신 방식: 컴퓨터(ECU)와 컴퓨터(ECU)를 직접 연결. 동시에 전송해도 충돌 없음
 ```
 
 ```

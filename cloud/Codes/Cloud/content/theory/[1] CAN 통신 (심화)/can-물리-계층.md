@@ -12,14 +12,14 @@ order: 5
 
 **5.1 물리계층 개요**
 
-![](assets/can-물리-계층/img01.png)
+![](assets/can-물리-계층/img04.png)
 
 - **신호 변환: 전압 차이의 유무로 0과 1을 구분**
 - **차동 신호(Differential Signal): CAN\_High, CAN\_Low 두 선의 전압 차이로 비트 판별**
 
 ## **5.2 비트 → 전압 변환 (송신, Tx)**
 
-![](assets/can-물리-계층/img02.png)![](assets/can-물리-계층/img03.png)
+![](assets/can-물리-계층/img03.png)![](assets/can-물리-계층/img02.png)
 
 - **논리값: 0 = dominant(우성), 1 = recessive(열성)**
 - **High Speed CAN(ISO 11898-2) 기준 전압:**
@@ -64,7 +64,7 @@ order: 5
 
 ## **5.6 꼬임선(Twisted Pair)과 종단저항**
 
-![](assets/can-물리-계층/img04.png)![](assets/can-물리-계층/img05.png)
+![](assets/can-물리-계층/img01.png)![](assets/can-물리-계층/img05.png)
 
 - **데이터 전송 시 케이블 주위에 자기장 발생 → 노이즈 영향 → 꼬임선(twisted pair)은 신호 잡음/간섭을 줄이는 데 도움**
 - **우성/열성 + AND 논리: 우성(0)이 논리 우세, 여러 노드가 동시 송신 시 AND 결과는 0(우성)이 유리하게 작용**

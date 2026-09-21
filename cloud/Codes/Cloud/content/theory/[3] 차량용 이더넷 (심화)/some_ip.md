@@ -21,7 +21,7 @@ order: 8
 - **미들웨어는 이런 세부사항을 애플리케이션으로부터 감추고(추상화), 애플리케이션은 "어떤 서비스를 어떻게 호출할지"만 신경 쓰면 되도록 만들어준다.**
 
 ```
-   ![](assets/some_ip/img01.png)
+   ![](assets/some_ip/img06.png)
 ```
 
 ---
@@ -31,7 +31,7 @@ order: 8
 - **SOME/IP(Scalable service-Oriented MiddlewarE over IP): 차량 내부 통신을 위한 표준 프로토콜**
 - **다양한 운영체제 및 HW를 사용하는 ECU 간 데이터 통신을 위한 미들웨어 솔루션으로, AUTOSAR, GENIVI 등 다양한 환경에서 활용 가능**
 
-![](assets/some_ip/img02.png)
+![](assets/some_ip/img01.png)
 
 ### **SOME/IP 목적**
 
@@ -47,12 +47,12 @@ order: 8
 | **장점** | **구조가 간단, 작은 데이터 패킷을 빠르게 송신** | **네트워크 로드 감소, 필요한 데이터만 정확히 전달** |
 | **단점** | **불필요한 데이터로 인해 네트워크 트래픽 증가** | **네트워크 구성 변경에 동적으로 대응해야 함** |
 
-![](assets/some_ip/img03.png)
+![](assets/some_ip/img05.png)
 
 ### **8.2.2 SOME/IP 메시지 구조**
 
 **CAN이 `ID + Data`라는 단순한 구조였다면(CAN 기초자료 6장 참고), SOME/IP는 이더넷(IP/UDP/TCP) 위에서 동작하는 만큼 더 풍부한 정보를 담는 자체 헤더 구조를 가진다.  
-![](assets/some_ip/img04.png)**
+![](assets/some_ip/img02.png)**
 
 | **필드** | **크기** | **설명** |
 | --- | --- | --- |
@@ -89,7 +89,7 @@ order: 8
 - **개발자가 RTE API 함수를 호출하면, RTE가 이를 SOME/IP 메시지로 자동 변환해 적절한 ECU로 전송**
 
 ```
-   ![](assets/some_ip/img05.png)
+   ![](assets/some_ip/img03.png)
 ```
 
 > **개발자 입장에서는 "SendSignal(브레이크상태, ON)"처럼 API 함수 하나만 호출하면 되고, 이 호출이 실제로 어떤 IP 주소/포트로, 어떤 바이트 순서로 전송되는지는 RTE와 SOME/IP 스택이 알아서 처리해준다. 이것이 미들웨어가 제공하는 "추상화"의 실질적 의미다.**
@@ -110,7 +110,7 @@ order: 8
 ### **8.3.2 SD 동작 시퀀스 - Offer / Find / Subscribe**
 
 ```
-![](assets/some_ip/img06.png)
+![](assets/some_ip/img04.png)
 ```
 
 - **OfferService: 서비스를 제공하는 ECU가 주기적으로(또는 상태 변화 시) "나는 이 서비스를 제공하고 있다"고 멀티캐스트로 알린다.**
