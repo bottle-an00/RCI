@@ -104,6 +104,18 @@ async def _close_hosted_channel(registry: BroadcastRegistry, channel_id: str) ->
         await _safe_send(viewer_ws, {"type": "channel_closed", "channel_id": channel_id})
 
 
+async def _leave_viewer(registry: BroadcastRegistry, channel_id: str, viewer_id: str) -> None:
+    """뷰어 등록을 해제하고, 채널이 남아있으면 그 마스터에게 viewer_left 를 알린다.
+
+    연결 종료 시(`finally`)와 같은 연결이 다른 채널로 재-`join` 할 때 둘 다 쓰인다 —
+    두 경우 모두 "이 소켓이 이전에 등록했던 뷰어 자리"를 똑같이 정리해야 한다.
+    """
+    registry.remove_viewer(channel_id, viewer_id)
+    channel = registry.get_channel(channel_id)
+    if channel is not None:
+        await _safe_send(channel.master, {"type": "viewer_left", "viewer_id": viewer_id})
+
+
 async def handle_connection(websocket: WebSocket, registry: BroadcastRegistry) -> None:
     """WS 연결 하나의 전체 수명 — 역할(마스터/뷰어/목록 구독자)은 첫 메시지로 정해진다.
 
@@ -124,6 +136,11 @@ async def handle_connection(websocket: WebSocket, registry: BroadcastRegistry) -
             mtype = msg.get("type")
 
             if mtype == "create":
+                if hosted_channel_id is not None:
+                    # 이 소켓이 이미 채널을 호스팅 중이면, 새 채널을 만들기 전에
+                    # 먼저 닫는다 — 그러지 않으면 이전 채널이 목록에 유령으로
+                    # 영원히 남는다(뷰어는 죽은 소켓으로 가는 viewer_joined만 받음).
+                    await _close_hosted_channel(registry, hosted_channel_id)
                 channel = registry.create_channel(msg.get("label", ""), websocket)
                 hosted_channel_id = channel.channel_id
                 await websocket.send_json({"type": "created", "channel_id": channel.channel_id})
@@ -143,6 +160,11 @@ async def handle_connection(websocket: WebSocket, registry: BroadcastRegistry) -
                         {"type": "error", "message": "채널을 찾을 수 없습니다"}
                     )
                     continue
+                if joined_channel_id is not None and viewer_id is not None:
+                    # 이 소켓이 이미 다른(또는 같은) 채널에 뷰어로 등록돼 있으면,
+                    # 새로 join 하기 전에 이전 등록을 먼저 정리한다 — 그러지 않으면
+                    # 옛 viewer_id가 연결이 끊길 때까지 channel.viewers 에 남는다.
+                    await _leave_viewer(registry, joined_channel_id, viewer_id)
                 viewer_id = registry.add_viewer(channel.channel_id, websocket)
                 joined_channel_id = channel.channel_id
                 await _safe_send(channel.master, {"type": "viewer_joined", "viewer_id": viewer_id})
@@ -193,9 +215,6 @@ async def handle_connection(websocket: WebSocket, registry: BroadcastRegistry) -
             await _close_hosted_channel(registry, hosted_channel_id)
             await _push_channel_list(registry)
         if joined_channel_id is not None and viewer_id is not None:
-            registry.remove_viewer(joined_channel_id, viewer_id)
-            channel = registry.get_channel(joined_channel_id)
-            if channel is not None:
-                await _safe_send(channel.master, {"type": "viewer_left", "viewer_id": viewer_id})
+            await _leave_viewer(registry, joined_channel_id, viewer_id)
         if is_list_subscriber:
             registry.remove_list_subscriber(websocket)

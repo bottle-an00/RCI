@@ -155,3 +155,62 @@ def test_explicit_close_removes_channel_and_keeps_socket_open(client):
         second = master.receive_json()
         assert second["type"] == "created"
         assert second["channel_id"] != channel_id
+
+
+def test_second_create_on_same_socket_closes_previous_channel(client):
+    with client.websocket_connect("/ws/broadcast") as master:
+        master.send_json({"type": "create", "label": "채널 1"})
+        channel_id_1 = master.receive_json()["channel_id"]
+
+        with client.websocket_connect("/ws/broadcast") as viewer:
+            viewer.send_json({"type": "join", "channel_id": channel_id_1})
+            master.receive_json()  # viewer_joined
+
+            master.send_json({"type": "create", "label": "채널 2"})
+
+            closed = viewer.receive_json()
+            assert closed == {"type": "channel_closed", "channel_id": channel_id_1}
+
+            created = master.receive_json()
+            assert created["type"] == "created"
+            channel_id_2 = created["channel_id"]
+            assert channel_id_2 != channel_id_1
+
+        assert main.broadcast_registry.get_channel(channel_id_1) is None
+        assert main.broadcast_registry.get_channel(channel_id_2) is not None
+
+    # 소켓이 완전히 닫히면 마지막(두번째) 채널도 정리된다 — 유령으로 남지 않는다.
+    assert main.broadcast_registry.get_channel(channel_id_2) is None
+
+
+def test_second_join_on_same_socket_replaces_previous_viewer_registration(client):
+    with client.websocket_connect("/ws/broadcast") as master:
+        master.send_json({"type": "create", "label": "UR3 시연"})
+        channel_id = master.receive_json()["channel_id"]
+
+        with client.websocket_connect("/ws/broadcast") as viewer:
+            viewer.send_json({"type": "join", "channel_id": channel_id})
+            viewer_id_1 = master.receive_json()["viewer_id"]
+
+            viewer.send_json({"type": "join", "channel_id": channel_id})
+
+            left = master.receive_json()
+            assert left == {"type": "viewer_left", "viewer_id": viewer_id_1}
+
+            joined_again = master.receive_json()
+            assert joined_again["type"] == "viewer_joined"
+            viewer_id_2 = joined_again["viewer_id"]
+            assert viewer_id_2 != viewer_id_1
+
+            channel = main.broadcast_registry.get_channel(channel_id)
+            assert viewer_id_1 not in channel.viewers
+            assert viewer_id_2 in channel.viewers
+
+        # 뷰어 소켓이 끊기면 최신 등록(viewer_id_2)만 정리되고, 첫 등록은 이미
+        # 정리됐으므로 다시 알림이 오지 않는다.
+        left_final = master.receive_json()
+        assert left_final == {"type": "viewer_left", "viewer_id": viewer_id_2}
+
+        channel = main.broadcast_registry.get_channel(channel_id)
+        assert channel is not None
+        assert channel.viewers == {}
