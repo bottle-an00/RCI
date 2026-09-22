@@ -30,6 +30,7 @@
   var viewLabelEl = root.querySelector("[data-broadcast-view-label]");
   var videoEl = root.querySelector("[data-broadcast-video]");
   var viewErrorEl = root.querySelector("[data-broadcast-view-error]");
+  var fullscreenBtn = root.querySelector("[data-broadcast-fullscreen]");
 
   function wsUrl() {
     var proto = location.protocol === "https:" ? "wss:" : "ws:";
@@ -420,4 +421,10 @@
   }
 
   backBtn.addEventListener("click", leaveView);
+
+  fullscreenBtn.addEventListener("click", function () {
+    if (videoEl.requestFullscreen) {
+      videoEl.requestFullscreen();
+    }
+  });
 })();

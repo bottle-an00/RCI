@@ -1696,6 +1696,7 @@ body.is-coach [data-coach-target] {
 .broadcast__view-head {
   display: flex; align-items: center; gap: 14px; margin-bottom: 14px; font-weight: 600;
 }
+.broadcast__view-head [data-broadcast-fullscreen] { margin-left: auto; }
 .broadcast__video {
   width: 100%; background: #14161b; aspect-ratio: 16 / 9; display: block;
 }
