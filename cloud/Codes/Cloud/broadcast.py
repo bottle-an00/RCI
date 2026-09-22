@@ -181,7 +181,13 @@ async def handle_connection(websocket: WebSocket, registry: BroadcastRegistry) -
                     await _safe_send(target, {"type": "offer", "sdp": msg.get("sdp")})
 
             elif mtype == "answer":
-                channel = registry.get_channel(joined_channel_id or "")
+                # 뷰어 쪽 검증: 클라이언트가 보낸 channel_id 가 아니라 이 연결이 실제로
+                # join 한 채널(joined_channel_id)인지로만 라우팅한다(기존 동작) — 다만
+                # 메시지의 channel_id 도 그것과 일치해야 한다. 이 소켓이 애초에 뷰어로
+                # 등록돼 있지 않다면(joined_channel_id is None) 아무 데도 보내지 않는다.
+                if joined_channel_id is None or msg.get("channel_id") != joined_channel_id:
+                    continue
+                channel = registry.get_channel(joined_channel_id)
                 if channel is not None:
                     await _safe_send(
                         channel.master,
@@ -193,10 +199,18 @@ async def handle_connection(websocket: WebSocket, registry: BroadcastRegistry) -
                 if channel is None:
                     continue
                 if channel.master is websocket:
+                    # 마스터 쪽 검증: offer 와 같은 패턴 — channel.master is websocket 이
+                    # 이미 "이 연결이 실제로 이 채널의 마스터인가"를 확인해 준다.
                     target = channel.viewers.get(msg.get("viewer_id", ""))
                     if target is not None:
                         await _safe_send(target, {"type": "ice", "candidate": msg.get("candidate")})
                 else:
+                    # 뷰어 쪽 검증: 메시지의 channel_id 를 그대로 믿고 라우팅하면, A 채널의
+                    # 뷰어가 channel_id 만 B 로 바꿔 보내는 것만으로 B 채널의 마스터에게
+                    # (자신의 viewer_id 를 달고) 끼어들 수 있다. join 성공 시 로컬에 저장해
+                    # 둔 joined_channel_id 와 일치할 때만 중계한다(answer 와 동일 기준).
+                    if joined_channel_id is None or msg.get("channel_id") != joined_channel_id:
+                        continue
                     await _safe_send(
                         channel.master,
                         {"type": "ice", "viewer_id": viewer_id, "candidate": msg.get("candidate")},

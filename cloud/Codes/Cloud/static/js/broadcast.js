@@ -171,6 +171,16 @@
     showSection(listSection);
   }
 
+  function dropFailedPeer(viewerId) {
+    // viewer_left 와 같은 정리 — peers 에서 빠져야 updateViewerCount() 가 "실제로
+    // 붙어 있는 시청자 수"를 보여준다(그냥 "peer 를 만들어 본 횟수"가 아니라).
+    var pc = peers[viewerId];
+    if (!pc) return;
+    pc.close();
+    delete peers[viewerId];
+    updateViewerCount();
+  }
+
   function createPeerForViewer(viewerId) {
     var pc = new RTCPeerConnection();
     pc._broadcastRemoteReady = false; // answer 의 setRemoteDescription 완료 전
@@ -178,6 +188,14 @@
     peers[viewerId] = pc;
     screenStream.getTracks().forEach(function (track) {
       pc.addTrack(track, screenStream);
+    });
+    // 연결이 끊기거나 아예 붙지 못하면(방화벽·AP 클라이언트 격리·VLAN 분리 등 같은
+    // LAN 에서도 흔하다) 조용히 죽은 채로 "N명 시청 중"에 잡혀 있지 않도록 정리한다.
+    // 재연결 로직은 두지 않는다(설계 제약) — 순수히 집계를 실제와 맞추는 목적이다.
+    pc.addEventListener("connectionstatechange", function () {
+      if (pc.connectionState === "failed" || pc.connectionState === "disconnected") {
+        dropFailedPeer(viewerId);
+      }
     });
     pc.addEventListener("icecandidate", function (event) {
       if (event.candidate) {
@@ -261,6 +279,11 @@
               delete peers[msg.viewer_id];
               updateViewerCount();
             }
+          } else if (msg.type === "error") {
+            // 서버가 무언가를 거부했을 때(예: 상한 offer/viewer_id) 마스터가 알 수
+            // 있는 유일한 경로 — 그냥 무시되면 방송자는 이유를 알 길이 없다.
+            hostErrorEl.textContent = msg.message || "오류가 발생했습니다.";
+            hostErrorEl.hidden = false;
           }
         });
         // 서버 재시작 등으로 소켓이 끊기면 재연결하지 않고(설계 제약) 목록으로
@@ -316,6 +339,22 @@
     viewPeer._broadcastIceBuffer = [];
     viewPeer.addEventListener("track", function (event) {
       videoEl.srcObject = event.streams[0];
+    });
+    // 연결이 실패/단절되면(방화벽·AP 클라이언트 격리·VLAN 분리 등) 학생 화면에는
+    // 그냥 멈춘 검은 <video> 만 남는다 — 이유를 알려주기만 한다(재연결 로직은 설계
+    // 제약으로 두지 않는다). channel_closed 와 달리 자동으로 목록에 복귀시키지는
+    // 않는다: 서버가 아니라 P2P 경로 문제라 방송 자체는 계속 살아 있을 수 있다.
+    // pc 를 클로저로 고정해 둔다 — 이 사이에 leaveView/joinChannel 이 다시 불려
+    // viewPeer 가 다른(또는 null) 값으로 바뀌어도, 이 리스너는 자신이 붙은 그 피어
+    // 연결의 상태만 본다.
+    var thisPeer = viewPeer;
+    thisPeer.addEventListener("connectionstatechange", function () {
+      if (viewPeer !== thisPeer) return; // 이미 떠났거나 다른 채널로 교체됨
+      var state = thisPeer.connectionState;
+      if (state === "failed" || state === "disconnected") {
+        viewErrorEl.textContent = "연결이 원활하지 않습니다. 네트워크 상태를 확인해 주세요.";
+        viewErrorEl.hidden = false;
+      }
     });
     viewPeer.addEventListener("icecandidate", function (event) {
       if (event.candidate && viewSocket) {

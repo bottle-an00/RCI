@@ -87,6 +87,7 @@ body {
 }
 .topbar__left, .topbar__right { display: flex; align-items: center; gap: 16px; }
 .topbar__right { margin-left: auto; }
+.topbar__right a { display: flex; color: inherit; text-decoration: none; }
 /* 학습자 배지 — 값이 있을 때만 learner-badge.js 가 hidden 을 뗀다. */
 .topbar__learner { font-size: 13px; font-weight: 600; color: var(--muted); }
 .topbar__brand {
@@ -1664,8 +1665,12 @@ body.is-coach [data-coach-target] {
 .broadcast__title { font-size: 19px; font-weight: 700; margin: 0; }
 
 .broadcast__list-head {
-  display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px;
 }
+/* .btn--primary 의 전역 flex:1(다른 화면의 버튼 줄에서 가로로 나눠 쓰기 위한 것)이
+   여기서는 "화면 공유 시작"/"공유 시작" 버튼을 줄 전체로 늘려버린다 — 다른 페이지의
+   기존 동작은 건드리지 않고 이 두 자리만 되돌린다(.frame-act .btn 과 같은 패턴). */
+.broadcast__list-head .btn, .broadcast__actions .btn { flex: none; }
 .broadcast__channels { list-style: none; margin: 0; padding: 0; }
 .broadcast__channel { border-bottom: 1px solid var(--border); }
 .broadcast__channel-btn {
