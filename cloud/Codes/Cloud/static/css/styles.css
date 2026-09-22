@@ -1648,3 +1648,49 @@ body.is-coach [data-coach-target] {
   .survey__item { flex-direction: column; align-items: stretch; gap: 10px; }
   .survey__opts, .survey__scale-head { width: 100%; }
 }
+
+/* =========================================================================
+   화면 실시간 송출 — templates/broadcast.html · static/js/broadcast.js
+   목록/방송 시작/시청 3개 섹션을 한 페이지에 두고 JS 가 hidden 속성으로 전환한다.
+   ========================================================================= */
+.broadcast {
+  flex: 1; overflow-y: auto; background: #e6e9ee; padding: 22px 26px;
+  display: flex; justify-content: center; align-items: flex-start;
+}
+.broadcast__list, .broadcast__host, .broadcast__view {
+  width: 100%; max-width: 900px;
+  background: #fff; border: 1px solid var(--border); padding: 26px 30px 24px;
+}
+.broadcast__title { font-size: 19px; font-weight: 700; margin: 0; }
+
+.broadcast__list-head {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;
+}
+.broadcast__channels { list-style: none; margin: 0; padding: 0; }
+.broadcast__channel { border-bottom: 1px solid var(--border); }
+.broadcast__channel-btn {
+  width: 100%; text-align: left; font: inherit; font-size: 14px; font-weight: 600;
+  padding: 14px 4px; background: none; border: none; color: var(--ink); cursor: pointer;
+}
+.broadcast__channel-btn:hover { color: var(--brand-blue); }
+.broadcast__empty { color: var(--muted); font-size: 13.5px; padding: 20px 4px; }
+
+.broadcast__field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.broadcast__field label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.broadcast__field input {
+  font: inherit; font-size: 14px; padding: 9px 11px;
+  border: 1px solid var(--border); background: #fff; color: var(--ink);
+}
+.broadcast__field input:focus { outline: none; border-color: var(--brand-blue); }
+.broadcast__actions { display: flex; gap: 10px; justify-content: flex-end; }
+.broadcast__live {
+  margin-top: 18px; display: flex; align-items: center; justify-content: space-between;
+}
+.broadcast__error { margin-top: 12px; font-size: 13px; color: var(--pdf-tag); }
+
+.broadcast__view-head {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 14px; font-weight: 600;
+}
+.broadcast__video {
+  width: 100%; background: #14161b; aspect-ratio: 16 / 9; display: block;
+}

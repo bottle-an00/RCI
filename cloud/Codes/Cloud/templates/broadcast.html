@@ -1,5 +1,52 @@
 {% extends "base_shell.html" %}
 {% block title %}RCI · 화면 실시간 송출{% endblock %}
+
 {% block content %}
-<div class="broadcast" data-broadcast></div>
+{# 목록/방송 시작/시청 3개 섹션을 한 페이지에 두고, static/js/broadcast.js 가
+   hidden 속성으로 전환한다. 대상(target)과 무관한 독립 화면이라 target 관련
+   컨텍스트 변수는 주지 않는다(partials/_subhead.html 이 없는 경우를 처리한다). #}
+<div class="broadcast" data-broadcast>
+
+  <section class="broadcast__list" data-broadcast-list>
+    <div class="broadcast__list-head">
+      <h1 class="broadcast__title">생방송 중인 채널</h1>
+      <button class="btn btn--primary" type="button" data-broadcast-start-mode>화면 공유 시작</button>
+    </div>
+    <ul class="broadcast__channels" data-broadcast-channels></ul>
+    <p class="broadcast__empty" data-broadcast-empty>현재 생방송 중인 채널이 없습니다.</p>
+  </section>
+
+  <section class="broadcast__host" data-broadcast-host hidden>
+    <h1 class="broadcast__title">화면 공유 시작</h1>
+    <div class="broadcast__field">
+      <label for="broadcast-label">채널 이름</label>
+      <input type="text" id="broadcast-label" data-broadcast-label
+             placeholder="예: UR3 강제구동 시연" maxlength="60" autocomplete="off">
+    </div>
+    <div class="broadcast__actions">
+      <button class="btn btn--ghost" type="button" data-broadcast-cancel-host>취소</button>
+      <button class="btn btn--primary" type="button" data-broadcast-go-live>공유 시작</button>
+    </div>
+    <div class="broadcast__live" data-broadcast-live hidden>
+      <p><b data-broadcast-viewer-count>0</b>명 시청 중</p>
+      <button class="btn btn--stop" type="button" data-broadcast-stop>방송 종료</button>
+    </div>
+    <p class="broadcast__error" data-broadcast-host-error hidden></p>
+  </section>
+
+  <section class="broadcast__view" data-broadcast-view hidden>
+    <div class="broadcast__view-head">
+      <button class="btn btn--ghost" type="button" data-broadcast-back>‹ 목록으로</button>
+      <span data-broadcast-view-label></span>
+    </div>
+    <video class="broadcast__video" data-broadcast-video autoplay playsinline></video>
+    <p class="broadcast__error" data-broadcast-view-error hidden></p>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ asset('js/broadcast.js') }}"></script>
 {% endblock %}
