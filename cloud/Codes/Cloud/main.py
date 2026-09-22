@@ -26,13 +26,14 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, WebSocket
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
+import broadcast
 import theory_content
 import visit_log
 from mqtt_bridge import BridgeError, BrokerConfig, MqttBridge, RequestTimeout
@@ -42,6 +43,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)-7s %(na
 BASE_DIR = Path(__file__).resolve().parent
 
 bridge = MqttBridge(BrokerConfig.from_env())
+broadcast_registry = broadcast.BroadcastRegistry()
 
 
 @asynccontextmanager
@@ -1870,6 +1872,24 @@ def search(request: Request, q: str | None = None):
     return templates.TemplateResponse(
         request, "search.html", {"query": q or "", "bottom_nav": BOTTOM_NAV},
     )
+
+
+@app.get("/broadcast", response_class=HTMLResponse)
+def broadcast_page(request: Request):
+    """강사 화면 실시간 공유 — 대상(target)과 무관한 독립 화면.
+
+    `/{target_id}` 캐치올보다 먼저 선언해야 한다(survey/search 와 같은 이유).
+    """
+    return templates.TemplateResponse(
+        request, "broadcast.html",
+        {"bottom_nav": BOTTOM_NAV, "status": "화면 실시간 송출",
+         "crumbs": [{"text": "화면 실시간 송출", "tier": "content"}]},
+    )
+
+
+@app.websocket("/ws/broadcast")
+async def ws_broadcast(websocket: WebSocket):
+    await broadcast.handle_connection(websocket, broadcast_registry)
 
 
 # --------------------------------------------------------------------------- #

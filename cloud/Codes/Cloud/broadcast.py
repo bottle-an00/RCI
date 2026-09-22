@@ -15,6 +15,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
+from fastapi import WebSocket, WebSocketDisconnect
+
 log = logging.getLogger("rci.broadcast")
 
 
@@ -78,3 +80,122 @@ class BroadcastRegistry:
         """테스트 전용 — 레지스트리를 초기 상태로 되돌린다."""
         self._channels.clear()
         self._list_subscribers.clear()
+
+
+async def _safe_send(websocket: Any, payload: dict) -> None:
+    """상대가 이미 끊긴 상태에서 보내다 실패해도 다른 연결에 영향 주지 않는다."""
+    try:
+        await websocket.send_json(payload)
+    except Exception:
+        log.debug("broadcast: 전송 실패(이미 끊긴 연결로 추정) type=%s", payload.get("type"))
+
+
+async def _push_channel_list(registry: BroadcastRegistry) -> None:
+    payload = {"type": "channel_list", "channels": registry.list_channels()}
+    for sub in registry.list_subscribers():
+        await _safe_send(sub, payload)
+
+
+async def _close_hosted_channel(registry: BroadcastRegistry, channel_id: str) -> None:
+    channel = registry.remove_channel(channel_id)
+    if channel is None:
+        return
+    for viewer_ws in channel.viewers.values():
+        await _safe_send(viewer_ws, {"type": "channel_closed", "channel_id": channel_id})
+
+
+async def handle_connection(websocket: WebSocket, registry: BroadcastRegistry) -> None:
+    """WS 연결 하나의 전체 수명 — 역할(마스터/뷰어/목록 구독자)은 첫 메시지로 정해진다.
+
+    한 연결이 `list` 로 목록을 구독한 채로 나중에 `join` 도 보낼 수 있다(학생이
+    목록 화면에서 채널을 고르는 흐름과 맞춘다) — 그래서 역할별 상태를 모두
+    지역 변수로 들고, 종료 시 해당되는 것만 정리한다.
+    """
+    await websocket.accept()
+
+    hosted_channel_id: str | None = None
+    joined_channel_id: str | None = None
+    viewer_id: str | None = None
+    is_list_subscriber = False
+
+    try:
+        while True:
+            msg = await websocket.receive_json()
+            mtype = msg.get("type")
+
+            if mtype == "create":
+                channel = registry.create_channel(msg.get("label", ""), websocket)
+                hosted_channel_id = channel.channel_id
+                await websocket.send_json({"type": "created", "channel_id": channel.channel_id})
+                await _push_channel_list(registry)
+
+            elif mtype == "list":
+                is_list_subscriber = True
+                registry.add_list_subscriber(websocket)
+                await websocket.send_json(
+                    {"type": "channel_list", "channels": registry.list_channels()}
+                )
+
+            elif mtype == "join":
+                channel = registry.get_channel(msg.get("channel_id", ""))
+                if channel is None:
+                    await websocket.send_json(
+                        {"type": "error", "message": "채널을 찾을 수 없습니다"}
+                    )
+                    continue
+                viewer_id = registry.add_viewer(channel.channel_id, websocket)
+                joined_channel_id = channel.channel_id
+                await _safe_send(channel.master, {"type": "viewer_joined", "viewer_id": viewer_id})
+
+            elif mtype == "offer":
+                channel = registry.get_channel(msg.get("channel_id", ""))
+                if channel is None or channel.master is not websocket:
+                    await websocket.send_json(
+                        {"type": "error", "message": "채널을 찾을 수 없습니다"}
+                    )
+                    continue
+                target = channel.viewers.get(msg.get("viewer_id", ""))
+                if target is not None:
+                    await _safe_send(target, {"type": "offer", "sdp": msg.get("sdp")})
+
+            elif mtype == "answer":
+                channel = registry.get_channel(joined_channel_id or "")
+                if channel is not None:
+                    await _safe_send(
+                        channel.master,
+                        {"type": "answer", "viewer_id": viewer_id, "sdp": msg.get("sdp")},
+                    )
+
+            elif mtype == "ice":
+                channel = registry.get_channel(msg.get("channel_id", ""))
+                if channel is None:
+                    continue
+                if channel.master is websocket:
+                    target = channel.viewers.get(msg.get("viewer_id", ""))
+                    if target is not None:
+                        await _safe_send(target, {"type": "ice", "candidate": msg.get("candidate")})
+                else:
+                    await _safe_send(
+                        channel.master,
+                        {"type": "ice", "viewer_id": viewer_id, "candidate": msg.get("candidate")},
+                    )
+
+            elif mtype == "close":
+                if hosted_channel_id is not None:
+                    await _close_hosted_channel(registry, hosted_channel_id)
+                    hosted_channel_id = None
+                    await _push_channel_list(registry)
+
+    except WebSocketDisconnect:
+        pass
+    finally:
+        if hosted_channel_id is not None:
+            await _close_hosted_channel(registry, hosted_channel_id)
+            await _push_channel_list(registry)
+        if joined_channel_id is not None and viewer_id is not None:
+            registry.remove_viewer(joined_channel_id, viewer_id)
+            channel = registry.get_channel(joined_channel_id)
+            if channel is not None:
+                await _safe_send(channel.master, {"type": "viewer_left", "viewer_id": viewer_id})
+        if is_list_subscriber:
+            registry.remove_list_subscriber(websocket)
